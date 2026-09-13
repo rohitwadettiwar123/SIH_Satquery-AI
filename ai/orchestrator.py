@@ -219,98 +219,85 @@ async def orchestrate(
         f"modalities={profile['modalities']}, session={profile['session_type']}"
     )
 
-    # ── Step 3: Cloud Screening + Reconstruction ──────────────────────────────
-    trace_steps.append("Step 3: Cloud screening (optical images only)")
-    reconstruction_results: list[dict] = []
-    cloud_reconstruction_info = {
-        "triggered": False,
-        "coverage_pct": 0.0,
-        "method": "passthrough",
-        "avg_confidence": 100.0,
-        "disclosure_text": "",
-        "original_url": "",
-        "reconstructed_url": "",
-    }
+    import asyncio
 
-    for i, (img_path, mod) in enumerate(zip(image_paths, profile["modalities"])):
+    # ── Step 3: Cloud Screening + Reconstruction (PARALLEL) ───────────
+    trace_steps.append("Step 3: Cloud screening (optical images only)")
+    cloud_reconstruction_info = {
+        "triggered": False, "coverage_pct": 0.0, "method": "passthrough",
+        "avg_confidence": 100.0, "disclosure_text": "", "original_url": "", "reconstructed_url": "",
+    }
+    
+    async def process_cloud(img_path, mod):
         if mod == "optical":
             from pipeline.reconstruction.inpainter import run_cloud_reconstruction
-            rc_result = run_cloud_reconstruction(img_path, config=config)
-            reconstruction_results.append(rc_result)
-            if rc_result["triggered"] and i == 0:
-                # Save reconstructed image to disk to serve it
-                recon_arr = rc_result["reconstructed_image_array"]
-                recon_filename = f"recon_{uuid.uuid4().hex[:8]}.png"
-                recon_path = Path("backend/data/uploads") / recon_filename
-                Image.fromarray(recon_arr).save(recon_path)
-                
-                cloud_reconstruction_info = {
-                    "triggered": rc_result["triggered"],
-                    "coverage_pct": rc_result["coverage_pct"],
-                    "method": rc_result["method"],
-                    "avg_confidence": rc_result["avg_confidence"],
-                    "disclosure_text": rc_result["disclosure_text"],
-                    "original_url": f"/uploads/{Path(img_path).name}",
-                    "reconstructed_url": f"/uploads/{recon_filename}",
-                }
-                trace_steps.append(f"Cloud reconstruction: {rc_result['disclosure_text']}")
-        else:
-            reconstruction_results.append({})
+            return await asyncio.to_thread(run_cloud_reconstruction, img_path, None, 0, config)
+        return {}
 
-    # ── Step 4: Compatibility Check ───────────────────────────────────────────
+    cloud_tasks = [process_cloud(p, m) for p, m in zip(image_paths, profile["modalities"])]
+    reconstruction_results = await asyncio.gather(*cloud_tasks)
+
+    for i, rc_result in enumerate(reconstruction_results):
+        if rc_result and rc_result.get("triggered") and i == 0:
+            recon_arr = rc_result["reconstructed_image_array"]
+            recon_filename = f"recon_{uuid.uuid4().hex[:8]}.png"
+            recon_path = Path("backend/data/uploads") / recon_filename
+            Image.fromarray(recon_arr).save(recon_path)
+            cloud_reconstruction_info = {
+                "triggered": rc_result["triggered"],
+                "coverage_pct": rc_result["coverage_pct"],
+                "method": rc_result["method"],
+                "avg_confidence": rc_result["avg_confidence"],
+                "disclosure_text": rc_result["disclosure_text"],
+                "original_url": f"/uploads/{Path(image_paths[0]).name}",
+                "reconstructed_url": f"/uploads/{recon_filename}",
+            }
+            trace_steps.append(f"Cloud reconstruction: {rc_result['disclosure_text']}")
+
+    # ── Step 4: Compatibility Check ───────────────────────────────────
     trace_steps.append("Step 4: Validating task-input compatibility")
     compatible, compat_error = check_task_compatibility(task_type, profile)
     if not compatible:
         return {
-            "query_id": query_id,
-            "task_type": task_type,
-            "query": query,
+            "query_id": query_id, "task_type": task_type, "query": query,
             "answer": f"❌ Compatibility Error: {compat_error}",
-            "confidence": 0.0,
-            "detected_objects": [],
-            "execution_trace": trace_steps,
+            "confidence": 0.0, "detected_objects": [], "execution_trace": trace_steps,
             "gate_verdicts": {"G0_format_check": "FAIL", "error": compat_error},
-            "audit_hash": "",
-            "cloud_reconstruction": cloud_reconstruction_info,
+            "audit_hash": "", "cloud_reconstruction": cloud_reconstruction_info,
         }
 
-    # ── Step 5-6: Specialist Execution ────────────────────────────────────────
+    # ── Step 5-7: Specialist & Validation Gates (PARALLEL) ────────────
     trace_steps.append(f"Step 5: Executing specialist — {task_type}")
-    try:
-        specialist_result = await _run_specialist(
-            task_type, image_paths, query, config, reconstruction_results
-        )
-    except Exception as e:
-        log.exception("Specialist execution failed")
-        specialist_result = {
-            "answer": f"Analysis completed with partial results. ({e})",
-            "confidence": 0.5,
-            "detected_objects": [],
-        }
+    from pipeline.evidence.assembler import run_validation_gates, generate_audit_hash
+    
+    async def run_specialist_task():
+        try:
+            return await _run_specialist(task_type, image_paths, query, config, reconstruction_results)
+        except Exception as e:
+            log.exception("Specialist execution failed")
+            return {"answer": f"Analysis completed with partial results. ({e})", "confidence": 0.5, "detected_objects": []}
 
-    trace_steps.append("Step 6: Fusing outputs and computing confidence")
+    async def run_gates_task():
+        gate_request = {"cloud_coverage_pct": cloud_reconstruction_info["coverage_pct"], "confidence": 1.0, "task_type": task_type}
+        return await asyncio.to_thread(run_validation_gates, gate_request, image_paths, config)
 
-    # ── Step 7: Confidence Fusion ─────────────────────────────────────────────
+    trace_steps.append("Step 6: Running G0-G8 scientific validation gates (Parallel)")
+    specialist_result, (gate_verdicts, gate_trace) = await asyncio.gather(
+        run_specialist_task(),
+        run_gates_task()
+    )
+    trace_steps.extend(gate_trace)
+
+    trace_steps.append("Step 7: Fusing outputs and computing confidence")
     specialist_confidence = specialist_result.get("confidence", 0.75)
     reconstruction_confidence = cloud_reconstruction_info["avg_confidence"] / 100.0
     if cloud_reconstruction_info["triggered"]:
-        # Blend: 70% specialist + 30% reconstruction confidence
         final_confidence = 0.70 * specialist_confidence + 0.30 * reconstruction_confidence
     else:
         final_confidence = specialist_confidence
     final_confidence = round(min(0.99, max(0.01, final_confidence)), 3)
 
-    # ── Step 8: Audit + Trace ─────────────────────────────────────────────────
-    trace_steps.append("Step 7: Running G0-G8 scientific validation gates")
-    from pipeline.evidence.assembler import run_validation_gates, generate_audit_hash
-
-    gate_request = {
-        "cloud_coverage_pct": cloud_reconstruction_info["coverage_pct"],
-        "confidence": final_confidence,
-        "task_type": task_type,
-    }
-    gate_verdicts, gate_trace = run_validation_gates(gate_request, image_paths, config)
-    trace_steps.extend(gate_trace)
+    # ── Step 8: Audit + Trace ─────────────────────────────────────────
     trace_steps.append("Step 8: Generating SHA-256 audit hash")
 
     # Build detected objects from specialist result

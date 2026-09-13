@@ -59,8 +59,10 @@ def run_validation_gates(
 
             g_imgs = []
             for p in image_paths[:2]:
-                img = np.array(Image.open(p).convert("L"))
-                g_imgs.append(img)
+                img_pil = Image.open(p).convert("L")
+                if max(img_pil.size) > 512:
+                    img_pil.thumbnail((512, 512), Image.BILINEAR)
+                g_imgs.append(np.array(img_pil))
 
             orb = cv2.ORB_create(nfeatures=200)
             kp1, d1 = orb.detectAndCompute(g_imgs[0], None)
