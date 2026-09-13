@@ -8,8 +8,8 @@ import { motion } from 'framer-motion';
 export default function LoginPage({ onLogin }: { onLogin: () => void }) {
   const [loading, setLoading] = useState(false);
 
-  const handleAuth = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAuth = (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -101,6 +101,15 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
                   INITIALIZE LINK
                 </span>
               )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAuth}
+              disabled={loading}
+              className="w-full bg-space hover:bg-panel-border border border-panel-border text-gray-400 hover:text-white font-mono font-bold text-xs tracking-widest rounded-lg py-2 mt-2 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              ACCESS SIH DEMO MODE
             </button>
           </form>
 
