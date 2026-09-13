@@ -20,14 +20,20 @@ export default function FloatingSatellite() {
   const stars = generateStars(1500);
 
   useFrame((state, delta) => {
+    const t = state.clock.elapsedTime * 0.3; // Orbit speed
+    
     if (satRef.current) {
-      // Float up and down slowly
-      satRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
-      // Rotate slowly
-      satRef.current.rotation.y += delta * 0.2;
-      satRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * 0.1;
-      satRef.current.rotation.x = Math.cos(state.clock.elapsedTime * 0.2) * 0.1;
+      // Wide sweeping orbit across the screen
+      satRef.current.position.x = Math.sin(t) * 7; 
+      satRef.current.position.y = Math.sin(t * 0.7) * 4; 
+      satRef.current.position.z = Math.cos(t) * 5; 
+      
+      // Dynamic rotation as it flies
+      satRef.current.rotation.y += delta * 0.4;
+      satRef.current.rotation.z = Math.sin(t * 2) * 0.2;
+      satRef.current.rotation.x = Math.cos(t * 2) * 0.2;
     }
+    
     if (starsRef.current) {
       starsRef.current.rotation.y -= 0.0002;
       starsRef.current.rotation.x -= 0.0001;
