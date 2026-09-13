@@ -24,16 +24,25 @@ async def chat_copilot(req: ChatRequest):
         client = Groq(api_key=settings.groq_api_key)
         
         # Convert history to Groq format
-        formatted_messages = []
+        formatted_messages = [
+            {
+                "role": "system",
+                "content": "You are Satquery Chatbot, an elite expert in satellite imagery, remote sensing, Earth Engine (GEE), and GIS. Provide perfect, concise, and highly accurate technical answers. Format code clearly and always prioritize scientific accuracy."
+            }
+        ]
         for msg in req.messages:
+            if msg.role == 'assistant':
+                role = 'assistant'
+            else:
+                role = 'user'
             formatted_messages.append({
-                "role": msg.role,
+                "role": role,
                 "content": msg.content
             })
             
         chat_completion = client.chat.completions.create(
             messages=formatted_messages,
-            model="mixtral-8x7b-32768",
+            model="qwen/qwen3.6-27b",
         )
         
         return {"response": chat_completion.choices[0].message.content}
