@@ -1,0 +1,49 @@
+# SatQuery AI — Master Configuration
+# All thresholds, weights, and settings are centralized here.
+# Modify this file to tune pipeline behavior without touching code.
+
+# ─── Cloud Reconstruction ────────────────────────────────────────────────────
+cloud_threshold: 0.15                   # Fraction above which reconstruction is triggered
+max_cloud_for_direct_use: 0.15          # Below this → passthrough, no reconstruction needed
+min_quality_score: 0.60                 # Minimum quality score for temporal candidate images
+max_date_gap_days: 365                  # Maximum days between temporal pair for reconstruction
+
+# ─── Confidence Estimation Weights ───────────────────────────────────────────
+confidence_weights:
+  cloud_prob: 0.30          # Weight for inverse cloud probability factor
+  temporal_age: 0.25        # Weight for temporal image age penalty
+  registration_quality: 0.20 # Weight for image registration accuracy
+  local_consistency: 0.15   # Weight for local reconstruction consistency
+  model_confidence: 0.10    # Weight for underlying model confidence
+
+# ─── NDVI Classification Thresholds ─────────────────────────────────────────
+ndvi_classes:
+  water: -1.00              # NDVI < -0.1  → water
+  bare_soil: 0.10           # NDVI 0.0–0.1 → bare soil
+  poor_vegetation: 0.20     # NDVI 0.1–0.2 → sparse vegetation
+  moderate_vegetation: 0.40 # NDVI 0.2–0.4 → moderate vegetation
+  healthy_vegetation: 1.00  # NDVI > 0.4   → healthy/dense vegetation
+
+ndvi_confidence_threshold: 50   # Only compute NDVI on pixels with confidence >= this
+ndvi_change_deadband: 0.05      # ±0.05 dead-band to absorb sensor noise in ΔNDVI
+
+# ─── Scientific Validation Gates ─────────────────────────────────────────────
+g1_max_coregistration_rmse: 2.0  # pixels — max acceptable reprojection error
+g2_nyquist_factor: 2.0           # target must be >= N×GSD for detection
+g5_escalation_threshold: 0.75   # confidence < this triggers human escalation
+
+# ─── AI Model Settings ───────────────────────────────────────────────────────
+gemini_model: "gemini-1.5-flash"
+ollama_url: "http://localhost:11434"
+ollama_model: "llava"
+use_ollama_fallback: true   # Try Ollama if Gemini API key not set
+
+# ─── Image Processing ────────────────────────────────────────────────────────
+max_image_size_px: 1024   # Resize to this if larger (CPU memory optimization)
+default_gsd_meters: 10.0  # Default GSD when not in metadata (Sentinel-2)
+sar_lee_window: 5          # Enhanced Lee filter window size
+
+# ─── Report & Audit ──────────────────────────────────────────────────────────
+audit_log_path: "backend/data/audit_log.json"
+uploads_dir: "backend/data/uploads"
+reports_dir: "backend/data/reports"

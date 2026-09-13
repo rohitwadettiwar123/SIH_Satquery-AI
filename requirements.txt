@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+python-dotenv
+pyyaml
+numpy
+scipy
+opencv-python-headless
+scikit-image
+Pillow
+aiofiles
+httpx
+google-generativeai
+reportlab
+python-jose

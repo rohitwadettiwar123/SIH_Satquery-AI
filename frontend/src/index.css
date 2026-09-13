@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-space text-gray-200 overflow-hidden;
+  }
+}
+
+@layer components {
+  .mission-panel {
+    @apply bg-panel border border-panel-border rounded-lg shadow-xl overflow-hidden relative;
+  }
+  
+  .mission-panel::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-panel-border to-transparent opacity-50;
+  }
+
+  .neon-text-green {
+    @apply text-neon-green;
+    text-shadow: 0 0 10px rgba(0, 220, 130, 0.5);
+  }
+  
+  .neon-text-cyan {
+    @apply text-neon-cyan;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  }
+}
+
+/* Custom Scrollbar for HUD feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-space;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-panel-border rounded;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neon-cyan;
+}
+
+/* CRT Scanline Overlay */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.15;
+}
