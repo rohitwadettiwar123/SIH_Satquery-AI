@@ -99,9 +99,13 @@ function App() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-space overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-space overflow-hidden relative">
+      {/* High-end ambient background overlay */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neon-cyan/5 via-space to-space pointer-events-none"></div>
+      <div className="absolute inset-0 z-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3N2Zz4=')] opacity-50 pointer-events-none"></div>
+      
       {/* Header */}
-      <header className="h-14 border-b border-panel-border bg-panel flex items-center justify-between px-6 shrink-0 z-10">
+      <header className="h-14 border-b border-panel-border bg-panel/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
         <div className="flex items-center gap-3">
           <Satellite className="text-neon-cyan h-6 w-6" />
           <h1 className="font-mono text-xl tracking-wider font-bold">
@@ -133,7 +137,7 @@ function App() {
       </header>
 
       {/* Main Grid */}
-      <main className="flex-1 overflow-y-auto lg:overflow-hidden p-4">
+      <main className="flex-1 overflow-y-auto lg:overflow-hidden p-4 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 h-full">
           
           {/* Left Col: Upload & Query */}

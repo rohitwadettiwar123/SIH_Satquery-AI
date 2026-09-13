@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import Globe from './Globe';
+import FloatingSatellite from './Globe';
 import { OrbitControls } from '@react-three/drei';
 import { Satellite, Lock, LogIn, Fingerprint, ScanEye } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -22,7 +22,7 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
       {/* 3D Background */}
       <div className="absolute inset-0 z-0">
         <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-          <Globe />
+          <FloatingSatellite />
           <OrbitControls 
             enableZoom={false} 
             enablePan={false}
