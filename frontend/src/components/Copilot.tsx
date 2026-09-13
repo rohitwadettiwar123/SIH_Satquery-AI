@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Copilot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([
-    { role: 'assistant', content: 'Hello! I am SatQuery Copilot. I can help you analyze satellite imagery, explain remote sensing metrics, or write SQL queries for Earth Engine.' }
+    { role: 'assistant', content: 'Hello! I am Satquery Chatbot. I can help you analyze satellite imagery, explain remote sensing metrics, or write SQL queries for Earth Engine.' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function Copilot() {
       const data = await res.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'SYSTEM ERROR: Unable to reach Copilot API.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'SYSTEM ERROR: Unable to reach Chatbot API.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +63,7 @@ export default function Copilot() {
             <div className="h-14 border-b border-panel-border bg-space/50 flex items-center justify-between px-4">
               <div className="flex items-center gap-2 text-neon-cyan font-mono font-bold">
                 <Bot className="w-5 h-5" />
-                SATQUERY COPILOT
+                SATQUERY CHATBOT
               </div>
               <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
@@ -104,7 +104,7 @@ export default function Copilot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask Copilot..."
+                  placeholder="Ask Chatbot..."
                   className="w-full bg-black border border-panel-border rounded-lg pl-4 pr-12 py-3 text-sm font-mono text-white focus:outline-none focus:border-neon-cyan"
                 />
                 <button 

@@ -33,7 +33,7 @@ async def chat_copilot(req: ChatRequest):
             
         chat_completion = client.chat.completions.create(
             messages=formatted_messages,
-            model="llama3-8b-8192",
+            model="mixtral-8x7b-32768",
         )
         
         return {"response": chat_completion.choices[0].message.content}
