@@ -46,7 +46,7 @@ async def _gemini_vqa(query: str, image_paths: list[str], api_key: str, config: 
         client = genai.Client(api_key=api_key)
         model_name = "gemini-1.5-flash"
 
-        parts = [gtypes.Part.from_text(
+        parts = [gtypes.Part.from_text(text=
             f"You are an expert remote sensing analyst. Answer this question about the satellite image(s). "
             f"Be specific, mention visible features, and give a confidence estimate.\n\nQuestion: {query}"
         )]

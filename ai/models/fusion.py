@@ -90,21 +90,31 @@ async def _ai_fusion_description(
     gemini_key = os.getenv("GEMINI_API_KEY", "")
     if gemini_key:
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel(config.get("gemini_model", "gemini-2.0-flash"))
+            import io
+            from google import genai
+            from google.genai import types as gtypes
+            client = genai.Client(api_key=gemini_key)
+            MODEL = "gemini-1.5-flash"
+            
             opt_img = Image.open(optical_path)
             if max(opt_img.size) > 1024:
                 opt_img.thumbnail((1024, 1024))
-            prompt = (
+            buf = io.BytesIO()
+            opt_img.save(buf, format="JPEG")
+            img_part = gtypes.Part.from_bytes(data=buf.getvalue(), mime_type="image/jpeg")
+            
+            prompt = gtypes.Part.from_text(text=
                 f"You are analyzing an optical satellite image (provided) combined with SAR data. "
                 f"Query: {query}\n"
                 f"Deterministic fusion metrics: Built-up={buildup_pct:.1f}%, Water={water_pct:.1f}%.\n"
                 f"Describe the joint land-use analysis using both spectral (optical) and "
                 f"structural (SAR backscatter) information. SAR can see through clouds."
             )
-            resp = model.generate_content([prompt, opt_img])
-            return resp.text.strip()
+            response = client.models.generate_content(
+                model=MODEL,
+                contents=[prompt, img_part]
+            )
+            return response.text.strip()
         except Exception as e:
             log.warning("Gemini fusion description failed: %s", e)
 

@@ -8,6 +8,15 @@ from typing import Optional
 log = logging.getLogger("satquery.pipeline.change_detect")
 
 
+def _to_gray_float(img: np.ndarray) -> np.ndarray:
+    arr = img.astype(np.float32)
+    if arr.max() > 1.0:
+        arr /= 255.0
+    if arr.ndim == 3:
+        arr = arr.mean(axis=2)
+    return arr
+
+
 def compute_ssim(img1: np.ndarray, img2: np.ndarray) -> float:
     """Structural Similarity Index between two images."""
     try:
@@ -68,23 +77,36 @@ def detect_change_clusters(
     Returns list of {bbox_normalized, area_pixels, severity_score}.
     """
     try:
-        from scipy.ndimage import label
+        from scipy.ndimage import label, find_objects
     except ImportError:
         return []
 
     labeled, n_features = label(change_mask)
     H, W = change_mask.shape
     clusters = []
+    
+    if n_features == 0:
+        return []
 
-    for i in range(1, n_features + 1):
-        region = labeled == i
-        area = int(region.sum())
+    slices = find_objects(labeled)
+    
+    for i, slc in enumerate(slices):
+        if slc is None:
+            continue
+            
+        y_slice, x_slice = slc
+        
+        # Sub-array for this bounding box
+        sub_labeled = labeled[y_slice, x_slice]
+        area = int((sub_labeled == (i + 1)).sum())
+        
         if area < min_area:
             continue
-        rows, cols = np.where(region)
-        y1, y2 = rows.min() / H, rows.max() / H
-        x1, x2 = cols.min() / W, cols.max() / W
-        severity = min(1.0, area / (H * W * 0.05))  # normalise by 5% of image
+            
+        y1, y2 = y_slice.start / H, y_slice.stop / H
+        x1, x2 = x_slice.start / W, x_slice.stop / W
+        
+        severity = min(1.0, area / (H * W * 0.05))
         clusters.append({
             "bbox_normalized": [round(x1, 3), round(y1, 3), round(x2, 3), round(y2, 3)],
             "area_pixels": area,

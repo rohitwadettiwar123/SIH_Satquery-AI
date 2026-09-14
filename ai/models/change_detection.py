@@ -128,7 +128,7 @@ async def _ai_change_description(
                 img.save(buf, format="JPEG")
                 return gtypes.Part.from_bytes(data=buf.getvalue(), mime_type="image/jpeg")
 
-            prompt = gtypes.Part.from_text(
+            prompt = gtypes.Part.from_text(text=
                 f"Compare these two satellite images (before/after). Query: {query}\n"
                 f"Deterministic metrics: SSIM={ssim:.4f}, Change area={change_pct:.1f}%, Affected area={area:.2f} km2.\n"
                 f"Describe what changed between T0 (first image) and T1 (second image). Be specific."

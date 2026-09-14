@@ -32,7 +32,7 @@ async def run_captioning(image_path: str, config: dict) -> dict:
             from google import genai
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
-            prompt = gtypes.Part.from_text(
+            prompt = gtypes.Part.from_text(text=
                 "You are a remote sensing expert. Describe this satellite image in detail, covering: "
                 "1) dominant land cover types and estimated percentages, "
                 "2) visible infrastructure or features, "
@@ -68,7 +68,7 @@ async def run_grounding(query: str, image_path: str, config: dict) -> dict:
             from google import genai
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
-            prompt = gtypes.Part.from_text(
+            prompt = gtypes.Part.from_text(text=
                 f"Locate this in the satellite image: '{query}'. "
                 "Describe where it is and provide a bounding box as [x1, y1, x2, y2] in normalised 0-1 coordinates."
             )
