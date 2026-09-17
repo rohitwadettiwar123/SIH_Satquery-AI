@@ -1,5 +1,0 @@
-.react-router/
-!app/lib/
-.wrangler/
-build/
-build-inputs.txt
