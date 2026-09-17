@@ -760,5 +760,570 @@
     "escalation_reason": "OK",
     "processing_time_ms": 0.0,
     "audit_hash": "30cf948bb18dcad1b23688e48c05e232056dabc844e75e00416ab8f45518b0f6"
+  },
+  {
+    "query_id": "298d0483-97f0-4cf7-a144-d0f8018b898a",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Change detection analysis: moderate change detected between the two images. Structural similarity (SSIM): 0.0426 (lower = more change). Approximately 20.0% of the scene changed, affecting ~20.97 km². Set GEMINI_API_KEY for detailed change interpretation.",
+    "confidence": 0.763,
+    "detected_objects": [
+      {
+        "class_name": "change_cluster_1",
+        "confidence": 0.067,
+        "bbox": {
+          "x1": 0.944,
+          "y1": 0.0,
+          "x2": 0.999,
+          "y2": 0.127
+        },
+        "area_hectares": 35.23,
+        "severity_score": 0.067
+      },
+      {
+        "class_name": "change_cluster_2",
+        "confidence": 0.05,
+        "bbox": {
+          "x1": 0.85,
+          "y1": 0.0,
+          "x2": 0.921,
+          "y2": 0.079
+        },
+        "area_hectares": 26.02,
+        "severity_score": 0.05
+      },
+      {
+        "class_name": "change_cluster_3",
+        "confidence": 0.046,
+        "bbox": {
+          "x1": 0.697,
+          "y1": 0.0,
+          "x2": 0.771,
+          "y2": 0.061
+        },
+        "area_hectares": 24.31,
+        "severity_score": 0.046
+      },
+      {
+        "class_name": "change_cluster_4",
+        "confidence": 0.04,
+        "bbox": {
+          "x1": 0.263,
+          "y1": 0.0,
+          "x2": 0.357,
+          "y2": 0.046
+        },
+        "area_hectares": 20.71,
+        "severity_score": 0.04
+      },
+      {
+        "class_name": "change_cluster_5",
+        "confidence": 0.037,
+        "bbox": {
+          "x1": 0.272,
+          "y1": 0.839,
+          "x2": 0.444,
+          "y2": 0.974
+        },
+        "area_hectares": 19.23,
+        "severity_score": 0.037
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.0426,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.5,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-14T12:10:14.705424+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 8a90344802727f56…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 0.0,
+    "audit_hash": "8a90344802727f5645e1780d246a69cb028baba98ac8038021a69cac222f2814"
+  },
+  {
+    "query_id": "d700b349-c069-4001-8408-13cae223cb8f",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Change detection analysis: moderate change detected between the two images. Structural similarity (SSIM): 0.0426 (lower = more change). Approximately 20.0% of the scene changed, affecting ~20.97 km². Set GEMINI_API_KEY for detailed change interpretation.",
+    "confidence": 0.763,
+    "detected_objects": [
+      {
+        "class_name": "change_cluster_1",
+        "confidence": 0.067,
+        "bbox": {
+          "x1": 0.944,
+          "y1": 0.0,
+          "x2": 0.999,
+          "y2": 0.127
+        },
+        "area_hectares": 35.23,
+        "severity_score": 0.067
+      },
+      {
+        "class_name": "change_cluster_2",
+        "confidence": 0.05,
+        "bbox": {
+          "x1": 0.85,
+          "y1": 0.0,
+          "x2": 0.921,
+          "y2": 0.079
+        },
+        "area_hectares": 26.02,
+        "severity_score": 0.05
+      },
+      {
+        "class_name": "change_cluster_3",
+        "confidence": 0.046,
+        "bbox": {
+          "x1": 0.697,
+          "y1": 0.0,
+          "x2": 0.771,
+          "y2": 0.061
+        },
+        "area_hectares": 24.31,
+        "severity_score": 0.046
+      },
+      {
+        "class_name": "change_cluster_4",
+        "confidence": 0.04,
+        "bbox": {
+          "x1": 0.263,
+          "y1": 0.0,
+          "x2": 0.357,
+          "y2": 0.046
+        },
+        "area_hectares": 20.71,
+        "severity_score": 0.04
+      },
+      {
+        "class_name": "change_cluster_5",
+        "confidence": 0.037,
+        "bbox": {
+          "x1": 0.272,
+          "y1": 0.839,
+          "x2": 0.444,
+          "y2": 0.974
+        },
+        "area_hectares": 19.23,
+        "severity_score": 0.037
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.0426,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.5,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-16T07:28:06.838442+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: e0ab1234d8261984…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 0.0,
+    "audit_hash": "e0ab1234d8261984de6d67187466e4a93edb71cb5091603af5789edfaea662c6"
+  },
+  {
+    "query_id": "4126b2de-c961-4f86-88e5-88e65759816b",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Change detection analysis: moderate change detected between the two images. Structural similarity (SSIM): 0.0426 (lower = more change). Approximately 20.0% of the scene changed, affecting ~20.97 km². Set GEMINI_API_KEY for detailed change interpretation.",
+    "confidence": 0.763,
+    "detected_objects": [
+      {
+        "class_name": "change_cluster_1",
+        "confidence": 0.067,
+        "bbox": {
+          "x1": 0.944,
+          "y1": 0.0,
+          "x2": 0.999,
+          "y2": 0.127
+        },
+        "area_hectares": 35.23,
+        "severity_score": 0.067
+      },
+      {
+        "class_name": "change_cluster_2",
+        "confidence": 0.05,
+        "bbox": {
+          "x1": 0.85,
+          "y1": 0.0,
+          "x2": 0.921,
+          "y2": 0.079
+        },
+        "area_hectares": 26.02,
+        "severity_score": 0.05
+      },
+      {
+        "class_name": "change_cluster_3",
+        "confidence": 0.046,
+        "bbox": {
+          "x1": 0.697,
+          "y1": 0.0,
+          "x2": 0.771,
+          "y2": 0.061
+        },
+        "area_hectares": 24.31,
+        "severity_score": 0.046
+      },
+      {
+        "class_name": "change_cluster_4",
+        "confidence": 0.04,
+        "bbox": {
+          "x1": 0.263,
+          "y1": 0.0,
+          "x2": 0.357,
+          "y2": 0.046
+        },
+        "area_hectares": 20.71,
+        "severity_score": 0.04
+      },
+      {
+        "class_name": "change_cluster_5",
+        "confidence": 0.037,
+        "bbox": {
+          "x1": 0.272,
+          "y1": 0.839,
+          "x2": 0.444,
+          "y2": 0.974
+        },
+        "area_hectares": 19.23,
+        "severity_score": 0.037
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.0426,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.5,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-17T15:17:59.941973+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 58bf5a7360423b10…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=1.57px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 0.0,
+    "audit_hash": "58bf5a7360423b109fb4b2c96df0d4f7b3ff390f9a304e318289273c378b2e3f"
+  },
+  {
+    "query_id": "a7be39b1-0a14-4847-a5aa-66e30413d253",
+    "task_type": "VQA",
+    "query": "What are the primary land cover types?",
+    "answer": "Based on pixel analysis of the 1024×1024 image: The scene appears water-dominant (high blue reflectance). Mean brightness: 0.39. Estimated vegetation coverage: ~46%. Note: For full AI analysis, configure a GEMINI_API_KEY.",
+    "confidence": 0.65,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-17T15:18:54.380538+00:00] Step 1: Classifying query intent",
+      "Task classified as: VQA (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — VQA",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.64px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 7ec68bf69295abb0…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.64px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": true,
+    "escalation_reason": "Confidence below threshold or gate failure.",
+    "processing_time_ms": 0.0,
+    "audit_hash": "7ec68bf69295abb00ed8fbec078cc856f1caa828e2d82c16f63ec577cba3cf96"
+  },
+  {
+    "query_id": "5d1b0a73-77ea-4e45-92e2-dc522283093a",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Change detection analysis: moderate change detected between the two images. Structural similarity (SSIM): 0.2278 (lower = more change). Approximately 20.0% of the scene changed, affecting ~20.97 km². Set GEMINI_API_KEY for detailed change interpretation.",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "change_cluster_1",
+        "confidence": 0.197,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "change_cluster_2",
+        "confidence": 0.156,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "change_cluster_3",
+        "confidence": 0.103,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "change_cluster_4",
+        "confidence": 0.086,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "change_cluster_5",
+        "confidence": 0.07,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-17T15:20:23.098581+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 33e1bb018eeb7f5c…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 0.0,
+    "audit_hash": "33e1bb018eeb7f5cdd637220988ac76001fd26fa1e0599f58b6c6669ef3d00a2"
   }
 ]
