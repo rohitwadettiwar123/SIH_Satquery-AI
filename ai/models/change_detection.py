@@ -118,7 +118,7 @@ async def _ai_change_description(
             from google import genai
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
-            MODEL = "gemini-1.5-flash"
+            MODEL = "gemini-2.0-flash"
 
             def to_part(path):
                 img = Image.open(path)
@@ -147,5 +147,5 @@ async def _ai_change_description(
         f"Change detection analysis: {change_level} change detected between the two images. "
         f"Structural similarity (SSIM): {ssim:.4f} (lower = more change). "
         f"Approximately {change_pct:.1f}% of the scene changed, affecting ~{area:.2f} km². "
-        f"Set GEMINI_API_KEY for detailed change interpretation."
+        f"({'(API key not set)' if not gemini_key else '(API error occurred)'} for detailed change interpretation.)"
     )

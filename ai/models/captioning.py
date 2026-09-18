@@ -25,7 +25,7 @@ def _img_to_part(path: str):
 async def run_captioning(image_path: str, config: dict) -> dict:
     """Generate satellite scene caption using Gemini or fallback."""
     gemini_key = os.getenv("GEMINI_API_KEY", "")
-    MODEL = "gemini-1.5-flash"
+    MODEL = "gemini-2.0-flash"
 
     if gemini_key:
         try:
@@ -59,7 +59,7 @@ async def run_captioning(image_path: str, config: dict) -> dict:
 async def run_grounding(query: str, image_path: str, config: dict) -> dict:
     """Text-guided region grounding."""
     gemini_key = os.getenv("GEMINI_API_KEY", "")
-    MODEL = "gemini-1.5-flash"
+    MODEL = "gemini-2.0-flash"
     bboxes = []
     answer = ""
 
