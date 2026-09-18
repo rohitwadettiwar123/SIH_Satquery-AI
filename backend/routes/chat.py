@@ -42,7 +42,7 @@ async def chat_copilot(req: ChatRequest):
             
         chat_completion = client.chat.completions.create(
             messages=formatted_messages,
-            model="qwen/qwen3.6-27b",
+            model="llama-3.3-70b-versatile",
         )
         
         return {"response": chat_completion.choices[0].message.content}
