@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Viewer, Entity } from 'resium';
 import { Cartesian3, Color } from 'cesium';
 
-// Use a placeholder terrain/imagery if needed, or default
 export default function CesiumGlobe() {
+  // Hide the default Ion access token warning and credits
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .cesium-widget-errorPanel {
+        display: none !important;
+      }
+      .cesium-viewer-bottom {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <Viewer 
       full 
