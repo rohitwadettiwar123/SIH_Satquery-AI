@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Viewer, Entity } from 'resium';
-import { Cartesian3, Color } from 'cesium';
+import { Viewer, Entity, CameraFlyTo } from 'resium';
+import { Cartesian3, Color, Math as CesiumMath } from 'cesium';
 
 export default function CesiumGlobe() {
   // Hide the default Ion access token warning and credits
@@ -20,6 +20,10 @@ export default function CesiumGlobe() {
     };
   }, []);
 
+  // San Francisco target
+  const lng = -122.4194;
+  const lat = 37.7749;
+
   return (
     <Viewer 
       full 
@@ -35,9 +39,18 @@ export default function CesiumGlobe() {
     >
       <Entity
         name="SatQuery Target"
-        position={Cartesian3.fromDegrees(-122.4194, 37.7749, 100000)}
-        point={{ pixelSize: 10, color: Color.GREEN }}
+        position={Cartesian3.fromDegrees(lng, lat, 100)}
+        point={{ pixelSize: 15, color: Color.GREEN, outlineColor: Color.WHITE, outlineWidth: 2 }}
         description="Active Target Region"
+      />
+      <CameraFlyTo 
+        duration={3.5}
+        destination={Cartesian3.fromDegrees(lng, lat - 0.05, 4000)}
+        orientation={{
+          heading: CesiumMath.toRadians(0),
+          pitch: CesiumMath.toRadians(-35),
+          roll: 0.0,
+        }}
       />
     </Viewer>
   );
