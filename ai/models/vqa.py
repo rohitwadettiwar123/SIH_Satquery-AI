@@ -44,7 +44,7 @@ async def _gemini_vqa(query: str, image_paths: list[str], api_key: str, config: 
         import base64
 
         client = genai.Client(api_key=api_key)
-        model_name = "gemini-2.0-flash"
+        model_name = "gemini-3.6-flash"
 
         parts = [gtypes.Part.from_text(text=
             f"You are an expert remote sensing analyst. Answer this question about the satellite image(s). "

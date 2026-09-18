@@ -118,7 +118,7 @@ async def _ai_change_description(
             from google import genai
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
-            MODEL = "gemini-2.0-flash"
+            MODEL = "gemini-3.6-flash"
 
             def to_part(path):
                 img = Image.open(path)

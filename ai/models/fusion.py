@@ -94,7 +94,7 @@ async def _ai_fusion_description(
             from google import genai
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
-            MODEL = "gemini-2.0-flash"
+            MODEL = "gemini-3.6-flash"
             
             opt_img = Image.open(optical_path)
             if max(opt_img.size) > 1024:

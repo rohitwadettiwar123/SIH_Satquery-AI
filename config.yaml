@@ -33,7 +33,7 @@ g2_nyquist_factor: 2.0           # target must be >= N×GSD for detection
 g5_escalation_threshold: 0.75   # confidence < this triggers human escalation
 
 # ─── AI Model Settings ───────────────────────────────────────────────────────
-gemini_model: "gemini-2.0-flash"
+gemini_model: "gemini-3.6-flash"
 ollama_url: "http://localhost:11434"
 ollama_model: "llava"
 use_ollama_fallback: true   # Try Ollama if Gemini API key not set
