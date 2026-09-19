@@ -1,14 +1,16 @@
 export interface UploadResponse {
   file_id: string;
   filename: string;
+  content_type?: string;
   size_bytes: number;
-  modality: 'optical' | 'sar';
-  cloud_coverage_pct: number;
-  width: number;
-  height: number;
-  bands: number;
-  metadata: Record<string, any>;
-  preview_url: string;
+  upload_time?: string;
+  modality?: 'optical' | 'sar';
+  cloud_coverage_pct?: number;
+  width?: number;
+  height?: number;
+  bands?: number;
+  metadata?: Record<string, any>;
+  preview_url?: string;
 }
 
 export interface BoundingBox {
@@ -19,9 +21,10 @@ export interface BoundingBox {
 }
 
 export interface DetectedObject {
-  class_name: string;
+  class_name?: string;
+  label?: string;
   confidence: number;
-  bbox: BoundingBox;
+  bbox?: BoundingBox;
   area_hectares?: number;
   severity_score?: number;
 }
@@ -31,6 +34,7 @@ export interface ChangeMetrics {
   change_ratio_pct: number;
   affected_area_km2: number;
   mean_delta: number;
+  confidence_interval_95?: number[];
 }
 
 export interface NdviStats {
@@ -38,7 +42,7 @@ export interface NdviStats {
   median: number;
   std: number;
   class_percentages: Record<string, number>;
-  delta_ndvi?: Record<string, any>;
+  delta_ndvi?: Record<string, { t0: number; t1: number; delta: number; pct: number }>;
 }
 
 export interface CloudReconstructionInfo {

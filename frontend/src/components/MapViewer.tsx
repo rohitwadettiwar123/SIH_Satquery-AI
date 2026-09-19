@@ -15,7 +15,7 @@ export default function MapViewer({ images, result }: Props) {
 
   useEffect(() => {
     if (images.length > 0) {
-      setActiveImage(images[0].preview_url);
+      setActiveImage(images[0].preview_url ?? '');
     } else {
       setActiveImage('');
     }
@@ -57,19 +57,19 @@ export default function MapViewer({ images, result }: Props) {
       <div className="absolute top-0 left-1/2 w-[1px] h-full bg-white/5 pointer-events-none z-10"></div>
 
       {/* Detected Bounding Boxes */}
-      {result?.detected_objects.map((obj, i) => (
-        <div 
+      {result?.detected_objects.filter(obj => obj.bbox).map((obj, i) => (
+        <div
           key={i}
           className="absolute border-2 border-neon-green bg-neon-green/10 flex items-start z-20"
           style={{
-            left: `${obj.bbox.x1 * 100}%`,
-            top: `${obj.bbox.y1 * 100}%`,
-            width: `${(obj.bbox.x2 - obj.bbox.x1) * 100}%`,
-            height: `${(obj.bbox.y2 - obj.bbox.y1) * 100}%`,
+            left: `${obj.bbox!.x1 * 100}%`,
+            top: `${obj.bbox!.y1 * 100}%`,
+            width: `${(obj.bbox!.x2 - obj.bbox!.x1) * 100}%`,
+            height: `${(obj.bbox!.y2 - obj.bbox!.y1) * 100}%`,
           }}
         >
           <span className="bg-neon-green text-black text-[9px] font-mono px-1 transform -translate-y-full shrink-0 truncate max-w-full">
-            {obj.class_name} ({Math.round(obj.confidence * 100)}%)
+            {obj.class_name || obj.label} ({Math.round(obj.confidence * 100)}%)
           </span>
         </div>
       ))}
@@ -80,9 +80,9 @@ export default function MapViewer({ images, result }: Props) {
           {images.map((img, i) => (
             <button
               key={img.file_id}
-              onClick={() => setActiveImage(img.preview_url)}
+              onClick={() => setActiveImage(img.preview_url ?? '')}
               className={`px-3 py-1 font-mono text-[10px] rounded transition-colors ${
-                activeImage === img.preview_url ? 'bg-neon-cyan text-black' : 'text-gray-400 hover:bg-gray-800'
+                activeImage === (img.preview_url ?? '') ? 'bg-neon-cyan text-black' : 'text-gray-400 hover:bg-gray-800'
               }`}
             >
               {img.modality === 'sar' ? 'SAR (T1)' : i === 0 ? 'OPTICAL (T0)' : 'OPTICAL (T1)'}

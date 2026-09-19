@@ -3,29 +3,29 @@ import { client } from './api/client';
 import { UploadResponse, AnalysisResult } from './types';
 import UploadPanel from './components/UploadPanel';
 import QueryPanel from './components/QueryPanel';
-import ResultPanel from './components/ResultPanel';
 import MapViewer from './components/MapViewer';
-import EvidencePanel from './components/EvidencePanel';
+import IntelligenceTrace from './components/IntelligenceTrace';
+import MissionIntel from './components/MissionIntel';
 import LoginPage from './components/LoginPage';
 import CesiumGlobe from './components/CesiumGlobe';
 import Copilot from './components/Copilot';
-import { Satellite, Activity, Server, ShieldCheck, Globe2 } from 'lucide-react';
+import { Satellite, ShieldCheck, Globe2 } from 'lucide-react';
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
-  const [health, setHealth] = useState<any>(null);
   const [uploads, setUploads] = useState<UploadResponse[]>([]);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [viewMode, setViewMode] = useState<'tactical' | 'godseye'>('tactical');
 
   useEffect(() => {
-    client.checkHealth().then(setHealth).catch(console.error);
+    client.checkHealth().catch(console.error);
   }, []);
 
   const handleAnalyze = async (query: string, hint?: string) => {
     if (uploads.length === 0) return;
     setIsProcessing(true);
+    setResult(null);
     try {
       const res = await client.analyze(uploads.map(u => u.file_id), query, hint);
       setResult(res);
@@ -43,55 +43,77 @@ function App() {
       content_type: 'image/tiff',
       size_bytes: 14500000,
       upload_time: new Date().toISOString()
-    }]);
-    
+    } as any]);
+
     setResult({
-      query_id: 'sih-demo-2026-0913',
-      task_type: 'VQA',
-      query: 'Analyze the terrain and detect anomalies.',
-      answer: 'Analysis complete. Detected 3 anomalous infrastructure clusters within the designated zone. The vegetation index indicates healthy foliage surrounding the primary facility. The optical sensor was partially obscured by 18% cloud cover, which was successfully reconstructed using spatial inpainting.',
+      query_id: 'sih-demo-2026-0913-ab7f',
+      task_type: 'CHANGE_DETECTION',
+      query: 'Analyze terrain changes and detect anomalies between T0 and T1.',
+      answer: 'Change detected between T0 and T1. Significant structural changes observed. 35.5% of the analyzed scene changed, corresponding to 5,038,900 m² (503.9 ha). Breakdown: New built-up area: 12,954,800 m². NDBI Δ = +0.38. Registration RMSE: 1.42 m. Mean CVM: 2.198. Mean Mahalanobis distance: 5.14. Overall evidence quality: 84.1%. 95% analytical uncertainty interval: 3,098,452–6,979,347 m². Evidence includes detected change mask, spatial polygons, measurements and provenance hash.',
       confidence: 0.94,
       detected_objects: [
-        { label: 'Infrastructure Alpha', confidence: 0.96, bbox: { x1: 0.2, y1: 0.3, x2: 0.4, y2: 0.5 } },
-        { label: 'Anomalous Vehicle', confidence: 0.89, bbox: { x1: 0.6, y1: 0.7, x2: 0.65, y2: 0.75 } },
-        { label: 'Command Center', confidence: 0.98, bbox: { x1: 0.45, y1: 0.45, x2: 0.55, y2: 0.55 } }
+        { class_name: 'New Built-up / Ground Disturbance', confidence: 0.96, bbox: { x1: 0.10, y1: 0.12, x2: 0.35, y2: 0.38 }, area_hectares: 124.0 },
+        { class_name: 'New Built-up / Ground Disturbance', confidence: 0.91, bbox: { x1: 0.40, y1: 0.20, x2: 0.60, y2: 0.45 }, area_hectares: 33.3 },
+        { class_name: 'New Built-up / Ground Disturbance', confidence: 0.87, bbox: { x1: 0.65, y1: 0.30, x2: 0.80, y2: 0.55 }, area_hectares: 11.0 },
+        { class_name: 'New Built-up / Ground Disturbance', confidence: 0.85, bbox: { x1: 0.15, y1: 0.60, x2: 0.38, y2: 0.82 }, area_hectares: 11.0 },
       ],
-      change_metrics: null,
+      change_metrics: {
+        ssim_score: 0.714,
+        change_ratio_pct: 35.55,
+        affected_area_km2: 5.04,
+        mean_delta: 0.38,
+        confidence_interval_95: [3098452, 6979347],
+      } as any,
       ndvi_stats: {
-        mean: 0.65,
-        median: 0.68,
-        std: 0.12,
-        class_percentages: { "healthy_vegetation": 75.4, "water": 12.1, "bare_soil": 12.5 },
-        delta_ndvi: null
+        mean: 0.065,
+        median: 0.068,
+        std: 0.112,
+        class_percentages: {
+          'Vegetation & Canopy':    13.2,
+          'Water Bodies & Hydrology': 22.0,
+          'Built-up & Infrastructure': 1.5,
+          'Bare Soil & Terrain':    63.3,
+          'Atmosphere & Clouds':    0.0,
+        },
+        delta_ndvi: {
+          'Vegetation & Canopy':     { t0: 360.16, t1: 186.96, delta: -173.2,  pct: -12.2 },
+          'Water Bodies & Hydrology':{ t0: 943.73, t1: 312.35, delta: -631.38, pct: -44.6 },
+          'Built-up & Infrastructure':{ t0: 30.4,  t1: 21.17,  delta: -9.23,   pct: -0.6  },
+          'Bare Soil & Terrain':     { t0: 83.03,  t1: 896.92, delta: +813.89, pct: +57.4 },
+          'Atmosphere & Clouds':     { t0: 0.08,   t1: 0.0,    delta: -0.08,   pct: 0     },
+        }
       },
       cloud_reconstruction: {
         triggered: true,
         coverage_pct: 18.4,
         method: 'spatial_inpainting',
         avg_confidence: 88.5,
-        disclosure_text: '18.4% cloud cover reconstructed via spatial inpainting.',
+        disclosure_text: '18.4% cloud cover reconstructed via spatial inpainting with 88.5% pixel-level confidence.',
         original_url: '/uploads/demo_image.png',
         reconstructed_url: '/uploads/demo_image.png'
       },
       execution_trace: [
-        'Step 1: Input registered and CRS validated (G0).',
-        'Step 2: Nyquist spatial limit verified (G2).',
-        'Step 3: Cloud reconstruction applied (18.4% coverage).',
-        'Step 4: Deterministic NDVI calculated (G4).',
-        'Step 5: VLM object detection executed.',
-        'Step 6: Cryptographic SHA-256 audit hash generated (G7).'
+        'Step 1: Subpixel coregistration passed (RMSE: 1.42m) — 91%',
+        'Step 2: Standardized CVM & Mahalanobis analysis (Mean CVM: 2.198) — 83%',
+        'Step 3: Segmented 4 distinct changed regions — 82%',
+        'Step 4: Nyquist spatial limit PASS — 97%',
+        'Step 5: NDVI deterministic pipeline executed (G4) — 88%',
+        'Step 6: SHA-256 cryptographic audit hash generated — 100%',
       ],
       gate_verdicts: {
-        'G0_format_check': 'PASS',
-        'G2_nyquist_limit': 'PASS',
+        'G0_format_check':       'PASS',
+        'G1_coregistration':     'PASS (RMSE=1.42m)',
+        'G2_nyquist_limit':      'PASS',
         'G4_deterministic_math': 'PASS',
-        'G5_escalation_check': 'PASS',
-        'G7_audit_hash': 'PASS'
+        'G5_escalation_check':   'PASS',
+        'G7_audit_hash':         'PASS',
+        'G8_cloud_screen':       'PASS (18.4% reconstructed)',
       },
       requires_expert_escalation: false,
+      escalation_reason: '',
       audit_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-      processing_time_ms: 1245
-    });
+      processing_time_ms: 1847,
+    } as any);
   };
 
   if (!isAuth) {
@@ -100,10 +122,10 @@ function App() {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-space overflow-hidden relative">
-      {/* High-end ambient background overlay */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neon-cyan/5 via-space to-space pointer-events-none"></div>
-      <div className="absolute inset-0 z-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3N2Zz4=')] opacity-50 pointer-events-none"></div>
-      
+      {/* Ambient background */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neon-cyan/5 via-space to-space pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3N2Zz4=')] opacity-50 pointer-events-none" />
+
       {/* Header */}
       <header className="h-14 border-b border-panel-border bg-panel/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-10">
         <div className="flex items-center gap-3">
@@ -112,22 +134,22 @@ function App() {
             SATQUERY<span className="text-neon-cyan">.AI</span>
           </h1>
           <span className="ml-4 px-2 py-0.5 text-xs font-mono bg-panel-border text-gray-400 rounded">v2.0 MISSION CONTROL</span>
-          <button 
+          <button
             onClick={loadDemo}
             className="ml-4 px-3 py-1 text-xs font-mono font-bold bg-neon-green/20 text-neon-green border border-neon-green/50 rounded hover:bg-neon-green/40 transition-colors animate-pulse"
           >
             RUN SIH DEMO
           </button>
         </div>
-        
+
         <div className="flex items-center gap-2 text-sm font-mono font-bold">
-          <button 
+          <button
             onClick={() => setViewMode('tactical')}
             className={`px-4 py-1.5 rounded transition-colors ${viewMode === 'tactical' ? 'bg-neon-cyan text-black' : 'text-gray-400 hover:bg-gray-800 border border-gray-700'}`}
           >
             2D TACTICAL
           </button>
-          <button 
+          <button
             onClick={() => setViewMode('godseye')}
             className={`px-4 py-1.5 flex items-center gap-2 rounded transition-colors ${viewMode === 'godseye' ? 'bg-neon-green text-black' : 'text-gray-400 hover:bg-gray-800 border border-gray-700'}`}
           >
@@ -136,29 +158,33 @@ function App() {
         </div>
       </header>
 
-      {/* Main Grid */}
-      <main className="flex-1 overflow-y-auto lg:overflow-hidden p-4 relative z-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 h-full">
-          
-          {/* Left Col: Upload & Query */}
-          <div className="lg:col-span-3 flex flex-col gap-3 h-full overflow-hidden">
-            <div className="overflow-y-auto" style={{ maxHeight: '55%' }}>
+      {/* Main Grid — 4 columns */}
+      <main className="flex-1 overflow-hidden p-3 relative z-10">
+        <div className="h-full grid grid-cols-12 gap-3">
+
+          {/* Col 1 — Upload & Query (3 cols) */}
+          <div className="col-span-3 flex flex-col gap-3 min-h-0 overflow-hidden">
+            <div className="flex-shrink-0" style={{ maxHeight: '50%', overflowY: 'auto' }}>
               <UploadPanel uploads={uploads} setUploads={setUploads} />
             </div>
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-hidden">
               <QueryPanel onAnalyze={handleAnalyze} isProcessing={isProcessing} disabled={uploads.length === 0} />
             </div>
           </div>
 
-          {/* Center Col: Map & Primary Results */}
-          <div className="lg:col-span-6 flex flex-col gap-4 overflow-hidden min-h-[600px] lg:min-h-0">
-            <div className="h-[60%] lg:h-[60%] min-h-[300px] mission-panel flex flex-col">
+          {/* Col 2 — Map Viewer (4 cols) */}
+          <div className="col-span-4 flex flex-col gap-3 min-h-0">
+            <div className="flex-1 mission-panel flex flex-col min-h-0">
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3 h-3" /> {viewMode === 'tactical' ? 'TACTICAL VIEW' : "GOD'S EYE VIEW"}
+                  <ShieldCheck className="w-3 h-3" />
+                  {viewMode === 'tactical' ? 'TACTICAL VIEW' : "GOD'S EYE VIEW"}
                 </div>
+                {result && (
+                  <span className="text-[10px] text-neon-green font-mono animate-pulse">● LIVE</span>
+                )}
               </div>
-              <div className="flex-1 relative overflow-hidden bg-black">
+              <div className="flex-1 relative overflow-hidden bg-black min-h-0">
                 {viewMode === 'tactical' ? (
                   <MapViewer images={uploads} result={result} />
                 ) : (
@@ -166,14 +192,16 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto">
-               <ResultPanel result={result} />
-            </div>
           </div>
 
-          {/* Right Col: Evidence & Trace */}
-          <div className="lg:col-span-3 overflow-y-auto min-h-[400px]">
-            <EvidencePanel result={result} />
+          {/* Col 3 — Intelligence Trace (2.5 cols) */}
+          <div className="col-span-3 min-h-0 overflow-hidden">
+            <IntelligenceTrace result={result} isProcessing={isProcessing} />
+          </div>
+
+          {/* Col 4 — Mission Intel (2.5 cols) */}
+          <div className="col-span-2 min-h-0 overflow-hidden">
+            <MissionIntel result={result} isProcessing={isProcessing} />
           </div>
 
         </div>
@@ -181,7 +209,6 @@ function App() {
 
       {/* Floating Copilot */}
       <Copilot />
-
     </div>
   );
 }
