@@ -352,10 +352,15 @@ async def orchestrate(
     result["audit_hash"] = generate_audit_hash(result)
     trace_steps.append(f"Audit hash: {result['audit_hash'][:16]}…")
 
-    # Persist to audit log
-    _append_audit_log(result, config)
+    # Fire-and-forget audit log write (non-blocking, doesn't delay response)
+    asyncio.create_task(_append_audit_log_async(result, config))
 
     return result
+
+
+async def _append_audit_log_async(result: dict, config: dict) -> None:
+    """Non-blocking async wrapper — writes audit log in a thread pool."""
+    await asyncio.to_thread(_append_audit_log, result, config)
 
 
 def _append_audit_log(result: dict, config: dict) -> None:

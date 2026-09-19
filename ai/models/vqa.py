@@ -15,8 +15,7 @@ async def run_vqa(query: str, image_paths: list[str], config: dict) -> dict:
 
     Priority chain:
     1. Google Gemini Vision API (if GEMINI_API_KEY set)
-    2. Ollama local VLM (if available)
-    3. Deterministic pixel statistics fallback
+    2. Deterministic pixel statistics fallback (Ollama skipped — not installed)
     """
     gemini_key = os.getenv("GEMINI_API_KEY", "")
 
@@ -25,42 +24,47 @@ async def run_vqa(query: str, image_paths: list[str], config: dict) -> dict:
         if result:
             return result
 
-    # Try Ollama
-    from ai.ollama_client import check_ollama_available, vqa_ollama
-    if await check_ollama_available(config.get("ollama_url", "http://localhost:11434")):
-        result = await vqa_ollama(query, image_paths[0], config.get("ollama_model", "llava"),
-                                   config.get("ollama_url", "http://localhost:11434"))
-        if result:
-            return result
-
-    # Fallback: deterministic pixel stats
+    # Skip Ollama check — not installed, wastes 2s timeout every request
+    # Fallback: deterministic pixel stats (instant)
     return _deterministic_vqa(query, image_paths)
 
 
 async def _gemini_vqa(query: str, image_paths: list[str], api_key: str, config: dict) -> dict | None:
     try:
+        import asyncio
+        import io
         from google import genai
         from google.genai import types as gtypes
-        import base64
 
         client = genai.Client(api_key=api_key)
-        model_name = "gemini-3.6-flash"
+        model_name = "gemini-2.0-flash"
+
+        # Prepare image bytes in thread pool (non-blocking)
+        def prepare_image(path: str) -> bytes:
+            img = Image.open(path)
+            if max(img.size) > 768:  # Smaller = faster API call
+                img.thumbnail((768, 768))
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=85)
+            return buf.getvalue()
+
+        # Prepare all images concurrently in threads
+        loop = asyncio.get_event_loop()
+        image_byte_list = await asyncio.gather(
+            *[loop.run_in_executor(None, prepare_image, p) for p in image_paths[:2]]
+        )
 
         parts = [gtypes.Part.from_text(text=
-            f"You are an expert remote sensing analyst. Answer this question about the satellite image(s). "
-            f"Be specific, mention visible features, and give a confidence estimate.\n\nQuestion: {query}"
+            f"You are an expert remote sensing analyst. Answer concisely in 2-3 sentences.\n\nQuestion: {query}"
         )]
+        for img_bytes in image_byte_list:
+            parts.append(gtypes.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"))
 
-        for path in image_paths[:2]:
-            img = Image.open(path)
-            if max(img.size) > 1024:
-                img.thumbnail((1024, 1024))
-            import io
-            buf = io.BytesIO()
-            img.save(buf, format="JPEG")
-            parts.append(gtypes.Part.from_bytes(data=buf.getvalue(), mime_type="image/jpeg"))
-
-        response = client.models.generate_content(model=model_name, contents=parts)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=parts,
+            config=gtypes.GenerateContentConfig(max_output_tokens=512)  # Limit response length for speed
+        )
         answer = response.text.strip()
 
         return {

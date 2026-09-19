@@ -15,17 +15,17 @@ def _img_to_part(path: str):
     """Load and resize image, return google.genai Part."""
     from google.genai import types as gtypes
     img = Image.open(path)
-    if max(img.size) > 1024:
-        img.thumbnail((1024, 1024))
+    if max(img.size) > 768:  # Smaller thumbnail = faster API
+        img.thumbnail((768, 768))
     buf = io.BytesIO()
-    img.save(buf, format="JPEG")
+    img.save(buf, format="JPEG", quality=85)
     return gtypes.Part.from_bytes(data=buf.getvalue(), mime_type="image/jpeg")
 
 
 async def run_captioning(image_path: str, config: dict) -> dict:
     """Generate satellite scene caption using Gemini or fallback."""
     gemini_key = os.getenv("GEMINI_API_KEY", "")
-    MODEL = "gemini-3.6-flash"
+    MODEL = "gemini-2.0-flash"
 
     if gemini_key:
         try:
@@ -33,15 +33,13 @@ async def run_captioning(image_path: str, config: dict) -> dict:
             from google.genai import types as gtypes
             client = genai.Client(api_key=gemini_key)
             prompt = gtypes.Part.from_text(text=
-                "You are a remote sensing expert. Describe this satellite image in detail, covering: "
-                "1) dominant land cover types and estimated percentages, "
-                "2) visible infrastructure or features, "
-                "3) apparent health of vegetation, "
-                "4) any notable anomalies. Be specific and scientific."
+                "You are a remote sensing expert. Briefly describe this satellite image in 3-4 sentences covering: "
+                "dominant land cover, visible features, and any notable anomalies."
             )
             response = client.models.generate_content(
                 model=MODEL,
-                contents=[prompt, _img_to_part(image_path)]
+                contents=[prompt, _img_to_part(image_path)],
+                config=gtypes.GenerateContentConfig(max_output_tokens=400)
             )
             return {
                 "answer": response.text.strip(),
