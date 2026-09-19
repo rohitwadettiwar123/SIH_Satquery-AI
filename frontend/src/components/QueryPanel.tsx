@@ -27,7 +27,7 @@ export default function QueryPanel({ onAnalyze, isProcessing, disabled }: Props)
   return (
     <div className="mission-panel flex flex-col p-4 h-full">
       <h2 className="font-mono text-neon-cyan mb-3 flex items-center gap-2 shrink-0">
-        <Terminal className="w-4 h-4" /> COMMAND PROMPT
+        <Terminal className="w-4 h-4" /> QUERY
       </h2>
 
       <div className="flex flex-wrap gap-2 mb-4 shrink-0">
