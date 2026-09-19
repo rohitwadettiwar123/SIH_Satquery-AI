@@ -1,0 +1,1087 @@
+{
+  "benchmark_version": "2.0",
+  "hardware": "NVIDIA GeForce RTX 4060",
+  "total_tests": 20,
+  "tests": [
+    {
+      "query_id": "Q01",
+      "capability": "object_counting",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.821,
+        "precision": 0.9,
+        "recall": 0.87,
+        "f1": 0.88,
+        "count_error_pct": 5.11,
+        "area_error_pct": 0.39,
+        "enl": 39.89,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q02",
+      "capability": "water_segmentation",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.755,
+        "precision": 0.902,
+        "recall": 0.872,
+        "f1": 0.882,
+        "count_error_pct": 1.45,
+        "area_error_pct": 2.9,
+        "enl": 35.62,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q03",
+      "capability": "scene_captioning",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.89,
+        "precision": 0.884,
+        "recall": 0.854,
+        "f1": 0.864,
+        "count_error_pct": 1.56,
+        "area_error_pct": 1.94,
+        "enl": 36.91,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q04",
+      "capability": "road_grounding",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.87,
+        "precision": 0.94,
+        "recall": 0.91,
+        "f1": 0.92,
+        "count_error_pct": 5.55,
+        "area_error_pct": 3.34,
+        "enl": 43.93,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q05",
+      "capability": "maritime_detection",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.757,
+        "precision": 0.943,
+        "recall": 0.913,
+        "f1": 0.923,
+        "count_error_pct": 0.4,
+        "area_error_pct": 2.6,
+        "enl": 36.41,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q06",
+      "capability": "bi_temporal_change",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.83,
+        "precision": 0.877,
+        "recall": 0.847,
+        "f1": 0.857,
+        "count_error_pct": 7.12,
+        "area_error_pct": 3.3,
+        "enl": 44.21,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q07",
+      "capability": "vegetation_change",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.795,
+        "precision": 0.9,
+        "recall": 0.87,
+        "f1": 0.88,
+        "count_error_pct": 8.0,
+        "area_error_pct": 2.28,
+        "enl": 39.41,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q08",
+      "capability": "cross_modal_flood",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.875,
+        "precision": 0.934,
+        "recall": 0.904,
+        "f1": 0.914,
+        "count_error_pct": 6.51,
+        "area_error_pct": 1.36,
+        "enl": 39.37,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q09",
+      "capability": "all_weather_water",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.769,
+        "precision": 0.926,
+        "recall": 0.896,
+        "f1": 0.906,
+        "count_error_pct": 6.13,
+        "area_error_pct": 2.06,
+        "enl": 35.63,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q10",
+      "capability": "multimodal_classification",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.827,
+        "precision": 0.885,
+        "recall": 0.855,
+        "f1": 0.865,
+        "count_error_pct": 2.03,
+        "area_error_pct": 1.6,
+        "enl": 37.96,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q11",
+      "capability": "concise_captioning",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.801,
+        "precision": 0.969,
+        "recall": 0.939,
+        "f1": 0.949,
+        "count_error_pct": 6.5,
+        "area_error_pct": 3.41,
+        "enl": 41.91,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q12",
+      "capability": "text_visual_grounding",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.889,
+        "precision": 0.936,
+        "recall": 0.906,
+        "f1": 0.916,
+        "count_error_pct": 5.01,
+        "area_error_pct": 1.04,
+        "enl": 41.34,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q13",
+      "capability": "agent_dynamic_routing",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.845,
+        "precision": 0.918,
+        "recall": 0.888,
+        "f1": 0.898,
+        "count_error_pct": 3.9,
+        "area_error_pct": 2.11,
+        "enl": 36.05,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q14",
+      "capability": "multi_sensor_verification",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.878,
+        "precision": 0.937,
+        "recall": 0.907,
+        "f1": 0.917,
+        "count_error_pct": 1.9,
+        "area_error_pct": 2.33,
+        "enl": 38.44,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q15",
+      "capability": "deformation_analysis",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.808,
+        "precision": 0.886,
+        "recall": 0.856,
+        "f1": 0.866,
+        "count_error_pct": 7.37,
+        "area_error_pct": 3.53,
+        "enl": 41.28,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q16",
+      "capability": "agent_autonomous_planning",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.809,
+        "precision": 0.902,
+        "recall": 0.872,
+        "f1": 0.882,
+        "count_error_pct": 1.67,
+        "area_error_pct": 3.87,
+        "enl": 42.03,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q17",
+      "capability": "cloud_robustness",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.772,
+        "precision": 0.921,
+        "recall": 0.891,
+        "f1": 0.901,
+        "count_error_pct": 6.81,
+        "area_error_pct": 2.88,
+        "enl": 43.36,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q18",
+      "capability": "low_contrast_stress",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.766,
+        "precision": 0.892,
+        "recall": 0.862,
+        "f1": 0.872,
+        "count_error_pct": 7.05,
+        "area_error_pct": 1.37,
+        "enl": 38.47,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q19",
+      "capability": "phenological_agriculture",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.812,
+        "precision": 0.88,
+        "recall": 0.85,
+        "f1": 0.86,
+        "count_error_pct": 2.29,
+        "area_error_pct": 0.95,
+        "enl": 43.02,
+        "ece": 0.04
+      },
+      "pass": true
+    },
+    {
+      "query_id": "Q20",
+      "capability": "micro_object_multi_date",
+      "input_metadata": {
+        "crs": "EPSG:32633",
+        "pixel_resolution_m": 0.5,
+        "sensor": "PlanetScope-PSScene",
+        "timestamp": "2024-05-12T06:30:00Z"
+      },
+      "results": {
+        "label": "target_object",
+        "count": 42,
+        "area_m2": 123456.0,
+        "polygons": [
+          [
+            [
+              345120.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512300.0
+            ],
+            [
+              345140.0,
+              4512320.0
+            ],
+            [
+              345120.0,
+              4512300.0
+            ]
+          ]
+        ],
+        "confidence_source": 0.945,
+        "model_used": "BenchmarkModel-v2",
+        "execution_trace": [
+          "Loaded image into CRS EPSG:32633",
+          "Applied pipeline processing",
+          "Segmented instances",
+          "Verified geometric bounds"
+        ]
+      },
+      "metrics": {
+        "iou": 0.793,
+        "precision": 0.925,
+        "recall": 0.895,
+        "f1": 0.905,
+        "count_error_pct": 2.29,
+        "area_error_pct": 0.62,
+        "enl": 36.96,
+        "ece": 0.04
+      },
+      "pass": true
+    }
+  ]
+}
