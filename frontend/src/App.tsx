@@ -120,19 +120,19 @@ function App() {
           </button>
         </div>
         
-        <div className="flex items-center gap-6 text-sm font-mono">
-          <div className="flex items-center gap-2">
-            <Server className="h-4 w-4 text-gray-400" />
-            <span className={health ? 'text-neon-green' : 'text-alert-red'}>
-              {health ? 'BACKEND ONLINE' : 'OFFLINE'}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-gray-400" />
-            <span className={health?.components?.ai === 'ready' ? 'text-neon-cyan' : 'text-alert-yellow'}>
-              {health?.components?.ai === 'ready' ? 'AI: GEMINI-PRO' : 'AI: FALLBACK'}
-            </span>
-          </div>
+        <div className="flex items-center gap-2 text-sm font-mono font-bold">
+          <button 
+            onClick={() => setViewMode('tactical')}
+            className={`px-4 py-1.5 rounded transition-colors ${viewMode === 'tactical' ? 'bg-neon-cyan text-black' : 'text-gray-400 hover:bg-gray-800 border border-gray-700'}`}
+          >
+            2D TACTICAL
+          </button>
+          <button 
+            onClick={() => setViewMode('godseye')}
+            className={`px-4 py-1.5 flex items-center gap-2 rounded transition-colors ${viewMode === 'godseye' ? 'bg-neon-green text-black' : 'text-gray-400 hover:bg-gray-800 border border-gray-700'}`}
+          >
+            <Globe2 className="w-4 h-4" /> GOD'S EYE 3D
+          </button>
         </div>
       </header>
 
@@ -155,21 +155,7 @@ function App() {
             <div className="h-[60%] lg:h-[60%] min-h-[300px] mission-panel flex flex-col">
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3 h-3" /> TACTICAL VIEW
-                </div>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setViewMode('tactical')}
-                    className={`px-2 py-0.5 rounded transition-colors ${viewMode === 'tactical' ? 'bg-neon-cyan text-black' : 'hover:bg-gray-800'}`}
-                  >
-                    2D Map
-                  </button>
-                  <button 
-                    onClick={() => setViewMode('godseye')}
-                    className={`px-2 py-0.5 flex items-center gap-1 rounded transition-colors ${viewMode === 'godseye' ? 'bg-neon-green text-black' : 'hover:bg-gray-800'}`}
-                  >
-                    <Globe2 className="w-3 h-3" /> God's Eye 3D
-                  </button>
+                  <ShieldCheck className="w-3 h-3" /> {viewMode === 'tactical' ? 'TACTICAL VIEW' : 'GOD\\'S EYE VIEW'}
                 </div>
               </div>
               <div className="flex-1 relative overflow-hidden bg-black">
