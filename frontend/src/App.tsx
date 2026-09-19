@@ -155,7 +155,7 @@ function App() {
             <div className="h-[60%] lg:h-[60%] min-h-[300px] mission-panel flex flex-col">
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3 h-3" /> {viewMode === 'tactical' ? 'TACTICAL VIEW' : 'GOD\\'S EYE VIEW'}
+                  <ShieldCheck className="w-3 h-3" /> {viewMode === 'tactical' ? 'TACTICAL VIEW' : "GOD'S EYE VIEW"}
                 </div>
               </div>
               <div className="flex-1 relative overflow-hidden bg-black">
