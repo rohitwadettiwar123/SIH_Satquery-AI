@@ -5,9 +5,10 @@ interface Props {
   onAnalyze: (query: string, hint?: string) => void;
   isProcessing: boolean;
   disabled: boolean;
+  isDemoMode?: boolean;
 }
 
-export default function QueryPanel({ onAnalyze, isProcessing, disabled }: Props) {
+export default function QueryPanel({ onAnalyze, isProcessing, disabled, isDemoMode }: Props) {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -59,6 +60,11 @@ export default function QueryPanel({ onAnalyze, isProcessing, disabled }: Props)
           {isProcessing ? (
             <span className="flex items-center gap-2 animate-pulse">
               <Zap className="w-4 h-4" /> PROCESSING TELEMETRY...
+            </span>
+          ) : isDemoMode ? (
+            <span className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-400" />
+              <span className="text-amber-400">DEMO INSTANT ANALYSIS</span>
             </span>
           ) : (
             <span className="flex items-center gap-2">
