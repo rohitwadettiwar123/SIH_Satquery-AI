@@ -186,7 +186,7 @@ export default function MissionIntel({ result, isProcessing }: Props) {
             <span className="ml-auto text-[9px] font-mono text-gray-500 border border-gray-800 px-2 py-0.5 rounded">TASK: {r.task_type}</span>
           </div>
           
-          <ol className="list-decimal pl-5 space-y-2 mb-4 marker:text-amber-500 marker:font-mono marker:text-[11px]">
+          <ol className="space-y-2 mb-4 list-decimal list-outside ml-4 marker:text-amber-500 marker:font-mono marker:text-[12px]">
             {r.answer.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0).map((sentence, idx) => (
               <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed pl-1">
                 {sentence}
