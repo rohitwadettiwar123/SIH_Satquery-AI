@@ -257,13 +257,24 @@ export default function MissionIntel({ result, isProcessing }: Props) {
                           <span className="text-sm leading-none">{emoji}</span>
                           <span className="text-[10px] font-mono text-gray-200 truncate">{cls.split(' &')[0]}</span>
                         </div>
-                        {/* T0 */}
-                        <div className="col-span-2 text-right">
-                          <span className="text-[10px] font-mono text-gray-500">{data.t0.toFixed(0)}</span>
-                        </div>
-                        {/* T1 */}
-                        <div className="col-span-2 text-right">
-                          <span className="text-[10px] font-mono text-gray-400">{data.t1.toFixed(0)}</span>
+                        {/* T0 / T1 bar chart */}
+                        <div className="col-span-4 flex items-center justify-end gap-2 pr-2">
+                          <div className="flex flex-col gap-0.5 items-end w-full">
+                            <div className="flex items-center gap-1 w-full justify-end">
+                              <span className="text-[8px] font-mono text-gray-500 w-4 text-right">T0</span>
+                              <div className="h-1 bg-gray-800 rounded flex-1 max-w-[40px] flex justify-end">
+                                <div className="h-full bg-gray-500 rounded" style={{ width: `${Math.min(100, (data.t0 / Math.max(data.t0, data.t1)) * 100)}%` }} />
+                              </div>
+                              <span className="text-[9px] font-mono text-gray-400 w-6 text-right">{data.t0.toFixed(0)}</span>
+                            </div>
+                            <div className="flex items-center gap-1 w-full justify-end">
+                              <span className="text-[8px] font-mono text-cyan-500/70 w-4 text-right">T1</span>
+                              <div className="h-1 bg-gray-800 rounded flex-1 max-w-[40px] flex justify-end">
+                                <div className="h-full bg-cyan-500 rounded" style={{ width: `${Math.min(100, (data.t1 / Math.max(data.t0, data.t1)) * 100)}%` }} />
+                              </div>
+                              <span className="text-[9px] font-mono text-cyan-400 w-6 text-right">{data.t1.toFixed(0)}</span>
+                            </div>
+                          </div>
                         </div>
                         {/* Delta */}
                         <div className="col-span-3 text-right flex items-center justify-end gap-1">
@@ -300,19 +311,43 @@ export default function MissionIntel({ result, isProcessing }: Props) {
               </span>
             </div>
 
-            {/* Stacked minibar */}
-            <div className="flex h-1.5 rounded-full overflow-hidden mb-3 gap-px">
-              {surfaceEntries.map(([key, pct]) => {
-                const { color } = getSurfaceConf(key);
-                return (
-                  <div
-                    key={key}
-                    className="h-full transition-all duration-1000 rounded-sm"
-                    style={{ width: `${pct}%`, backgroundColor: color }}
-                    title={`${key}: ${pct.toFixed(1)}%`}
-                  />
-                );
-              })}
+            {/* Doughnut Chart & Legend Grid */}
+            <div className="flex gap-4 mb-4 items-center bg-[#090e1b] border border-gray-800/60 rounded-xl p-3">
+              <div 
+                className="w-20 h-20 rounded-full relative shadow-lg flex-shrink-0"
+                style={{ 
+                  background: `conic-gradient(${
+                    surfaceEntries.reduce((acc, [key, pct], idx) => {
+                      const { color } = getSurfaceConf(key);
+                      const start = acc.sum;
+                      const end = start + pct;
+                      acc.stops.push(`${color} ${start}% ${end}%`);
+                      acc.sum = end;
+                      return acc;
+                    }, { sum: 0, stops: [] as string[] }).stops.join(', ')
+                  })` 
+                }}
+              >
+                <div className="absolute inset-[3px] bg-[#090e1b] rounded-full flex flex-col items-center justify-center">
+                   <span className="text-[8px] font-mono text-gray-500">COVERAGE</span>
+                   <span className="text-[12px] font-mono font-bold text-white">100%</span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-1.5 flex-1 justify-center">
+                 {surfaceEntries.slice(0, 3).map(([key, pct]) => {
+                   const { color, label } = getSurfaceConf(key);
+                   return (
+                     <div key={key} className="flex items-center justify-between">
+                       <div className="flex items-center gap-1.5">
+                         <div className="w-2 h-2 rounded-full shadow-[0_0_5px_currentColor]" style={{ backgroundColor: color, color }} />
+                         <span className="text-[9px] font-mono text-gray-300 truncate max-w-[80px]">{label.split(' &')[0]}</span>
+                       </div>
+                       <span className="text-[10px] font-mono font-bold" style={{ color }}>{pct.toFixed(1)}%</span>
+                     </div>
+                   );
+                 })}
+              </div>
             </div>
 
             {/* Table */}
