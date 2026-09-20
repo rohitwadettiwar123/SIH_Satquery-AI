@@ -34,7 +34,14 @@ export default function MapViewer({ images, result }: Props) {
 
   return (
     <div className="w-full h-full bg-black relative overflow-hidden group">
-      {result?.cloud_reconstruction?.triggered && result.cloud_reconstruction.original_url && result.cloud_reconstruction.reconstructed_url ? (
+      {images.length > 1 ? (
+        <div className="absolute inset-0 z-0">
+          <BeforeAfterSlider 
+            beforeUrl={images[0].preview_url ?? ''} 
+            afterUrl={images[1].preview_url ?? ''} 
+          />
+        </div>
+      ) : result?.cloud_reconstruction?.triggered && result.cloud_reconstruction.original_url && result.cloud_reconstruction.reconstructed_url ? (
         <div className="absolute inset-0 z-0">
           <BeforeAfterSlider 
             beforeUrl={result.cloud_reconstruction.original_url} 
@@ -116,18 +123,17 @@ export default function MapViewer({ images, result }: Props) {
 
       {/* Controls Overlay */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-panel/80 backdrop-blur border border-panel-border rounded p-1 flex gap-1 z-10">
-          {images.map((img, i) => (
-            <button
-              key={img.file_id}
-              onClick={() => setActiveImage(img.preview_url ?? '')}
-              className={`px-3 py-1 font-mono text-[10px] rounded transition-colors ${
-                activeImage === (img.preview_url ?? '') ? 'bg-neon-cyan text-black' : 'text-gray-400 hover:bg-gray-800'
-              }`}
-            >
-              {img.modality === 'sar' ? 'SAR (T1)' : i === 0 ? 'OPTICAL (T0)' : 'OPTICAL (T1)'}
-            </button>
-          ))}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#1a1f2e]/80 backdrop-blur-md border border-gray-800 rounded-lg p-1 flex gap-1 z-10 shadow-xl">
+          <button
+            className="px-6 py-1.5 font-mono text-[11px] rounded transition-colors bg-neon-cyan text-black font-bold"
+          >
+            OPTICAL (T0)
+          </button>
+          <button
+            className="px-6 py-1.5 font-mono text-[11px] rounded transition-colors text-gray-400 hover:text-white"
+          >
+            {images[1].modality === 'sar' ? 'SAR (T1)' : 'OPTICAL (T1)'}
+          </button>
         </div>
       )}
     </div>

@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Layers } from 'lucide-react';
 
 interface Props {
   beforeUrl: string;
@@ -45,44 +44,44 @@ export default function BeforeAfterSlider({ beforeUrl, afterUrl }: Props) {
   }, [isDragging]);
 
   return (
-    <div className="flex flex-col gap-2 h-full">
-      <div className="flex justify-between items-center text-[10px] font-mono text-neon-cyan uppercase">
-        <span>Raw Optical (T0)</span>
-        <span className="flex items-center gap-1"><Layers className="w-3 h-3" /> Cloud-Free Reconstruction</span>
-      </div>
+    <div 
+      ref={containerRef}
+      className="relative w-full h-full flex-1 overflow-hidden select-none"
+      onMouseDown={(e) => {
+        setIsDragging(true);
+        handleMove(e.clientX);
+      }}
+      onTouchStart={(e) => {
+        setIsDragging(true);
+        handleMove(e.touches[0].clientX);
+      }}
+    >
+      {/* After Image (Background, Right Side) */}
+      <img src={afterUrl} alt="After" className="absolute inset-0 w-full h-full object-contain bg-black" />
+
+      {/* Before Image (Clipped Foreground, Left Side) */}
       <div 
-        ref={containerRef}
-        className="relative w-full h-full flex-1 min-h-[250px] overflow-hidden rounded border border-panel-border select-none"
-        onMouseDown={(e) => {
-          setIsDragging(true);
-          handleMove(e.clientX);
-        }}
-        onTouchStart={(e) => {
-          setIsDragging(true);
-          handleMove(e.touches[0].clientX);
-        }}
+        className="absolute inset-0 w-full h-full overflow-hidden"
+        style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
       >
-        {/* After Image (Background) */}
-        <img src={afterUrl} alt="After" className="absolute inset-0 w-full h-full object-contain bg-black" />
+        <img src={beforeUrl} alt="Before" className="absolute inset-0 w-full h-full object-contain bg-black" />
+      </div>
 
-        {/* Before Image (Clipped Foreground) */}
-        <div 
-          className="absolute inset-0 w-full h-full overflow-hidden"
-          style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-        >
-          <img src={beforeUrl} alt="Before" className="absolute inset-0 w-full h-full object-contain bg-black" />
+      {/* Slider Divider Line */}
+      <div 
+        className="absolute top-0 bottom-0 w-[3px] bg-neon-cyan shadow-[0_0_15px_rgba(0,245,255,1)] z-10 cursor-ew-resize"
+        style={{ left: `calc(${sliderPosition}% - 1px)` }}
+      >
+        {/* HUD Concentric Circle Overlay */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 border border-white/20 rounded-full pointer-events-none flex items-center justify-center">
         </div>
-
-        {/* Slider Handle */}
-        <div 
-          className="absolute top-0 bottom-0 w-[2px] bg-neon-cyan cursor-ew-resize shadow-[0_0_10px_rgba(6,182,212,0.8)] z-10"
-          style={{ left: `${sliderPosition}%` }}
-        >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-panel border-2 border-neon-cyan rounded-full flex items-center justify-center">
-            <div className="flex gap-[2px]">
-              <div className="w-[2px] h-3 bg-neon-cyan/50 rounded-full"></div>
-              <div className="w-[2px] h-3 bg-neon-cyan/50 rounded-full"></div>
-            </div>
+        
+        {/* Center Handle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black border-2 border-neon-cyan rounded-full shadow-[0_0_15px_rgba(0,245,255,0.8)] flex items-center justify-center cursor-ew-resize">
+          {/* Pause symbol inside */}
+          <div className="flex gap-[3px]">
+            <div className="w-[3px] h-3.5 bg-neon-cyan rounded-sm"></div>
+            <div className="w-[3px] h-3.5 bg-neon-cyan rounded-sm"></div>
           </div>
         </div>
       </div>
