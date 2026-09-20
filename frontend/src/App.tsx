@@ -172,8 +172,8 @@ function App() {
             </div>
           </div>
 
-          {/* Col 2 — Map Viewer & Trace (7 cols) */}
-          <div className="col-span-7 flex flex-col gap-3 min-h-0">
+          {/* Col 2 — Map Viewer & Trace (6 cols) */}
+          <div className="col-span-6 flex flex-col gap-3 min-h-0">
             <div className="flex-[2] mission-panel flex flex-col min-h-0">
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
@@ -199,8 +199,8 @@ function App() {
             </div>
           </div>
 
-          {/* Col 3 — Mission Intel (2 cols) */}
-          <div className="col-span-2 min-h-0 overflow-hidden">
+          {/* Col 3 — Mission Intel (3 cols) */}
+          <div className="col-span-3 min-h-0 overflow-hidden">
             <MissionIntel result={result} isProcessing={isProcessing} />
           </div>
 

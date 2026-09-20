@@ -120,7 +120,7 @@ export default function MissionIntel({ result, isProcessing }: Props) {
       <div className="mission-panel h-full flex flex-col p-4">
         <div className="flex items-center gap-2 mb-4">
           <FileSearch className="w-4 h-4 text-gray-600" />
-          <h2 className="font-mono text-gray-600 text-sm tracking-widest">MISSION INTEL</h2>
+          <h2 className="font-mono text-gray-600 text-sm tracking-widest">RESULT</h2>
         </div>
         <div className="flex-1 border border-dashed border-gray-800 rounded-lg flex flex-col items-center justify-center gap-3 opacity-40">
           <Binoculars className="w-8 h-8 text-gray-700" />
@@ -135,7 +135,7 @@ export default function MissionIntel({ result, isProcessing }: Props) {
       <div className="mission-panel h-full flex flex-col p-4">
         <div className="flex items-center gap-2 mb-4">
           <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
-          <h2 className="font-mono text-cyan-400 text-sm tracking-widest">MISSION INTEL</h2>
+          <h2 className="font-mono text-cyan-400 text-sm tracking-widest">RESULT</h2>
         </div>
         <div className="space-y-3">
           {[80, 60, 90, 45, 70].map((w, i) => (
@@ -168,7 +168,7 @@ export default function MissionIntel({ result, isProcessing }: Props) {
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <Binoculars className="w-4 h-4 text-amber-400" />
-          <h2 className="font-mono text-amber-400 text-sm tracking-widest">MISSION INTEL</h2>
+          <h2 className="font-mono text-amber-400 text-sm tracking-widest">RESULT</h2>
         </div>
         {objectCount > 0 && (
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
@@ -180,12 +180,20 @@ export default function MissionIntel({ result, isProcessing }: Props) {
       {/* Primary Finding Summary */}
       <FadeIn delay={0}>
         <div className="bg-gradient-to-br from-[#0a0f1a] to-[#060910] border border-amber-900/30 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[10px] font-mono text-amber-500 tracking-widest">PRIMARY FINDING</span>
-            <span className="ml-auto text-[9px] font-mono text-gray-600">TASK: {r.task_type}</span>
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="w-4 h-4 text-amber-400" />
+            <span className="text-[11px] font-mono text-amber-500 tracking-widest font-bold">PRIMARY FINDING</span>
+            <span className="ml-auto text-[9px] font-mono text-gray-500 border border-gray-800 px-2 py-0.5 rounded">TASK: {r.task_type}</span>
           </div>
-          <p className="text-xs font-sans text-gray-200 leading-relaxed">{r.answer}</p>
+          
+          <ul className="space-y-2 mb-4">
+            {r.answer.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0).map((sentence, idx) => (
+              <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed flex items-start gap-2">
+                <span className="text-amber-500 mt-1.5 text-[8px]">●</span>
+                <span className="flex-1">{sentence}</span>
+              </li>
+            ))}
+          </ul>
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 h-1 bg-gray-800 rounded-full overflow-hidden">
               <div
