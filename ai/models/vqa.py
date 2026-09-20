@@ -37,7 +37,7 @@ async def _gemini_vqa(query: str, image_paths: list[str], api_key: str, config: 
         from google.genai import types as gtypes
 
         client = genai.Client(api_key=api_key)
-        model_name = "gemini-2.0-flash"
+        model_name = config.get("gemini_model", "gemini-3.6-flash")
 
         # Prepare image bytes in thread pool (non-blocking)
         def prepare_image(path: str) -> bytes:

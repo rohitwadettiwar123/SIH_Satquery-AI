@@ -206,7 +206,7 @@ async def orchestrate(
         task_type, task_confidence = task_hint.upper(), 0.95
     elif config.get("gemini_api_key") or config.get("GEMINI_API_KEY"):
         api_key = config.get("gemini_api_key") or config.get("GEMINI_API_KEY", "")
-        task_type, task_confidence = await _call_gemini_classify(query, api_key, config.get("gemini_model", "gemini-2.0-flash"))
+        task_type, task_confidence = await _call_gemini_classify(query, api_key, config.get("gemini_model", "gemini-3.6-flash"))
     else:
         task_type, task_confidence = classify_query_intent(query)
     trace_steps.append(f"Task classified as: {task_type} (confidence={task_confidence:.2f})")
