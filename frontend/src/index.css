@@ -27,6 +27,14 @@
     @apply text-neon-cyan;
     text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
   }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Custom Scrollbar for HUD feel */

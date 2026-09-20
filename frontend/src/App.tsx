@@ -172,9 +172,9 @@ function App() {
             </div>
           </div>
 
-          {/* Col 2 — Map Viewer (4 cols) */}
-          <div className="col-span-4 flex flex-col gap-3 min-h-0">
-            <div className="flex-1 mission-panel flex flex-col min-h-0">
+          {/* Col 2 — Map Viewer & Trace (7 cols) */}
+          <div className="col-span-7 flex flex-col gap-3 min-h-0">
+            <div className="flex-[2] mission-panel flex flex-col min-h-0">
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-3 h-3" />
@@ -192,14 +192,14 @@ function App() {
                 )}
               </div>
             </div>
+            
+            {/* Horizontal Intelligence Trace below Map */}
+            <div className="h-44 shrink-0 min-h-0 overflow-hidden">
+              <IntelligenceTrace result={result} isProcessing={isProcessing} />
+            </div>
           </div>
 
-          {/* Col 3 — Intelligence Trace (2.5 cols) */}
-          <div className="col-span-3 min-h-0 overflow-hidden">
-            <IntelligenceTrace result={result} isProcessing={isProcessing} />
-          </div>
-
-          {/* Col 4 — Mission Intel (2.5 cols) */}
+          {/* Col 3 — Mission Intel (2 cols) */}
           <div className="col-span-2 min-h-0 overflow-hidden">
             <MissionIntel result={result} isProcessing={isProcessing} />
           </div>
