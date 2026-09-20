@@ -194,7 +194,7 @@ function App() {
             </div>
             
             {/* Horizontal Intelligence Trace below Map */}
-            <div className="h-44 shrink-0 min-h-0 overflow-hidden">
+            <div className="h-56 shrink-0 min-h-0 overflow-hidden">
               <IntelligenceTrace result={result} isProcessing={isProcessing} />
             </div>
           </div>
