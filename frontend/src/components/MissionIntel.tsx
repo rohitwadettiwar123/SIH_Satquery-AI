@@ -188,8 +188,8 @@ export default function MissionIntel({ result, isProcessing }: Props) {
           
           <ul className="space-y-2 mb-4">
             {r.answer.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0).map((sentence, idx) => (
-              <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed flex items-start gap-2">
-                <span className="text-amber-500 mt-1.5 text-[8px]">●</span>
+              <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed flex items-start gap-2.5">
+                <span className="text-amber-500 font-mono text-[11px] mt-0.5">{idx + 1}.</span>
                 <span className="flex-1">{sentence}</span>
               </li>
             ))}

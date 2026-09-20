@@ -52,6 +52,20 @@
   @apply bg-neon-cyan/80 shadow-[0_0_10px_rgba(0,240,255,0.8)];
 }
 
+/* Horizontal Scrollbar specifically for Trace Panel */
+.custom-trace-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.custom-trace-scroll::-webkit-scrollbar-track {
+  @apply bg-[#0f1522] rounded-full;
+}
+.custom-trace-scroll::-webkit-scrollbar-thumb {
+  @apply bg-[#374151] rounded-full;
+}
+.custom-trace-scroll::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#2dd4bf] shadow-[0_0_8px_rgba(45,212,191,0.6)];
+}
+
 /* CRT Scanline Overlay */
 .scanlines {
   position: fixed;

@@ -120,8 +120,8 @@ export default function IntelligenceTrace({ result, isProcessing }: Props) {
       </div>
 
       {/* Horizontal Scrolling Pipeline Steps */}
-      <div className="flex-1 overflow-x-auto overflow-y-hidden hide-scrollbar">
-        <div className="flex gap-3 h-full pb-2">
+      <div className="flex-1 overflow-x-auto overflow-y-hidden custom-trace-scroll pb-1">
+        <div className="flex gap-3 h-full pb-3">
           {result!.execution_trace.map((step, i) => (
             <TraceStepCard key={i} step={step} index={i} />
           ))}
