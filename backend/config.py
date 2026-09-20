@@ -100,6 +100,7 @@ class Settings:
             "max_image_size_px": self.max_image_size_px,
             "default_gsd_meters": self.default_gsd_meters,
             "sar_lee_window": self.sar_lee_window,
+            "gemini_api_key": self.gemini_api_key,
             "gemini_model": self.gemini_model,
             "ollama_url": self.ollama_url,
             "ollama_model": self.ollama_model,

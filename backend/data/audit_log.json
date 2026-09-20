@@ -4254,5 +4254,61 @@
     "escalation_reason": "Confidence below threshold or gate failure.",
     "processing_time_ms": 8558.9,
     "audit_hash": "205a676d1f12bfa3fdf71c0fa4e49d8dd6ff61c09c3753cd82563bb4665f31c1"
+  },
+  {
+    "query_id": "f93540b9-53f1-4c7c-8162-45f37c801dc5",
+    "task_type": "VQA",
+    "query": "What are the primary land cover types?",
+    "answer": "Based on pixel analysis of the 1024×1024 image: The scene appears vegetation-dominant (high green reflectance). Mean brightness: 0.23. Estimated vegetation coverage: ~30%. Note: For full AI analysis, configure a GEMINI_API_KEY.",
+    "confidence": 0.65,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-20T08:43:22.531086+00:00] Step 1: Classifying query intent",
+      "Task classified as: VQA (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 1 image(s), modalities=['sar'], session=single",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — VQA",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1 result: SKIPPED (single image)",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 8e38740b28dce243…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "SKIPPED (single image)",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": true,
+    "escalation_reason": "Confidence below threshold or gate failure.",
+    "processing_time_ms": 8322.4,
+    "audit_hash": "8e38740b28dce24300e2edd32e44daec42ac331704a8dbee47d5791d122d5866"
   }
 ]
