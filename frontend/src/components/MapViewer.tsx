@@ -56,23 +56,63 @@ export default function MapViewer({ images, result }: Props) {
       <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 pointer-events-none z-10"></div>
       <div className="absolute top-0 left-1/2 w-[1px] h-full bg-white/5 pointer-events-none z-10"></div>
 
-      {/* Detected Bounding Boxes */}
-      {result?.detected_objects.filter(obj => obj.bbox).map((obj, i) => (
-        <div
-          key={i}
-          className="absolute border-2 border-neon-green bg-neon-green/10 flex items-start z-20"
-          style={{
-            left: `${obj.bbox!.x1 * 100}%`,
-            top: `${obj.bbox!.y1 * 100}%`,
-            width: `${(obj.bbox!.x2 - obj.bbox!.x1) * 100}%`,
-            height: `${(obj.bbox!.y2 - obj.bbox!.y1) * 100}%`,
-          }}
-        >
-          <span className="bg-neon-green text-black text-[9px] font-mono px-1 transform -translate-y-full shrink-0 truncate max-w-full">
-            {obj.class_name || obj.label} ({Math.round(obj.confidence * 100)}%)
-          </span>
-        </div>
-      ))}
+      {/* Detected Bounding Boxes — sorted by confidence, each labelled AREA N */}
+      {result && [...result.detected_objects]
+        .filter(obj => obj.bbox)
+        .sort((a, b) => b.confidence - a.confidence)
+        .map((obj, i) => {
+          const areaLabel = `AREA ${i + 1}`;
+          const boxColors = [
+            { border: '#00f5ff', bg: 'rgba(0,245,255,0.08)', text: '#000', badge: '#00f5ff' }, // cyan
+            { border: '#22c55e', bg: 'rgba(34,197,94,0.08)',  text: '#000', badge: '#22c55e' }, // green
+            { border: '#f59e0b', bg: 'rgba(245,158,11,0.08)', text: '#000', badge: '#f59e0b' }, // amber
+            { border: '#a78bfa', bg: 'rgba(167,139,250,0.08)', text: '#000', badge: '#a78bfa' }, // purple
+            { border: '#f97316', bg: 'rgba(249,115,22,0.08)', text: '#000', badge: '#f97316' }, // orange
+          ];
+          const c = boxColors[i % boxColors.length];
+          const shortClass = (obj.class_name || obj.label || 'Region').split('/')[0].trim();
+          return (
+            <div
+              key={i}
+              className="absolute flex items-start z-20 group/box"
+              style={{
+                left: `${obj.bbox!.x1 * 100}%`,
+                top: `${obj.bbox!.y1 * 100}%`,
+                width: `${(obj.bbox!.x2 - obj.bbox!.x1) * 100}%`,
+                height: `${(obj.bbox!.y2 - obj.bbox!.y1) * 100}%`,
+                border: `2px solid ${c.border}`,
+                background: c.bg,
+                boxShadow: `0 0 10px ${c.border}50`,
+              }}
+            >
+              {/* Corner brackets */}
+              <span
+                className="absolute -top-px -left-px w-2.5 h-2.5 border-t-2 border-l-2"
+                style={{ borderColor: c.border }}
+              />
+              <span
+                className="absolute -top-px -right-px w-2.5 h-2.5 border-t-2 border-r-2"
+                style={{ borderColor: c.border }}
+              />
+              <span
+                className="absolute -bottom-px -left-px w-2.5 h-2.5 border-b-2 border-l-2"
+                style={{ borderColor: c.border }}
+              />
+              <span
+                className="absolute -bottom-px -right-px w-2.5 h-2.5 border-b-2 border-r-2"
+                style={{ borderColor: c.border }}
+              />
+              {/* Label badge */}
+              <span
+                className="absolute -top-5 left-0 text-[9px] font-mono font-bold px-1.5 py-0.5 flex items-center gap-1 whitespace-nowrap"
+                style={{ backgroundColor: c.badge, color: '#000' }}
+              >
+                {areaLabel} · {shortClass} ({Math.round(obj.confidence * 100)}%)
+              </span>
+            </div>
+          );
+        })
+      }
 
       {/* Controls Overlay */}
       {images.length > 1 && (

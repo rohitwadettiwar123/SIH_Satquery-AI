@@ -399,17 +399,25 @@ export default function MissionIntel({ result, isProcessing }: Props) {
                   const label = obj.class_name || 'Change Region';
                   const { emoji, color } = getTargetConf(label);
                   const ha = (obj as any).area_hectares ?? 0;
-                  const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#94a3b8' : i === 2 ? '#b45309' : '#4b5563';
+                  const areaLabel = `AREA ${i + 1}`;
+                  const areaColors = ['#00f5ff','#22c55e','#f59e0b','#a78bfa','#f97316'];
+                  const areaColor = areaColors[i % areaColors.length];
                   return (
                     <FadeIn key={i} delay={350 + i * 60}>
                       <div className="bg-[#090e1b] border border-gray-800/60 rounded-lg px-2.5 py-2 hover:border-purple-900/40 transition-colors">
                         <div className="grid grid-cols-12 gap-1 items-center mb-1.5">
-                          <span className="col-span-1 text-[10px] font-mono font-bold" style={{ color: rankColor }}>
-                            #{i + 1}
-                          </span>
-                          <div className="col-span-6 flex items-center gap-1.5">
+                          {/* Area badge */}
+                          <div className="col-span-2">
+                            <span
+                              className="text-[8px] font-mono font-bold px-1 py-0.5 rounded"
+                              style={{ backgroundColor: `${areaColor}22`, color: areaColor, border: `1px solid ${areaColor}50` }}
+                            >
+                              {areaLabel}
+                            </span>
+                          </div>
+                          <div className="col-span-5 flex items-center gap-1.5">
                             <span className="text-sm leading-none">{emoji}</span>
-                            <span className="text-[10px] font-mono text-gray-200 truncate">{label}</span>
+                            <span className="text-[9px] font-mono text-gray-200 truncate">{label.split('/')[0].trim()}</span>
                           </div>
                           <div className="col-span-2 text-right">
                             <span className="text-[10px] font-mono text-gray-500">{ha > 0 ? ha.toFixed(1) : '—'}</span>
