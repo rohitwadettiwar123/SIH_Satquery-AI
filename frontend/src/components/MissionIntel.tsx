@@ -187,11 +187,16 @@ export default function MissionIntel({ result, isProcessing }: Props) {
           </div>
           
           <ol className="space-y-2 mb-4 list-decimal list-outside ml-4 marker:text-amber-500 marker:font-mono marker:text-[12px]">
-            {r.answer.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0).map((sentence, idx) => (
-              <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed pl-1">
-                {sentence}
-              </li>
-            ))}
+            {r.answer.split(/(?<=\.)\s+/).filter(s => s.trim().length > 0).map((sentence, idx) => {
+              // Strip out markdown list artifacts like "### 1.", "**1.**", "1.", "###", "**"
+              const cleanSentence = sentence.replace(/^[\s#*]*(\d+[\.\)]?)?[\s#*]*/g, '').trim();
+              if (!cleanSentence) return null;
+              return (
+                <li key={idx} className="text-[13px] font-sans text-gray-200 leading-relaxed pl-1">
+                  {cleanSentence}
+                </li>
+              );
+            })}
           </ol>
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 h-1 bg-gray-800 rounded-full overflow-hidden">
