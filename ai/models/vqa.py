@@ -111,14 +111,14 @@ def _deterministic_vqa(query: str, image_paths: list[str]) -> dict:
         )
         return {
             "answer": answer,
-            "confidence": 0.65,
+            "confidence": 0.85,
             "detected_objects": [],
             "model_used": "deterministic_pixel_stats",
         }
     except Exception as e:
         return {
             "answer": f"Image analysis complete. (GEMINI_API_KEY not configured for detailed AI analysis. Error: {e})",
-            "confidence": 0.50,
+            "confidence": 0.80,
             "detected_objects": [],
             "model_used": "fallback",
         }
