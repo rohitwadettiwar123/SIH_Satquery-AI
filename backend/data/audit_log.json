@@ -7687,5 +7687,142 @@
     "escalation_reason": "OK",
     "processing_time_ms": 2726.2,
     "audit_hash": "e59d4228e6264a20941c7e83c10827f1a639a4334accc6f7af41b7dc2e7aa6b1"
+  },
+  {
+    "query_id": "e3b4d429-67a9-4f07-896c-7dd69a803b16",
+    "task_type": "NDVI_MONITORING",
+    "query": "Analyze vegetation health and compute NDVI.",
+    "answer": "NDVI analysis complete. Mean NDVI: 0.041. Vegetation change: 11.0% increased, 71.8% decreased.",
+    "confidence": 0.88,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": {
+      "mean": 0.0413,
+      "median": 0.0169,
+      "std": 0.0985,
+      "class_percentages": {
+        "water": 0.38,
+        "bare_soil": 78.54,
+        "poor_vegetation": 14.31,
+        "moderate_vegetation": 6.29,
+        "healthy_vegetation": 0.48
+      },
+      "delta_ndvi": {
+        "mean_delta": -0.1498,
+        "std_delta": 0.172,
+        "deadband_used": 0.05,
+        "class_percentages": {
+          "increase": 10.97,
+          "no_change": 17.2,
+          "decrease": 71.83
+        },
+        "significant_change_fraction": 0.1,
+        "significant_change_pct": 10.0
+      }
+    },
+    "land_cover_analysis": {
+      "Vegetation & Canopy": {
+        "pct": 69.0,
+        "ha": 7165.78,
+        "px2": 716578,
+        "sub_metric": {
+          "label": "Mean NGRDI",
+          "value": 175.781
+        },
+        "color": "#22c55e",
+        "emoji": "🌲"
+      },
+      "Water Bodies & Hydrology": {
+        "pct": 0.0,
+        "ha": 1.38,
+        "px2": 138,
+        "sub_metric": {
+          "label": "Absorption Level",
+          "value": 34.6
+        },
+        "color": "#3b82f6",
+        "emoji": "🌊"
+      },
+      "Built-up & Infrastructure": {
+        "pct": 20.4,
+        "ha": 2113.19,
+        "px2": 211319,
+        "sub_metric": {
+          "label": "Edge Texture Density",
+          "value": 9.3
+        },
+        "color": "#f97316",
+        "emoji": "🏗️"
+      },
+      "Bare Soil & Terrain": {
+        "pct": 8.8,
+        "ha": 915.35,
+        "px2": 91535,
+        "sub_metric": {
+          "label": "Surface Albedo",
+          "value": 122.2
+        },
+        "color": "#f59e0b",
+        "emoji": "🏔️"
+      },
+      "Atmosphere & Clouds": {
+        "pct": 1.8,
+        "ha": 181.98,
+        "px2": 18198,
+        "sub_metric": {
+          "label": "Atmospheric Opacity",
+          "value": 12.1
+        },
+        "color": "#94a3b8",
+        "emoji": "☁️"
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T13:40:45.820913+00:00] Step 1: Classifying query intent",
+      "Task classified as: NDVI_MONITORING (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — NDVI_MONITORING",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 1edbb78e19f1f867…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 4696.8,
+    "audit_hash": "1edbb78e19f1f8679b26f0d9ab21c28f727543d5dca44340e340fd6e153e3041"
   }
 ]

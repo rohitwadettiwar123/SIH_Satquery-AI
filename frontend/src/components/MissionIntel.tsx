@@ -239,9 +239,9 @@ function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: nu
   return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`;
 }
 
-function AreaPieChart({ detectedObjects, deltaEntries, surfaceEntries, hasDelta, hasSurface, landCoverData }: {
-  detectedObjects: any[];
-  deltaEntries: [string, { t0: number; t1: number; delta: number; pct: number }][];
+function AreaPieChart({ detectedObjects = [], deltaEntries = [], surfaceEntries = [], hasDelta, hasSurface, landCoverData }: {
+  detectedObjects?: any[];
+  deltaEntries?: [string, { t0: number; t1: number; delta: number; pct: number }][];
   surfaceEntries: [string, number][];
   hasDelta: boolean;
   hasSurface: boolean;
@@ -637,23 +637,20 @@ export default function MissionIntel({ result, isProcessing }: Props) {
         </FadeIn>
       )}
 
-
-
-            {/* NDVI mini stats */}
-            {r.ndvi_stats && (
-              <div className="mt-2 grid grid-cols-3 gap-1.5">
-                {[
-                  { label: 'MEAN NDVI', value: r.ndvi_stats.mean.toFixed(3), color: '#22c55e' },
-                  { label: 'MEDIAN',    value: r.ndvi_stats.median.toFixed(3), color: '#3b82f6' },
-                  { label: 'STD DEV',   value: r.ndvi_stats.std.toFixed(3), color: '#f59e0b' },
-                ].map(stat => (
-                  <div key={stat.label} className="bg-[#050a14] border border-gray-800/50 rounded-lg p-1.5 text-center">
-                    <p className="text-[8px] font-mono text-gray-600">{stat.label}</p>
-                    <p className="text-[11px] font-mono font-bold mt-0.5" style={{ color: stat.color }}>{stat.value}</p>
-                  </div>
-                ))}
+      {/* ── NDVI mini stats ────────────────────────── */}
+      {r.ndvi_stats && (
+        <FadeIn delay={300}>
+          <div className="mt-2 grid grid-cols-3 gap-1.5">
+            {[
+              { label: 'MEAN NDVI', value: r.ndvi_stats.mean.toFixed(3), color: '#22c55e' },
+              { label: 'MEDIAN',    value: r.ndvi_stats.median.toFixed(3), color: '#3b82f6' },
+              { label: 'STD DEV',   value: r.ndvi_stats.std.toFixed(3), color: '#f59e0b' },
+            ].map(stat => (
+              <div key={stat.label} className="bg-[#050a14] border border-gray-800/50 rounded-lg p-1.5 text-center">
+                <p className="text-[8px] font-mono text-gray-600">{stat.label}</p>
+                <p className="text-[11px] font-mono font-bold mt-0.5" style={{ color: stat.color }}>{stat.value}</p>
               </div>
-            )}
+            ))}
           </div>
         </FadeIn>
       )}
