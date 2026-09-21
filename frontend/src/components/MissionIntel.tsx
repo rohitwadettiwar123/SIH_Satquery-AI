@@ -117,6 +117,230 @@ function getTargetConf(label: string): { emoji: string; color: string } {
   return { emoji: '🎯', color: '#00f5ff' };
 }
 
+// ── SVG Pie Chart ─────────────────────────────────────────────────────────────
+interface PieSlice { label: string; value: number; color: string; emoji: string; pct: number; }
+
+function polarToCartesian(cx: number, cy: number, r: number, deg: number) {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: number): string {
+  const s = polarToCartesian(cx, cy, r, startDeg);
+  const e = polarToCartesian(cx, cy, r, endDeg);
+  const large = endDeg - startDeg > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`;
+}
+
+function AreaPieChart({ detectedObjects, deltaEntries, surfaceEntries, hasDelta, hasSurface }: {
+  detectedObjects: any[];
+  deltaEntries: [string, { t0: number; t1: number; delta: number; pct: number }][];
+  surfaceEntries: [string, number][];
+  hasDelta: boolean;
+  hasSurface: boolean;
+}) {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setAnimated(true), 300); return () => clearTimeout(t); }, []);
+
+  const AREA_COLORS = ['#00f5ff', '#22c55e', '#f59e0b', '#a78bfa', '#f97316', '#ec4899', '#10b981'];
+
+  // Build pie slices from best available data source
+  let slices: PieSlice[] = [];
+
+  if (detectedObjects.length > 0) {
+    const sorted = [...detectedObjects].sort((a, b) => b.confidence - a.confidence).slice(0, 6);
+    const totalConf = sorted.reduce((s, o) => s + o.confidence, 0);
+    slices = sorted.map((obj, i) => {
+      const label = (obj.class_name || 'Region').split('/')[0].trim();
+      const { emoji, color } = getTargetConf(label);
+      const pct = (obj.confidence / totalConf) * 100;
+      return { label, value: obj.confidence, color: AREA_COLORS[i] || color, emoji, pct };
+    });
+  } else if (hasDelta) {
+    const entries = deltaEntries.slice(0, 6);
+    const totalT1 = entries.reduce((s, [, d]) => s + d.t1, 0) || 1;
+    slices = entries.map(([cls, data], i) => {
+      const { emoji, color } = getSurfaceConf(cls);
+      const label = cls.split(' &')[0];
+      const pct = (data.t1 / totalT1) * 100;
+      return { label, value: data.t1, color: AREA_COLORS[i] || color, emoji, pct };
+    });
+  } else if (hasSurface) {
+    slices = surfaceEntries.slice(0, 6).map(([cls, pct], i) => {
+      const { emoji, color } = getSurfaceConf(cls);
+      const label = cls.split(' &')[0];
+      return { label, value: pct, color: AREA_COLORS[i] || color, emoji, pct };
+    });
+  }
+
+  if (slices.length === 0) return null;
+
+  const CX = 80, CY = 80, R = 68, INNER_R = 40;
+  let cursor = 0;
+
+  return (
+    <div className="bg-[#070c18] border border-gray-800/70 rounded-2xl p-4 mb-2 shadow-[0_0_40px_rgba(0,245,255,0.04)]">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-[10px] font-mono text-cyan-400 tracking-widest font-bold flex items-center gap-1.5">
+          <Target className="w-3 h-3" /> DISTRIBUTION ANALYSIS
+        </h3>
+        <span className="text-[9px] font-mono text-gray-600 border border-gray-800 px-1.5 py-0.5 rounded-full">Confidence %</span>
+      </div>
+
+      <div className="flex items-center gap-5">
+        {/* SVG Pie */}
+        <div className="relative flex-shrink-0 w-40 h-40">
+          <svg
+            viewBox="0 0 160 160"
+            className="w-full h-full"
+            style={{ filter: 'drop-shadow(0 0 18px rgba(0,245,255,0.18))' }}
+          >
+            <defs>
+              {slices.map((s, i) => (
+                <filter key={i} id={`glow-${i}`} x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              ))}
+            </defs>
+
+            {/* Background ring */}
+            <circle cx={CX} cy={CY} r={R} fill="none" stroke="#1a2030" strokeWidth="2"/>
+
+            {/* Pie slices */}
+            {slices.map((slice, i) => {
+              const startDeg = cursor;
+              const sweep = (slice.pct / 100) * 360;
+              cursor += sweep;
+              const endDeg = cursor;
+              const midDeg = startDeg + sweep / 2;
+              const isHov = hovered === i;
+              // Outer radius grows on hover
+              const outerR = isHov ? R + 4 : R;
+              const path = arcPath(CX, CY, outerR, startDeg, endDeg);
+              // Label position (outside midpoint)
+              const labelR = R + 10;
+              const lp = polarToCartesian(CX, CY, labelR, midDeg);
+              const showLabel = sweep > 25; // only show text if slice is big enough
+
+              return (
+                <g key={i} style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                   onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
+                  <path
+                    d={path}
+                    fill={slice.color}
+                    opacity={animated ? (isHov ? 1 : 0.82) : 0}
+                    stroke="#070c18"
+                    strokeWidth={isHov ? 1.5 : 1}
+                    filter={isHov ? `url(#glow-${i})` : undefined}
+                    style={{ transition: 'opacity 0.8s ease, r 0.2s' }}
+                  />
+                  {/* Percentage text on slice */}
+                  {showLabel && (
+                    <text
+                      x={polarToCartesian(CX, CY, R * 0.72, midDeg).x}
+                      y={polarToCartesian(CX, CY, R * 0.72, midDeg).y}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="7"
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                      fill="#000"
+                      opacity={animated ? 0.85 : 0}
+                      style={{ transition: 'opacity 1s ease 0.4s' }}
+                    >
+                      {slice.pct.toFixed(0)}%
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+
+            {/* Donut hole */}
+            <circle cx={CX} cy={CY} r={INNER_R} fill="#070c18"/>
+
+            {/* Center: HUD concentric rings */}
+            <circle cx={CX} cy={CY} r={INNER_R - 4} fill="none" stroke="#1a2030" strokeWidth="1"/>
+            <circle cx={CX} cy={CY} r={INNER_R - 10} fill="none" stroke="#1a2030" strokeWidth="0.5"/>
+
+            {/* Center text — shows hovered slice info or totals */}
+            {hovered !== null ? (
+              <>
+                <text x={CX} y={CY - 7} textAnchor="middle" dominantBaseline="middle" fontSize="16" fontFamily="monospace" fontWeight="bold" fill={slices[hovered].color}>
+                  {slices[hovered].pct.toFixed(1)}%
+                </text>
+                <text x={CX} y={CY + 9} textAnchor="middle" dominantBaseline="middle" fontSize="6.5" fontFamily="monospace" fill="#6b7280">
+                  {slices[hovered].label.substring(0, 12)}
+                </text>
+              </>
+            ) : (
+              <>
+                <text x={CX} y={CY - 5} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontFamily="monospace" fill="#4b5563">AREA</text>
+                <text x={CX} y={CY + 8} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontFamily="monospace" fill="#4b5563">MAP</text>
+              </>
+            )}
+          </svg>
+        </div>
+
+        {/* Right Legend */}
+        <div className="flex-1 flex flex-col gap-1.5 justify-center">
+          {slices.map((slice, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between px-2 py-1 rounded-lg cursor-pointer transition-all"
+              style={{
+                backgroundColor: hovered === i ? `${slice.color}15` : 'transparent',
+                border: `1px solid ${hovered === i ? slice.color + '40' : 'transparent'}`,
+              }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              <div className="flex items-center gap-2">
+                {/* Color dot with glow */}
+                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{
+                  backgroundColor: slice.color,
+                  boxShadow: `0 0 6px ${slice.color}`,
+                }}/>
+                <span className="text-[10px] leading-none">{slice.emoji}</span>
+                <span className="text-[9px] font-mono text-gray-300 truncate max-w-[80px]" style={{ color: hovered === i ? slice.color : '' }}>
+                  {`AREA ${i + 1}`}
+                </span>
+              </div>
+              {/* Pct badge */}
+              <span className="text-[10px] font-mono font-bold ml-1" style={{ color: slice.color }}>
+                {slice.pct.toFixed(1)}%
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom stacked thin progress bar for full visual summary */}
+      <div className="mt-4 flex h-1.5 rounded-full overflow-hidden gap-px">
+        {slices.map((s, i) => (
+          <div
+            key={i}
+            className="h-full rounded-sm transition-all duration-1000"
+            style={{
+              width: animated ? `${s.pct}%` : '0%',
+              backgroundColor: s.color,
+              boxShadow: `0 0 6px ${s.color}`,
+              transitionDelay: `${i * 60}ms`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="flex justify-between mt-1">
+        {slices.map((s, i) => (
+          <span key={i} className="text-[7px] font-mono" style={{ color: s.color }}>{s.emoji}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function MissionIntel({ result, isProcessing }: Props) {
 
   if (!result && !isProcessing) {
@@ -491,96 +715,16 @@ export default function MissionIntel({ result, isProcessing }: Props) {
         </FadeIn>
       )}
 
-      {/* ── STATISTICAL DISTRIBUTION GRAPH ────────── */}
-      {(hasDelta || hasSurface) && (
+      {/* ── PIE CHART ─────────────────────────────── */}
+      {(hasObjects || hasDelta || hasSurface) && (
         <FadeIn delay={550}>
-          <div className="bg-[#090e1b] border border-gray-800/60 rounded-xl p-4 mb-2">
-            <div className="flex items-center justify-between mb-4">
-               <h3 className="text-[10px] font-mono text-purple-400 tracking-widest font-bold flex items-center gap-1.5">
-                 <Target className="w-3 h-3" /> STATISTICAL DISTRIBUTION
-               </h3>
-               <span className="text-[9px] font-mono text-gray-500">Area (ha)</span>
-            </div>
-            
-            <div className="h-32 flex items-end justify-between border-b border-l border-gray-800 pb-1 pl-1 ml-4 relative">
-              {/* Y-axis Labels */}
-              {(() => {
-                const maxArea = hasDelta 
-                  ? Math.max(1, ...deltaEntries.flatMap(d => [d[1].t0, d[1].t1]))
-                  : Math.max(1, ...surfaceEntries.map(s => s[1] * 14.17));
-                
-                return (
-                  <div className="absolute -left-6 top-0 bottom-0 flex flex-col justify-between text-[8px] text-gray-600 font-mono items-end pr-1">
-                    <span>{maxArea.toFixed(0)}</span>
-                    <span>{(maxArea/2).toFixed(0)}</span>
-                    <span>0</span>
-                  </div>
-                );
-              })()}
-
-              {/* Grid lines */}
-              <div className="absolute left-0 right-0 top-0 h-[1px] bg-gray-800/50 z-0"></div>
-              <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-gray-800/50 z-0 border-dashed"></div>
-
-              {/* Bars */}
-              <div className="w-full flex justify-around items-end h-full z-10 px-2">
-                {hasDelta ? (
-                  // Comparative T0 vs T1 Graph
-                  deltaEntries.slice(0, 5).map(([cls, data]) => {
-                    const maxArea = Math.max(1, ...deltaEntries.flatMap(d => [d[1].t0, d[1].t1]));
-                    const t0H = (data.t0 / maxArea) * 100;
-                    const t1H = (data.t1 / maxArea) * 100;
-                    const { color, emoji } = getSurfaceConf(cls);
-                    return (
-                      <div key={cls} className="flex flex-col items-center gap-1 group">
-                        <div className="flex items-end gap-[2px] h-full w-8">
-                          <div className="w-3.5 bg-gray-600 rounded-t-sm transition-all group-hover:brightness-125 relative group-hover:bg-gray-500" style={{ height: `${t0H}%` }}>
-                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{data.t0.toFixed(0)}</span>
-                          </div>
-                          <div className="w-3.5 rounded-t-sm transition-all group-hover:brightness-125 relative shadow-[0_0_8px_currentColor]" style={{ height: `${t1H}%`, backgroundColor: color, color: color }}>
-                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{data.t1.toFixed(0)}</span>
-                          </div>
-                        </div>
-                        <span className="text-[12px] mt-1" title={cls}>{emoji}</span>
-                      </div>
-                    );
-                  })
-                ) : (
-                  // Single Coverage Graph
-                  surfaceEntries.slice(0, 5).map(([cls, pct]) => {
-                    const maxArea = Math.max(1, ...surfaceEntries.map(s => s[1] * 14.17));
-                    const ha = pct * 14.17;
-                    const h = (ha / maxArea) * 100;
-                    const { color, emoji } = getSurfaceConf(cls);
-                    return (
-                      <div key={cls} className="flex flex-col items-center gap-1 group">
-                        <div className="flex items-end h-full w-6">
-                          <div className="w-5 rounded-t-sm transition-all group-hover:brightness-125 relative shadow-[0_0_8px_currentColor]" style={{ height: `${h}%`, backgroundColor: color, color: color }}>
-                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{ha.toFixed(0)}</span>
-                          </div>
-                        </div>
-                        <span className="text-[12px] mt-1" title={cls}>{emoji}</span>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-            
-            {/* Legend for Delta */}
-            {hasDelta && (
-              <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-gray-800">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-gray-600 rounded-sm"></div>
-                  <span className="text-[9px] font-mono text-gray-400">T0 Area</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-purple-500 rounded-sm shadow-[0_0_5px_currentColor]" style={{ color: '#a855f7' }}></div>
-                  <span className="text-[9px] font-mono text-gray-400">T1 Area (Color By Class)</span>
-                </div>
-              </div>
-            )}
-          </div>
+          <AreaPieChart
+            detectedObjects={r.detected_objects}
+            deltaEntries={deltaEntries}
+            surfaceEntries={surfaceEntries}
+            hasDelta={hasDelta}
+            hasSurface={hasSurface}
+          />
         </FadeIn>
       )}
 

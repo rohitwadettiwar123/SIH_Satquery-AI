@@ -6514,5 +6514,151 @@
     "escalation_reason": "OK",
     "processing_time_ms": 22997.1,
     "audit_hash": "a499caec16bcb8b7aea0892e93c1e362902d2dce592844cc6818770bb6809b94"
+  },
+  {
+    "query_id": "5c859be4-52d9-4f4e-8b5e-5bc284de1a1d",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Moderate structural and terrain changes detected between the T0 and T1 baseline images. Quantitative analysis confirms 20.0% of the total scene underwent surface-level transformation. Total affected physical area is approximately 20.97 km² (2097.2 hectares). Sub-pixel Structural Similarity (SSIM) registered at 0.2278, indicating statistically confident localized variance. Mean Change Vector Magnitude confirms deviations well above the established noise floor. Multiple distinct change clusters were isolated, spectral-classified, and geographically bounded for tactical review. Cryptographic hash and evidence provenance generated successfully for audit logging. ",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.77,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.76,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.75,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": {
+      "mean": 0.45,
+      "median": 0.45,
+      "std": 0.12,
+      "class_percentages": {},
+      "delta_ndvi": {
+        "Vegetation Loss / Deforestation": {
+          "t0": 461.775,
+          "t1": 184.70999999999998,
+          "delta": -277.065,
+          "pct": -60.0
+        },
+        "Flood / Water Body Expansion": {
+          "t0": 135.7,
+          "t1": 339.25,
+          "delta": 203.55,
+          "pct": 150.00000000000003
+        }
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T05:04:40.433881+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 7c16d77678e41a28…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 27841.8,
+    "audit_hash": "7c16d77678e41a286b5210c4a01c5fee094d163f42f0ec61b585f2fc71c7623e"
   }
 ]
