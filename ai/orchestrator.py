@@ -303,6 +303,15 @@ async def orchestrate(
     # Build detected objects from specialist result
     detected_objects = specialist_result.get("detected_objects", [])
 
+    # ── Land Cover Analysis (always run on primary image) ──────────────────
+    try:
+        from ai.models.land_cover_analysis import analyse_land_cover
+        import asyncio as _asyncio
+        land_cover_analysis = await _asyncio.to_thread(analyse_land_cover, image_paths[0], config.get("default_gsd_meters", 10.0))
+    except Exception as _lce:
+        log.warning("Land cover analysis skipped: %s", _lce)
+        land_cover_analysis = {}
+
     # Build change metrics
     change_metrics = specialist_result.get("change_metrics")
     if not change_metrics and "ssim_score" in specialist_result:
@@ -342,6 +351,7 @@ async def orchestrate(
         "detected_objects": detected_objects,
         "change_metrics": change_metrics,
         "ndvi_stats": ndvi_stats,
+        "land_cover_analysis": land_cover_analysis,
         "cloud_reconstruction": cloud_reconstruction_info,
         "execution_trace": trace_steps,
         "gate_verdicts": gate_verdicts,

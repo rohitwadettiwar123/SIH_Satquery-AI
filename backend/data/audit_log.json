@@ -7154,5 +7154,61 @@
     "escalation_reason": "OK",
     "processing_time_ms": 65545.7,
     "audit_hash": "6d89fa87c733318bb1db8521ef6981df8ead4b8eb0ead2e78970310e4e535bc7"
+  },
+  {
+    "query_id": "80e8a98d-fd6b-4aba-adec-7a0b3b654150",
+    "task_type": "VQA",
+    "query": "What are the primary land cover types?",
+    "answer": "Based on pixel analysis of the 1024×1024 image: The scene appears water-dominant (high blue reflectance). Mean brightness: 0.39. Estimated vegetation coverage: ~46%. Note: For full AI analysis, configure a GEMINI_API_KEY.",
+    "confidence": 0.85,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T12:29:37.215479+00:00] Step 1: Classifying query intent",
+      "Task classified as: VQA (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 1 image(s), modalities=['optical'], session=single",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — VQA",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1 result: SKIPPED (single image)",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: cb6d30dc79e447de…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "SKIPPED (single image)",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 45147.4,
+    "audit_hash": "cb6d30dc79e447defd1737b0ddadba1243a2f3837f97484010d924a680ba193f"
   }
 ]

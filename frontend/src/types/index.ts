@@ -55,6 +55,15 @@ export interface CloudReconstructionInfo {
   reconstructed_url?: string;
 }
 
+export interface LandCoverCategory {
+  pct: number;
+  ha: number;
+  px2: number;
+  sub_metric: { label: string; value: number };
+  color: string;
+  emoji: string;
+}
+
 export interface AnalysisResult {
   query_id: string;
   task_type: string;
@@ -64,6 +73,7 @@ export interface AnalysisResult {
   detected_objects: DetectedObject[];
   change_metrics?: ChangeMetrics;
   ndvi_stats?: NdviStats;
+  land_cover_analysis?: Record<string, LandCoverCategory>;
   cloud_reconstruction: CloudReconstructionInfo;
   execution_trace: string[];
   gate_verdicts: Record<string, string>;

@@ -117,6 +117,113 @@ function getTargetConf(label: string): { emoji: string; color: string } {
   return { emoji: '🎯', color: '#00f5ff' };
 }
 
+// ── Land Cover Category Cards (matches reference image) ───────────────────────
+function LandCoverCards({ data }: { data: Record<string, { pct: number; ha: number; px2: number; sub_metric: { label: string; value: number }; color: string; emoji: string }> }) {
+  const CATEGORY_ORDER = [
+    'Vegetation & Canopy',
+    'Water Bodies & Hydrology',
+    'Built-up & Infrastructure',
+    'Bare Soil & Terrain',
+    'Atmosphere & Clouds',
+  ];
+
+  const entries = CATEGORY_ORDER
+    .filter(k => k in data)
+    .map(k => [k, data[k]] as const);
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div className="bg-[#07090f] border border-gray-800/60 rounded-2xl p-3 mb-2 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-[10px] font-mono text-cyan-400 tracking-widest font-bold flex items-center gap-1.5">
+          <Layers className="w-3 h-3" /> LAND COVER CLASSIFICATION
+        </h3>
+        <span className="text-[8px] font-mono text-gray-600 border border-gray-800 px-1.5 py-0.5 rounded-full">Scene Breakdown</span>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {entries.map(([name, cat], idx) => (
+          <LandCoverCard key={name} name={name} cat={cat} delay={idx * 80} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LandCoverCard({ name, cat, delay }: {
+  name: string;
+  cat: { pct: number; ha: number; px2: number; sub_metric: { label: string; value: number }; color: string; emoji: string };
+  delay: number;
+}) {
+  const [barW, setBarW] = useState(0);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setVisible(true), delay);
+    const t2 = setTimeout(() => setBarW(cat.pct), delay + 250);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [delay, cat.pct]);
+
+  const shortName = name.split(' & ');
+  const line1 = shortName[0];
+  const line2 = shortName[1] ? `& ${shortName[1]}` : '';
+
+  return (
+    <div
+      className="flex items-center gap-3 bg-[#0a0d17] border border-gray-800/40 rounded-xl px-3 py-2.5 hover:border-gray-700/60 transition-all group"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : 'translateX(-8px)',
+        transition: 'opacity 0.4s ease, transform 0.4s ease',
+        borderLeft: `2px solid ${cat.color}50`,
+      }}
+    >
+      {/* Emoji icon */}
+      <span className="text-xl flex-shrink-0 w-7 text-center leading-none group-hover:scale-110 transition-transform">
+        {cat.emoji}
+      </span>
+
+      {/* Name + sub-metric */}
+      <div className="flex-1 min-w-0">
+        <div className="font-mono font-bold text-[10px] text-gray-100 leading-tight">
+          {line1}
+        </div>
+        {line2 && (
+          <div className="font-mono font-bold text-[10px] text-gray-100 leading-tight">{line2}</div>
+        )}
+        <div className="text-[9px] font-mono mt-0.5" style={{ color: `${cat.color}90` }}>
+          {cat.sub_metric.label}:&nbsp;
+          <span style={{ color: cat.color }}>{cat.sub_metric.value}</span>
+        </div>
+        {/* Bar */}
+        <div className="mt-1.5 h-[3px] bg-gray-800/80 rounded-full overflow-hidden w-full">
+          <div
+            className="h-full rounded-full transition-all duration-1000 ease-out"
+            style={{
+              width: `${barW}%`,
+              backgroundColor: cat.color,
+              boxShadow: `0 0 6px ${cat.color}80`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Right: pct + area */}
+      <div className="text-right flex-shrink-0">
+        <div className="text-[14px] font-mono font-bold leading-none" style={{ color: cat.color }}>
+          {cat.pct.toFixed(1)}%
+        </div>
+        <div className="text-[8px] font-mono text-gray-500 mt-0.5 leading-tight">
+          {cat.ha.toLocaleString('en-IN', { maximumFractionDigits: 2 })} ha
+        </div>
+        <div className="text-[8px] font-mono text-gray-600 leading-tight">
+          ({cat.px2.toLocaleString('en-IN')}&nbsp;px²)
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── SVG Pie Chart ─────────────────────────────────────────────────────────────
 interface PieSlice { label: string; value: number; color: string; emoji: string; pct: number; }
 
@@ -132,12 +239,13 @@ function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: nu
   return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`;
 }
 
-function AreaPieChart({ detectedObjects, deltaEntries, surfaceEntries, hasDelta, hasSurface }: {
+function AreaPieChart({ detectedObjects, deltaEntries, surfaceEntries, hasDelta, hasSurface, landCoverData }: {
   detectedObjects: any[];
   deltaEntries: [string, { t0: number; t1: number; delta: number; pct: number }][];
   surfaceEntries: [string, number][];
   hasDelta: boolean;
   hasSurface: boolean;
+  landCoverData?: Record<string, { pct: number; ha: number; px2: number; sub_metric: { label: string; value: number }; color: string; emoji: string }>;
 }) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [animated, setAnimated] = useState(false);
@@ -145,10 +253,17 @@ function AreaPieChart({ detectedObjects, deltaEntries, surfaceEntries, hasDelta,
 
   const AREA_COLORS = ['#00f5ff', '#22c55e', '#f59e0b', '#a78bfa', '#f97316', '#ec4899', '#10b981'];
 
-  // Build pie slices from best available data source
+  // Build pie slices — land_cover_analysis is the highest-fidelity source
   let slices: PieSlice[] = [];
 
-  if (detectedObjects.length > 0) {
+  if (landCoverData && Object.keys(landCoverData).length > 0) {
+    const CATEGORY_ORDER = ['Vegetation & Canopy', 'Water Bodies & Hydrology', 'Built-up & Infrastructure', 'Bare Soil & Terrain', 'Atmosphere & Clouds'];
+    const entries = CATEGORY_ORDER.filter(k => k in landCoverData);
+    slices = entries.map(k => {
+      const cat = landCoverData[k];
+      return { label: k.split(' & ')[0], value: cat.pct, color: cat.color, emoji: cat.emoji, pct: cat.pct };
+    });
+  } else if (detectedObjects.length > 0) {
     const sorted = [...detectedObjects].sort((a, b) => b.confidence - a.confidence).slice(0, 6);
     const totalConf = sorted.reduce((s, o) => s + o.confidence, 0);
     slices = sorted.map((obj, i) => {
@@ -715,15 +830,23 @@ export default function MissionIntel({ result, isProcessing }: Props) {
         </FadeIn>
       )}
 
+      {/* ── LAND COVER CLASSIFICATION CARDS ─────────── */}
+      {r.land_cover_analysis && Object.keys(r.land_cover_analysis).length > 0 && (
+        <FadeIn delay={480}>
+          <LandCoverCards data={r.land_cover_analysis} />
+        </FadeIn>
+      )}
+
       {/* ── PIE CHART ─────────────────────────────── */}
-      {(hasObjects || hasDelta || hasSurface) && (
-        <FadeIn delay={550}>
+      {(hasObjects || hasDelta || hasSurface || (r.land_cover_analysis && Object.keys(r.land_cover_analysis).length > 0)) && (
+        <FadeIn delay={600}>
           <AreaPieChart
             detectedObjects={r.detected_objects}
             deltaEntries={deltaEntries}
             surfaceEntries={surfaceEntries}
             hasDelta={hasDelta}
             hasSurface={hasSurface}
+            landCoverData={r.land_cover_analysis}
           />
         </FadeIn>
       )}
