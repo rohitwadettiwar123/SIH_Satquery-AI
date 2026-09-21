@@ -63,10 +63,10 @@ def analyse_land_cover(image_path: str, gsd_meters: float = GSD_METERS) -> dict:
         from PIL import ImageFilter
         gray_pil = Image.fromarray((gray * 255).astype(np.uint8))
         sobel_h = np.array(gray_pil.filter(ImageFilter.Kernel(
-            size=3, kernel=[-1, 0, 1, -2, 0, 2, -1, 0, 1], scale=1, offset=128
+            size=(3, 3), kernel=[-1, 0, 1, -2, 0, 2, -1, 0, 1], scale=1, offset=128
         ))).astype(np.float32)
         sobel_v = np.array(gray_pil.filter(ImageFilter.Kernel(
-            size=3, kernel=[-1, -2, -1, 0, 0, 0, 1, 2, 1], scale=1, offset=128
+            size=(3, 3), kernel=[-1, -2, -1, 0, 0, 0, 1, 2, 1], scale=1, offset=128
         ))).astype(np.float32)
         edge_mag = np.sqrt((sobel_h - 128) ** 2 + (sobel_v - 128) ** 2)
         # Built-up = high edge density AND moderate-high brightness, not vegetation

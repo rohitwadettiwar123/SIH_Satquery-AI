@@ -7210,5 +7210,482 @@
     "escalation_reason": "OK",
     "processing_time_ms": 45147.4,
     "audit_hash": "cb6d30dc79e447defd1737b0ddadba1243a2f3837f97484010d924a680ba193f"
+  },
+  {
+    "query_id": "5087c4de-a729-452f-bb80-82b008d71700",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Based on a comparison of the two images, the following major structural and environmental changes are observed between **T0** and **T1**:\n\n### 1. Widespread Inundation & Flooding\n* **Agricultural Fields Submerged:** Vast areas of cultivated cropland, green fields, and boundary lines seen in T0 are entirely submerged under muddy, sediment-rich floodwaters in T1.\n* **Loss of Surface Vegetation:** The bright green and yellow agricultural patchwork in T0 is replaced across extensive areas by standing, brown water.\n\n### 2. Expansion of Waterways\n* **River Overflow:** The narrow, winding river channel visible in T0 has severely overflowed its banks, spreading across low-lying terrain and merging into large bodies of standing water.\n\n### 3. Impact on Settlements & Structures\n* **Isolated Residential Clusters:** Towns and small residential hamlets visible in T0 are largely surrounded by floodwaters in T1, forming isolated \"islands\" cut off from surrounding land.\n* **Property Inundation:** Buildings on the perimeter of villages and isolated farmsteads are directly bordered or impacted by floodwaters.\n\n### 4. Infrastructure Disruption\n* **Submerged Road Networks:** Numerous local roads, intersections, and field access routes clearly defined in T0 are completely submerged or cut off by floodwaters in T1, disrupting regional transport and access.",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.77,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.76,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.75,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": {
+      "mean": 0.45,
+      "median": 0.45,
+      "std": 0.12,
+      "class_percentages": {},
+      "delta_ndvi": {
+        "Vegetation Loss / Deforestation": {
+          "t0": 461.775,
+          "t1": 184.70999999999998,
+          "delta": -277.065,
+          "pct": -60.0
+        },
+        "Flood / Water Body Expansion": {
+          "t0": 135.7,
+          "t1": 339.25,
+          "delta": 203.55,
+          "pct": 150.00000000000003
+        }
+      }
+    },
+    "land_cover_analysis": {
+      "Vegetation & Canopy": {
+        "pct": 35.0,
+        "ha": 917.5,
+        "px2": 91750,
+        "sub_metric": {
+          "label": "Mean NGRDI",
+          "value": 0.035
+        },
+        "color": "#22c55e",
+        "emoji": "🌲"
+      },
+      "Water Bodies & Hydrology": {
+        "pct": 25.0,
+        "ha": 655.4,
+        "px2": 65540,
+        "sub_metric": {
+          "label": "Absorption Level",
+          "value": 62.5
+        },
+        "color": "#3b82f6",
+        "emoji": "🌊"
+      },
+      "Built-up & Infrastructure": {
+        "pct": 20.0,
+        "ha": 524.3,
+        "px2": 52430,
+        "sub_metric": {
+          "label": "Edge Texture Density",
+          "value": 9.1
+        },
+        "color": "#f97316",
+        "emoji": "🏗️"
+      },
+      "Bare Soil & Terrain": {
+        "pct": 12.0,
+        "ha": 314.6,
+        "px2": 31460,
+        "sub_metric": {
+          "label": "Surface Albedo",
+          "value": 106.2
+        },
+        "color": "#f59e0b",
+        "emoji": "🏔️"
+      },
+      "Atmosphere & Clouds": {
+        "pct": 8.0,
+        "ha": 209.7,
+        "px2": 20970,
+        "sub_metric": {
+          "label": "Atmospheric Opacity",
+          "value": 1.1
+        },
+        "color": "#94a3b8",
+        "emoji": "☁️"
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T12:41:52.662921+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 7bd791fb36ba3c12…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 94539.6,
+    "audit_hash": "7bd791fb36ba3c12bcaacd4f0013e12ccaddf46805d12850ea0265561f8dbee4"
+  },
+  {
+    "query_id": "47e4aee2-33c7-4c29-82ad-d4b19b6c68f4",
+    "task_type": "NDVI_MONITORING",
+    "query": "Analyze vegetation health and compute NDVI.",
+    "answer": "NDVI analysis complete. Mean NDVI: 0.092. Vegetation change: 8.8% increased, 50.8% decreased.",
+    "confidence": 0.88,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": {
+      "mean": 0.0921,
+      "median": 0.0909,
+      "std": 0.0293,
+      "class_percentages": {
+        "water": 0.06,
+        "bare_soil": 91.58,
+        "poor_vegetation": 7.87,
+        "moderate_vegetation": 0.41,
+        "healthy_vegetation": 0.07
+      },
+      "delta_ndvi": {
+        "mean_delta": -0.2038,
+        "std_delta": 0.2967,
+        "deadband_used": 0.05,
+        "class_percentages": {
+          "increase": 8.79,
+          "no_change": 40.45,
+          "decrease": 50.76
+        },
+        "significant_change_fraction": 0.1,
+        "significant_change_pct": 10.0
+      }
+    },
+    "land_cover_analysis": {
+      "Vegetation & Canopy": {
+        "pct": 35.0,
+        "ha": 917.5,
+        "px2": 91750,
+        "sub_metric": {
+          "label": "Mean NGRDI",
+          "value": 0.035
+        },
+        "color": "#22c55e",
+        "emoji": "🌲"
+      },
+      "Water Bodies & Hydrology": {
+        "pct": 25.0,
+        "ha": 655.4,
+        "px2": 65540,
+        "sub_metric": {
+          "label": "Absorption Level",
+          "value": 62.5
+        },
+        "color": "#3b82f6",
+        "emoji": "🌊"
+      },
+      "Built-up & Infrastructure": {
+        "pct": 20.0,
+        "ha": 524.3,
+        "px2": 52430,
+        "sub_metric": {
+          "label": "Edge Texture Density",
+          "value": 9.1
+        },
+        "color": "#f97316",
+        "emoji": "🏗️"
+      },
+      "Bare Soil & Terrain": {
+        "pct": 12.0,
+        "ha": 314.6,
+        "px2": 31460,
+        "sub_metric": {
+          "label": "Surface Albedo",
+          "value": 106.2
+        },
+        "color": "#f59e0b",
+        "emoji": "🏔️"
+      },
+      "Atmosphere & Clouds": {
+        "pct": 8.0,
+        "ha": 209.7,
+        "px2": 20970,
+        "sub_metric": {
+          "label": "Atmospheric Opacity",
+          "value": 1.1
+        },
+        "color": "#94a3b8",
+        "emoji": "☁️"
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T12:44:25.341389+00:00] Step 1: Classifying query intent",
+      "Task classified as: NDVI_MONITORING (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — NDVI_MONITORING",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=1.11px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 7bfb9aeee810da07…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=1.11px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 2350.9,
+    "audit_hash": "7bfb9aeee810da07887ca0f4e0b5c229b0882474b532fd94129a2ad7699fdfd0"
+  },
+  {
+    "query_id": "fbfce3c5-a1df-4326-82eb-cc1fc3478895",
+    "task_type": "NDVI_MONITORING",
+    "query": "Analyze vegetation health and compute NDVI.",
+    "answer": "NDVI analysis complete. Mean NDVI: 0.041. Vegetation change: 11.0% increased, 71.8% decreased.",
+    "confidence": 0.88,
+    "detected_objects": [],
+    "change_metrics": null,
+    "ndvi_stats": {
+      "mean": 0.0413,
+      "median": 0.0169,
+      "std": 0.0985,
+      "class_percentages": {
+        "water": 0.38,
+        "bare_soil": 78.54,
+        "poor_vegetation": 14.31,
+        "moderate_vegetation": 6.29,
+        "healthy_vegetation": 0.48
+      },
+      "delta_ndvi": {
+        "mean_delta": -0.1498,
+        "std_delta": 0.172,
+        "deadband_used": 0.05,
+        "class_percentages": {
+          "increase": 10.97,
+          "no_change": 17.2,
+          "decrease": 71.83
+        },
+        "significant_change_fraction": 0.1,
+        "significant_change_pct": 10.0
+      }
+    },
+    "land_cover_analysis": {
+      "Vegetation & Canopy": {
+        "pct": 35.0,
+        "ha": 917.5,
+        "px2": 91750,
+        "sub_metric": {
+          "label": "Mean NGRDI",
+          "value": 0.035
+        },
+        "color": "#22c55e",
+        "emoji": "🌲"
+      },
+      "Water Bodies & Hydrology": {
+        "pct": 25.0,
+        "ha": 655.4,
+        "px2": 65540,
+        "sub_metric": {
+          "label": "Absorption Level",
+          "value": 62.5
+        },
+        "color": "#3b82f6",
+        "emoji": "🌊"
+      },
+      "Built-up & Infrastructure": {
+        "pct": 20.0,
+        "ha": 524.3,
+        "px2": 52430,
+        "sub_metric": {
+          "label": "Edge Texture Density",
+          "value": 9.1
+        },
+        "color": "#f97316",
+        "emoji": "🏗️"
+      },
+      "Bare Soil & Terrain": {
+        "pct": 12.0,
+        "ha": 314.6,
+        "px2": 31460,
+        "sub_metric": {
+          "label": "Surface Albedo",
+          "value": 106.2
+        },
+        "color": "#f59e0b",
+        "emoji": "🏔️"
+      },
+      "Atmosphere & Clouds": {
+        "pct": 8.0,
+        "ha": 209.7,
+        "px2": 20970,
+        "sub_metric": {
+          "label": "Atmospheric Opacity",
+          "value": 1.1
+        },
+        "color": "#94a3b8",
+        "emoji": "☁️"
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T12:44:46.511660+00:00] Step 1: Classifying query intent",
+      "Task classified as: NDVI_MONITORING (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — NDVI_MONITORING",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: e59d4228e6264a20…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 2726.2,
+    "audit_hash": "e59d4228e6264a20941c7e83c10827f1a639a4334accc6f7af41b7dc2e7aa6b1"
   }
 ]
