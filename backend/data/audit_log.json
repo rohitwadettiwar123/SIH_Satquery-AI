@@ -6387,5 +6387,132 @@
     "escalation_reason": "OK",
     "processing_time_ms": 35679.1,
     "audit_hash": "651d5b7e6ce3a5511e45372fb620581274ec8ee34b2f5133157047fbf5170c96"
+  },
+  {
+    "query_id": "25ebc388-cccf-41ba-8fe7-f8b559db1fe4",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Based on a comparison of the two images, a major severe flooding event has occurred between **T0** and **T1**. The key structural and environmental changes include:\n\n1. **Widespread Agricultural Inundation:**\n   * **T0:** Shows dry, neatly segmented agricultural fields with active vegetation (vibrant green, brown, and yellow crop plots).\n   * **T1:** Extensive areas of farmland are completely submerged under muddy, turbid floodwaters, obscuring field boundaries and destroying crop cover across the region.\n\n2. **Settlement Isolation and Inundation:**\n   * **T0:** Villages and cluster settlements are connected via a clear road network surrounded by dry land.\n   * **T1:** Residential clusters are now partially surrounded or surrounded entirely by floodwaters, creating isolated \"islands\" of buildings and trees amidst flooded terrain.\n\n3. **Infrastructure Disruption:**\n   * **T0:** A clear network of paved roads, bridges, and agricultural tracks traverses the landscape.\n   * **T1:** Large sections of the road network and lower-lying access points are submerged or cut off, significantly impairing ground transport.\n\n4. **River Channel Expansion & Overflow:**\n   * **T0:** The river follows a defined, narrow winding channel.\n   * **T1:** The river has significantly burst its banks, merging with the flooded countryside and depositing heavy sediment loads (brown floodwater).",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.77,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.76,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.75,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T04:59:48.128317+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: a499caec16bcb8b7…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 22997.1,
+    "audit_hash": "a499caec16bcb8b7aea0892e93c1e362902d2dce592844cc6818770bb6809b94"
   }
 ]
