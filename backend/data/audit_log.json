@@ -6133,5 +6133,259 @@
     "escalation_reason": "OK",
     "processing_time_ms": 16117.4,
     "audit_hash": "1c3dc403ce00d45182e8552e850d90f8a17ab52096c74aa49f60c515cb0f16bf"
+  },
+  {
+    "query_id": "32d8330d-5660-48df-8732-a5377bd22d7e",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Based on a comparison between the two satellite images (**T0** and **T1**), there are significant structural, spatial, and visual differences across the observed area:\n\n### 1. Image Modality and Environmental Conditions\n* **T0 (First Image):** A clear, full-color (RGB) optical satellite image showing vibrant green vegetation, clear blue water, urban structures, and visible road networks under daylight conditions.\n* **T1 (Second Image):** A high-contrast, black-and-white (grayscale) image—likely captured via a different sensor (such as panchromatic or Synthetic Aperture Radar)—featuring heavy atmospheric cloud/smoke cover or sea surface pattern clutter over the water on the left.\n\n### 2. Waterfront and Port Infrastructure\n* **T0:** Features a natural coastline on the right and bottom with small-scale marinas, minor breakwaters, and recreational beaches.\n* **T1:** Shows a major, highly developed industrial port complex featuring large, concrete container terminals, projecting piers/docks, breakwaters, and extensive industrial facilities along the waterfront. Multiple large ships and vessels are anchored or in transit in the offshore waters on the left.\n\n### 3. Topography and Vegetation\n* **T0:** Contains extensive forested green hills and residential developments on the inland (left) side of the city.\n* **T1:** Shows no visible green hills or natural forested terrain on the left; instead, the left side is entirely occupied by sea, coastal waters, and atmospheric/cloud coverage.\n\n### 4. Urban Fabric and Layout\n* **T0:** Shows a curved railway corridor running inland along the edge of dense urban neighborhoods, leading toward a southern cove/bay.\n* **T1:** Displays a completely different urban grid and industrial shoreline layout, with transportation lines and dense built-up zones oriented directly adjacent to the large port docks.\n\n---\n\n### Summary\nThe two images represent fundamentally different views or locations, reflected by the extremely low structural similarity (SSIM = 0.0426):\n* **T0** depicts a green, residential coastal city with small marina infrastructure along a right-side shoreline.\n* **T1** depicts a heavy industrial container port with large pier structures extending leftward into open water, surrounded by dense urban land cover and active maritime traffic.",
+    "confidence": 0.763,
+    "detected_objects": [
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.944,
+          "y1": 0.0,
+          "x2": 0.999,
+          "y2": 0.127
+        },
+        "area_hectares": 35.23,
+        "severity_score": 0.067
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.73,
+        "bbox": {
+          "x1": 0.85,
+          "y1": 0.0,
+          "x2": 0.921,
+          "y2": 0.079
+        },
+        "area_hectares": 26.02,
+        "severity_score": 0.05
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.73,
+        "bbox": {
+          "x1": 0.697,
+          "y1": 0.0,
+          "x2": 0.771,
+          "y2": 0.061
+        },
+        "area_hectares": 24.31,
+        "severity_score": 0.046
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.73,
+        "bbox": {
+          "x1": 0.263,
+          "y1": 0.0,
+          "x2": 0.357,
+          "y2": 0.046
+        },
+        "area_hectares": 20.71,
+        "severity_score": 0.04
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.73,
+        "bbox": {
+          "x1": 0.272,
+          "y1": 0.839,
+          "x2": 0.444,
+          "y2": 0.974
+        },
+        "area_hectares": 19.23,
+        "severity_score": 0.037
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.0426,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.5,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-20T13:08:07.821229+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.73)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'sar'], session=cross_modal_pair",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=1.11px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: b494e65fe7235044…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=1.11px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 30936.0,
+    "audit_hash": "b494e65fe72350443a52bb278daf8a2f75f8bebf0ecf0bf057923b8b6bb0af2b"
+  },
+  {
+    "query_id": "02122e1d-5139-498d-9809-70e86b0deffb",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Based on a comparison of the two images, significant environmental and structural changes are visible between **T0** and **T1**:\n\n1. **Widespread Inundation and Flooding:**\n   * **T0** shows a dry, well-defined agricultural landscape consisting of green and cultivated fields, clear road networks, and normal river boundaries.\n   * **T1** demonstrates catastrophic flooding, with deep, muddy floodwater inundating vast swathes of farmland and low-lying terrain across an affected area of approximately 20.97 km².\n\n2. **Submerged Infrastructure and Road Networks:**\n   * Local roads, field tracks, and lower elevation infrastructure visible across the plain in T0 are completely submerged beneath floodwaters in T1, severing transportation links.\n\n3. **Inundated and Isolated Settlements:**\n   * Several residential clusters and small rural villages that were surrounded by green fields in T0 are now directly encroached upon or completely isolated like islands amidst the floodwaters in T1.\n\n4. **Breached Waterways:**\n   * The meandering river channels visible in T0 have severely overflowed their banks, expanding outward into a massive unified body of water covering the surrounding agricultural plain.",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.77,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.76,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.75,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": null,
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-21T04:51:34.574349+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: 651d5b7e6ce3a551…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 35679.1,
+    "audit_hash": "651d5b7e6ce3a5511e45372fb620581274ec8ee34b2f5133157047fbf5170c96"
   }
 ]

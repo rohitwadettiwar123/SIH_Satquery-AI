@@ -476,7 +476,7 @@ export default function MissionIntel({ result, isProcessing }: Props) {
       {/* ── Change Metrics row ─────────────────────── */}
       {hasChange && (
         <FadeIn delay={450}>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5 mb-2">
             {[
               { label: 'CHANGE',  value: `${r.change_metrics!.change_ratio_pct.toFixed(1)}%`, color: '#ef4444' },
               { label: 'AREA km²', value: `${r.change_metrics!.affected_area_km2}`, color: '#f59e0b' },
@@ -487,6 +487,99 @@ export default function MissionIntel({ result, isProcessing }: Props) {
                 <p className="text-[12px] font-mono font-bold mt-0.5" style={{ color: s.color }}>{s.value}</p>
               </div>
             ))}
+          </div>
+        </FadeIn>
+      )}
+
+      {/* ── STATISTICAL DISTRIBUTION GRAPH ────────── */}
+      {(hasDelta || hasSurface) && (
+        <FadeIn delay={550}>
+          <div className="bg-[#090e1b] border border-gray-800/60 rounded-xl p-4 mb-2">
+            <div className="flex items-center justify-between mb-4">
+               <h3 className="text-[10px] font-mono text-purple-400 tracking-widest font-bold flex items-center gap-1.5">
+                 <Target className="w-3 h-3" /> STATISTICAL DISTRIBUTION
+               </h3>
+               <span className="text-[9px] font-mono text-gray-500">Area (ha)</span>
+            </div>
+            
+            <div className="h-32 flex items-end justify-between border-b border-l border-gray-800 pb-1 pl-1 ml-4 relative">
+              {/* Y-axis Labels */}
+              {(() => {
+                const maxArea = hasDelta 
+                  ? Math.max(1, ...deltaEntries.flatMap(d => [d[1].t0, d[1].t1]))
+                  : Math.max(1, ...surfaceEntries.map(s => s[1] * 14.17));
+                
+                return (
+                  <div className="absolute -left-6 top-0 bottom-0 flex flex-col justify-between text-[8px] text-gray-600 font-mono items-end pr-1">
+                    <span>{maxArea.toFixed(0)}</span>
+                    <span>{(maxArea/2).toFixed(0)}</span>
+                    <span>0</span>
+                  </div>
+                );
+              })()}
+
+              {/* Grid lines */}
+              <div className="absolute left-0 right-0 top-0 h-[1px] bg-gray-800/50 z-0"></div>
+              <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-gray-800/50 z-0 border-dashed"></div>
+
+              {/* Bars */}
+              <div className="w-full flex justify-around items-end h-full z-10 px-2">
+                {hasDelta ? (
+                  // Comparative T0 vs T1 Graph
+                  deltaEntries.slice(0, 5).map(([cls, data]) => {
+                    const maxArea = Math.max(1, ...deltaEntries.flatMap(d => [d[1].t0, d[1].t1]));
+                    const t0H = (data.t0 / maxArea) * 100;
+                    const t1H = (data.t1 / maxArea) * 100;
+                    const { color, emoji } = getSurfaceConf(cls);
+                    return (
+                      <div key={cls} className="flex flex-col items-center gap-1 group">
+                        <div className="flex items-end gap-[2px] h-full w-8">
+                          <div className="w-3.5 bg-gray-600 rounded-t-sm transition-all group-hover:brightness-125 relative group-hover:bg-gray-500" style={{ height: `${t0H}%` }}>
+                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{data.t0.toFixed(0)}</span>
+                          </div>
+                          <div className="w-3.5 rounded-t-sm transition-all group-hover:brightness-125 relative shadow-[0_0_8px_currentColor]" style={{ height: `${t1H}%`, backgroundColor: color, color: color }}>
+                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{data.t1.toFixed(0)}</span>
+                          </div>
+                        </div>
+                        <span className="text-[12px] mt-1" title={cls}>{emoji}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  // Single Coverage Graph
+                  surfaceEntries.slice(0, 5).map(([cls, pct]) => {
+                    const maxArea = Math.max(1, ...surfaceEntries.map(s => s[1] * 14.17));
+                    const ha = pct * 14.17;
+                    const h = (ha / maxArea) * 100;
+                    const { color, emoji } = getSurfaceConf(cls);
+                    return (
+                      <div key={cls} className="flex flex-col items-center gap-1 group">
+                        <div className="flex items-end h-full w-6">
+                          <div className="w-5 rounded-t-sm transition-all group-hover:brightness-125 relative shadow-[0_0_8px_currentColor]" style={{ height: `${h}%`, backgroundColor: color, color: color }}>
+                            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity">{ha.toFixed(0)}</span>
+                          </div>
+                        </div>
+                        <span className="text-[12px] mt-1" title={cls}>{emoji}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+            
+            {/* Legend for Delta */}
+            {hasDelta && (
+              <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-gray-800">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-gray-600 rounded-sm"></div>
+                  <span className="text-[9px] font-mono text-gray-400">T0 Area</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 bg-purple-500 rounded-sm shadow-[0_0_5px_currentColor]" style={{ color: '#a855f7' }}></div>
+                  <span className="text-[9px] font-mono text-gray-400">T1 Area (Color By Class)</span>
+                </div>
+              </div>
+            )}
           </div>
         </FadeIn>
       )}
