@@ -15,11 +15,12 @@ export const client = {
     return data;
   },
 
-  async analyze(imageIds: string[], query: string, taskHint?: string): Promise<AnalysisResult> {
+  async analyze(imageIds: string[], query: string, taskHint?: string, bbox?: number[]): Promise<AnalysisResult> {
     const { data } = await api.post<AnalysisResult>('/analyze', {
       image_ids: imageIds,
       query,
       task_hint: taskHint,
+      bbox,
     });
     return data;
   },

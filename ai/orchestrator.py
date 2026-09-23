@@ -190,6 +190,7 @@ async def orchestrate(
     image_metadata: list[dict],
     config: dict,
     task_hint: Optional[str] = None,
+    bbox: Optional[list[float]] = None,
 ) -> dict:
     """
     Main agentic orchestration function.
@@ -408,11 +409,31 @@ async def orchestrate(
         except Exception as e:
             log.warning(f"Failed to auto-extract fallback bounding boxes: {e}")
 
+    # ── User Custom Area Selection Filtering ───────────────────────────
+    answer_text = specialist_result.get("answer", "Analysis complete.")
+    if bbox and len(bbox) == 4:
+        x1, y1, x2, y2 = bbox
+        trace_steps.append(f"Filtering results to custom area selection: [{x1:.3f}, {y1:.3f}, {x2:.3f}, {y2:.3f}]")
+        
+        # Helper to check intersection
+        def intersects(b1, b2):
+            return not (b1["x2"] < b2["x1"] or b1["x1"] > b2["x2"] or b1["y2"] < b2["y1"] or b1["y1"] > b2["y2"])
+            
+        user_box = {"x1": min(x1, x2), "y1": min(y1, y2), "x2": max(x1, x2), "y2": max(y1, y2)}
+        
+        original_count = len(detected_objects)
+        detected_objects = [obj for obj in detected_objects if obj.get("bbox") and intersects(obj["bbox"], user_box)]
+        filtered_count = len(detected_objects)
+        
+        if original_count > 0:
+            trace_steps.append(f"Filtered {original_count} detections down to {filtered_count} within selected area.")
+            answer_text += f"\n\n[USER AREA SELECTOR ACTIVE] - Analysis has been isolated to the specific region of interest drawn on the map. {filtered_count} out of {original_count} original detections fall within this area."
+
     result = {
         "query_id": query_id,
         "task_type": task_type,
         "query": query,
-        "answer": specialist_result.get("answer", "Analysis complete."),
+        "answer": answer_text,
         "confidence": final_confidence,
         "detected_objects": detected_objects,
         "change_metrics": change_metrics,

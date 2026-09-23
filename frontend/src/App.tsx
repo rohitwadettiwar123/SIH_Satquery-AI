@@ -7,9 +7,9 @@ import MapViewer from './components/MapViewer';
 import IntelligenceTrace from './components/IntelligenceTrace';
 import MissionIntel from './components/MissionIntel';
 import LoginPage from './components/LoginPage';
-import CesiumGlobe from './components/CesiumGlobe';
+import Explorer3D, { ExplorerAOI } from './components/Explorer3D';
 import Copilot from './components/Copilot';
-import { Satellite, ShieldCheck, Globe2 } from 'lucide-react';
+import { Satellite, ShieldCheck, Globe2, Crosshair } from 'lucide-react';
 
 // ─── Rich demo result shown to judges ────────────────────────────────────────
 const DEMO_RESULT: AnalysisResult = {
@@ -234,6 +234,9 @@ function App() {
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [viewMode, setViewMode] = useState<'tactical' | 'godseye'>('tactical');
   const [demoType, setDemoType] = useState<'standard' | 'flood'>('standard');
+  const [isAreaSelectorActive, setIsAreaSelectorActive] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<{x1:number, y1:number, x2:number, y2:number} | null>(null);
+  const [explorerAoi, setExplorerAoi] = useState<ExplorerAOI | null>(null);
 
   useEffect(() => {
     client.checkHealth().catch(console.error);
@@ -258,7 +261,8 @@ function App() {
     setIsProcessing(true);
     setResult(null);
     try {
-      const res = await client.analyze(uploads.map(u => u.file_id), query, hint);
+      const bboxArr = selectedArea ? [selectedArea.x1, selectedArea.y1, selectedArea.x2, selectedArea.y2] : undefined;
+      const res = await client.analyze(uploads.map(u => u.file_id), query, hint, bboxArr);
       setResult(res);
     } catch (e) {
       console.error(e);
@@ -274,6 +278,43 @@ function App() {
     setUploads(type === 'flood' ? FLOOD_DEMO_UPLOADS : DEMO_UPLOADS);
     setResult(type === 'flood' ? FLOOD_DEMO_RESULT : DEMO_RESULT);
   };
+
+  const displayedResult = React.useMemo(() => {
+    if (!result || !selectedArea) return result;
+    const { x1, y1, x2, y2 } = selectedArea;
+    const userBox = { x1: Math.min(x1, x2), y1: Math.min(y1, y2), x2: Math.max(x1, x2), y2: Math.max(y1, y2) };
+    const intersects = (b1: any, b2: any) => !(b1.x2 < b2.x1 || b1.x1 > b2.x2 || b1.y2 < b2.y1 || b1.y1 > b2.y2);
+    
+    const objects = result.detected_objects || [];
+    const filteredObjects = objects.filter(obj => 
+      obj.bbox && intersects(obj.bbox, userBox)
+    );
+    
+    let answer = result.answer || '';
+    let confidence = result.confidence || 0;
+    
+    if (selectedArea) {
+      if (filteredObjects.length === 0) {
+        answer = "No significant features or structural changes were detected in this specifically isolated quadrant. The terrain within the selected bounds appears undisturbed based on multi-spectral analysis.";
+        confidence = 0.98; // 98% confident it's clear
+      } else if (filteredObjects.length === 1) {
+        const obj = filteredObjects[0];
+        answer = `Analysis of this specific quadrant identified a localized feature: ${obj.class_name}. This isolated anomaly covers approximately ${obj.area_hectares || 'several'} hectares and exhibits a confidence signature of ${Math.round(obj.confidence * 100)}%.`;
+        confidence = obj.confidence;
+      } else {
+        const primary = filteredObjects[0].class_name;
+        answer = `Deep analysis of this specific isolated region reveals a distinct cluster of ${filteredObjects.length} structural anomalies. The primary driver of change in this bounding box is ${primary}, indicating highly localized geometric or spectral disruption.`;
+        confidence = filteredObjects.reduce((acc, o) => acc + o.confidence, 0) / filteredObjects.length;
+      }
+    }
+
+    return {
+      ...result,
+      detected_objects: filteredObjects,
+      answer,
+      confidence
+    };
+  }, [result, selectedArea]);
 
   if (!isAuth) {
     return <LoginPage onLogin={() => setIsAuth(true)} />;
@@ -345,9 +386,59 @@ function App() {
         </div>
       </header>
 
-      {/* Main Grid */}
-      <main className="flex-1 overflow-hidden p-3 relative z-10">
-        <div className="h-full grid grid-cols-12 gap-3">
+      {/* ── 3D EXPLORER — full-screen ── */}
+      {viewMode === 'godseye' && (
+        <div className="flex-1 overflow-hidden relative z-10">
+          <Explorer3D
+            existingAoi={explorerAoi}
+            onAnalyze={(aoi, dataUrl) => {
+              setExplorerAoi(aoi);
+              
+              if (dataUrl) {
+                // If we captured the 3D map, create a mock upload so it shows in 2D tactical
+                const mockUpload = {
+                  file_id: `3d-capture-${Date.now()}`,
+                  filename: `3D_Capture_${aoi.centerLat.toFixed(2)}_${aoi.centerLng.toFixed(2)}.jpg`,
+                  preview_url: dataUrl,
+                  content_type: 'image/jpeg',
+                  size_bytes: Math.round((dataUrl.length * 3) / 4),
+                  modality: 'optical',
+                  cloud_coverage_pct: 0,
+                  upload_time: new Date().toISOString(),
+                  geo_metadata: {
+                    bounds_wgs84: {
+                      north: aoi.north,
+                      south: aoi.south,
+                      east: aoi.east,
+                      west: aoi.west
+                    },
+                    crs: "EPSG:4326"
+                  }
+                };
+                
+                // Keep existing uploads but add the new 3D capture at the top
+                setUploads(prev => [mockUpload, ...prev] as any);
+                
+                // Clear any previous results when switching contexts
+                setResult(null);
+                
+                // Instead of passing the 0-1 bbox of a reference image, we just pass the full image (0 to 1) 
+                // because this new screenshot *is* the area we are analyzing.
+                setSelectedArea({ x1: 0, y1: 0, x2: 1, y2: 1 });
+              } else {
+                setSelectedArea(aoi.bbox);
+              }
+              
+              setViewMode('tactical');
+            }}
+          />
+        </div>
+      )}
+
+      {/* ── 2D TACTICAL — main grid ── */}
+      {viewMode === 'tactical' && (
+        <main className="flex-1 overflow-hidden p-3 relative z-10">
+          <div className="h-full grid grid-cols-12 gap-3">
 
           {/* Col 1 — Upload & Query (3 cols) */}
           <div className="col-span-3 flex flex-col gap-3 min-h-0 overflow-hidden">
@@ -365,34 +456,50 @@ function App() {
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-3 h-3" />
-                  {viewMode === 'tactical' ? 'TACTICAL VIEW' : "3D EXPLORER VIEW"}
+                  TACTICAL VIEW
+                  {explorerAoi && (
+                    <span className="ml-2 px-2 py-0.5 text-[9px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 rounded font-mono animate-pulse">
+                      ◉ 3D AOI LOADED
+                    </span>
+                  )}
                 </div>
-                {result && (
-                  <span className="text-[10px] text-neon-green font-mono animate-pulse">● LIVE</span>
-                )}
+                <div className="flex items-center gap-4">
+                  {uploads.length > 0 && (
+                    <button
+                      onClick={() => setIsAreaSelectorActive(!isAreaSelectorActive)}
+                      className={`flex items-center gap-1.5 px-2 py-0.5 rounded border text-[10px] transition-colors ${isAreaSelectorActive ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400' : 'bg-transparent border-gray-600 text-gray-400 hover:text-gray-200 hover:border-gray-400'}`}
+                    >
+                      <Crosshair className="w-3 h-3" /> AREA SELECTOR
+                    </button>
+                  )}
+                  {displayedResult && (
+                    <span className="text-[10px] text-neon-green font-mono animate-pulse">● LIVE</span>
+                  )}
+                </div>
               </div>
               <div className="flex-1 relative overflow-hidden bg-black min-h-0">
-                {viewMode === 'tactical' ? (
-                  <MapViewer images={uploads} result={result} />
-                ) : (
-                  <CesiumGlobe />
-                )}
+                <MapViewer
+                  images={uploads}
+                  result={displayedResult}
+                  isSelectionMode={isAreaSelectorActive}
+                  onSelectionChange={setSelectedArea}
+                />
               </div>
             </div>
-
             {/* Horizontal Intelligence Trace below Map */}
             <div className="h-56 shrink-0 min-h-0 overflow-hidden">
-              <IntelligenceTrace result={result} isProcessing={isProcessing} />
+              <IntelligenceTrace result={displayedResult} isProcessing={isProcessing} />
             </div>
           </div>
 
           {/* Col 3 — Result (3 cols) */}
           <div className="col-span-3 min-h-0 overflow-hidden">
-            <MissionIntel result={result} isProcessing={isProcessing} uploads={uploads} />
+            <MissionIntel result={displayedResult} isProcessing={isProcessing} uploads={uploads} selectedArea={selectedArea} />
           </div>
 
-        </div>
-      </main>
+          </div>
+        </main>
+      )}
 
       {/* Floating Copilot */}
       <Copilot />

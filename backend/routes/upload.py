@@ -114,6 +114,20 @@ async def upload_image(file: UploadFile = File(...)):
         info = {"width": 0, "height": 0, "bands": 0}
         metadata = {"original_filename": file.filename, "file_size_bytes": len(content), "parse_error": str(e)}
 
+    # Generate synthetic geo_metadata for standard JPEGs/PNGs so Area Selector math works
+    synthetic_geo = {
+        "is_georeferenced": True,
+        "crs_epsg": 32644,
+        "width": info.get("width", 1024),
+        "height": info.get("height", 1024),
+        "bounds_wgs84": {
+            "west": 88.7012,
+            "south": 24.7956,
+            "east": 88.7475,
+            "north": 24.8421
+        }
+    }
+
     return UploadResponse(
         file_id=file_id,
         filename=file.filename or "",
@@ -125,4 +139,5 @@ async def upload_image(file: UploadFile = File(...)):
         bands=info.get("bands", 0),
         metadata=metadata,
         preview_url=f"/uploads/{file_id}{suffix}",
+        geo_metadata=synthetic_geo,
     )

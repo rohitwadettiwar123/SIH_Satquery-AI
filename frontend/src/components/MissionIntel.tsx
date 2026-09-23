@@ -11,6 +11,7 @@ interface Props {
   result: AnalysisResult | null;
   isProcessing?: boolean;
   uploads?: any[];
+  selectedArea?: {x1:number, y1:number, x2:number, y2:number} | null;
 }
 
 // Animated counter
@@ -458,7 +459,7 @@ function AreaPieChart({ detectedObjects = [], deltaEntries = [], surfaceEntries 
   );
 }
 
-export default function MissionIntel({ result, isProcessing, uploads = [] }: Props) {
+export default function MissionIntel({ result, isProcessing, uploads = [], selectedArea }: Props) {
 
   if (!result && !isProcessing) {
     return (
@@ -511,31 +512,42 @@ export default function MissionIntel({ result, isProcessing, uploads = [] }: Pro
     ? Object.entries(r.ndvi_stats!.delta_ndvi!).sort((a, b) => Math.abs(b[1].delta) - Math.abs(a[1].delta))
     : [];
 
-  // Spatial Evidence Data
-  let centroidText = "Awaiting Query";
+  // Default bounds — used if image has no geo_metadata (standard JPEGs)
+  const DEFAULT_BOUNDS = { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 };
+  const bounds = (uploads.length > 0 && uploads[0].geo_metadata?.bounds_wgs84)
+    ? uploads[0].geo_metadata.bounds_wgs84
+    : DEFAULT_BOUNDS;
+
+  let centroidText = "N/A";
   let areaHa = 0;
-  if (uploads.length > 0 && uploads[0].geo_metadata?.bounds_wgs84) {
-    const b = uploads[0].geo_metadata.bounds_wgs84;
-    let cx = 0.5;
-    let cy = 0.5;
-    if (hasObjects) {
-       const obj = r.detected_objects![0].bbox;
-       cx = (obj.x1 + obj.x2) / 2;
-       cy = (obj.y1 + obj.y2) / 2;
+
+  if (selectedArea) {
+    const { x1, y1, x2, y2 } = selectedArea;
+    const cx = (Math.min(x1, x2) + Math.max(x1, x2)) / 2;
+    const cy = (Math.min(y1, y2) + Math.max(y1, y2)) / 2;
+    const lng = bounds.west + cx * (bounds.east - bounds.west);
+    const lat = bounds.north - cy * (bounds.north - bounds.south);
+    centroidText = `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(6)}° ${lng >= 0 ? 'E' : 'W'}`;
+    const latDist = (bounds.north - bounds.south) * 111000;
+    const lngDist = (bounds.east - bounds.west) * 111000 * Math.cos(bounds.north * Math.PI / 180);
+    const totalAreaHa = (latDist * lngDist) / 10000;
+    areaHa = totalAreaHa * Math.abs((Math.max(x1,x2) - Math.min(x1,x2)) * (Math.max(y1,y2) - Math.min(y1,y2)));
+  } else {
+    if (hasChange && r.change_metrics) {
+      areaHa = r.change_metrics.affected_area_km2 * 100;
+    } else if (hasObjects) {
+      areaHa = r.detected_objects!.reduce((acc, o) => acc + (o.area_hectares || 0), 0);
+    } else if (hasSurface) {
+      areaHa = r.land_cover_analysis ? Object.values(r.land_cover_analysis).reduce((acc, o) => acc + o.ha, 0) : 0;
     }
-    const lng = b.west + cx * (b.east - b.west);
-    const lat = b.north - cy * (b.north - b.south);
-    const latStr = `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? 'N' : 'S'}`;
-    const lngStr = `${Math.abs(lng).toFixed(6)}° ${lng >= 0 ? 'E' : 'W'}`;
-    centroidText = `${latStr}, ${lngStr}`;
-  }
-  
-  if (hasChange && r.change_metrics) {
-    areaHa = r.change_metrics.affected_area_km2 * 100;
-  } else if (hasObjects) {
-    areaHa = r.detected_objects!.reduce((acc, o) => acc + (o.area_hectares || 0), 0);
-  } else if (hasSurface) {
-    areaHa = r.land_cover_analysis ? Object.values(r.land_cover_analysis).reduce((acc, o) => acc + o.ha, 0) : 0;
+    let cx = 0.5, cy = 0.5;
+    if (hasObjects) {
+      const box = r.detected_objects!.find(o => o.bbox)?.bbox;
+      if (box) { cx = (box.x1 + box.x2) / 2; cy = (box.y1 + box.y2) / 2; }
+    }
+    const lng = bounds.west + cx * (bounds.east - bounds.west);
+    const lat = bounds.north - cy * (bounds.north - bounds.south);
+    centroidText = `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lng).toFixed(6)}° ${lng >= 0 ? 'E' : 'W'}`;
   }
 
   return (
@@ -578,7 +590,7 @@ export default function MissionIntel({ result, isProcessing, uploads = [] }: Pro
               </div>
             </div>
             <div className="bg-[#050b14] border border-gray-800/80 rounded-xl p-3 flex flex-col justify-center">
-              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">CENTROID (WGS84)</div>
+              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">LAT/LONG (WGS84)</div>
               <div className="text-[10px] font-mono font-bold text-gray-100 leading-tight">
                 {centroidText}
               </div>

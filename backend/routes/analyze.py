@@ -50,6 +50,7 @@ async def analyze(request: AnalysisRequest):
             image_metadata=[{}] * len(image_paths),
             config=settings.as_dict(),
             task_hint=request.task_hint,
+            bbox=request.bbox,
         )
     except Exception as e:
         log.exception("Orchestration failed")
