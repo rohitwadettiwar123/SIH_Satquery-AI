@@ -56,4 +56,21 @@ async def analyze(request: AnalysisRequest):
         raise HTTPException(status_code=500, detail=f"Analysis pipeline error: {e}")
 
     result["processing_time_ms"] = round((time.monotonic() - t0) * 1000, 1)
+
+    # ── Attach georeferencing metadata (GeoTIFF only) ───────────────────────
+    try:
+        from backend.utils.geo_utils import extract_geo_metadata
+        geo = extract_geo_metadata(image_paths[0])
+        if geo is not None:
+            result["geo_metadata"] = geo.to_dict()
+        else:
+            result["geo_metadata"] = {
+                "is_georeferenced": False,
+                "message": "Georeferencing unavailable — source image has no geographic metadata.",
+            }
+    except Exception as geo_err:
+        log.warning("geo_metadata extraction failed: %s", geo_err)
+        result.setdefault("geo_metadata", None)
+
     return AnalysisResult(**result)
+

@@ -58,10 +58,27 @@ async def run_optical_sar_fusion(
             query, optical_path, sar_path, buildup_pct, water_pct, config
         )
 
+        from pipeline.change_detect.metrics import detect_change_clusters
+        
+        # Extract bounding boxes for built-up areas
+        clusters = detect_change_clusters(buildup_mask, min_area=50)
+        detected_objects = []
+        for i, c in enumerate(clusters[:5]):
+            bbox = c["bbox_normalized"]
+            detected_objects.append({
+                "class_name": "Built-up Structure (SAR Fusion)",
+                "confidence": 0.85 + c["severity_score"] * 0.1,
+                "bbox": {
+                    "x1": bbox[0], "y1": bbox[1], "x2": bbox[2], "y2": bbox[3],
+                },
+                "area_hectares": round(c["area_pixels"] * 10.0 ** 2 / 10000, 2),
+                "severity_score": c["severity_score"],
+            })
+
         return {
             "answer": description,
             "confidence": 0.84,
-            "detected_objects": [],
+            "detected_objects": detected_objects,
             "fusion_result": description,
             "penetrated_cloud_cover": True,
             "ndvi_result": {

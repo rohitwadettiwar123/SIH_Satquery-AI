@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Terminal, Send, Zap, Eye, Map, Cloud } from 'lucide-react';
+import { Terminal, Send, Zap, Eye, Map, Cloud, ShieldCheck } from 'lucide-react';
 
 interface Props {
   onAnalyze: (query: string, hint?: string) => void;
@@ -21,7 +21,7 @@ export default function QueryPanel({ onAnalyze, isProcessing, disabled, isDemoMo
   const quickPrompts = [
     { label: "Change Detection", icon: <Map className="w-3 h-3" />, hint: "CHANGE_DETECTION", q: "Detect and describe all structural changes." },
     { label: "NDVI Monitor", icon: <Zap className="w-3 h-3" />, hint: "NDVI_MONITORING", q: "Analyze vegetation health and compute NDVI." },
-    { label: "Cloud Repair", icon: <Cloud className="w-3 h-3" />, hint: "CLOUD_RECONSTRUCTION", q: "Remove clouds and reconstruct the image." },
+    { label: "High precision Escalation", icon: <ShieldCheck className="w-3 h-3" />, hint: "ESCALATION", q: "Request high-precision expert escalation for complex analysis." },
     { label: "Scene VQA", icon: <Eye className="w-3 h-3" />, hint: "VQA", q: "What are the primary land cover types?" },
   ];
 

@@ -93,6 +93,16 @@ const DEMO_RESULT: AnalysisResult = {
   escalation_reason: '',
   audit_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
   processing_time_ms: 1847,
+  primary_image_id: 'demo_change_t1',
+  geo_metadata: {
+    is_georeferenced: true,
+    crs_epsg: 32644,
+    crs_wkt: 'PROJCS["WGS 84 / UTM zone 44N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",81],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AUTHORITY["EPSG","32644"]]',
+    width: 1024,
+    height: 1024,
+    bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    message: 'Synthetic geo-registration applied for demo purposes.',
+  },
 } as any;
 
 const DEMO_UPLOADS: UploadResponse[] = [
@@ -105,6 +115,13 @@ const DEMO_UPLOADS: UploadResponse[] = [
     modality: 'optical',
     cloud_coverage_pct: 5,
     preview_url: 'http://127.0.0.1:8000/uploads/demo_change_t0.jpg',
+    geo_metadata: {
+      is_georeferenced: true,
+      crs_epsg: 32644,
+      width: 1024,
+      height: 1024,
+      bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    },
   } as any,
   {
     file_id: 'demo_change_t1',
@@ -115,8 +132,98 @@ const DEMO_UPLOADS: UploadResponse[] = [
     modality: 'optical',
     cloud_coverage_pct: 18,
     preview_url: 'http://127.0.0.1:8000/uploads/demo_change_t1.jpg',
+    geo_metadata: {
+      is_georeferenced: true,
+      crs_epsg: 32644,
+      width: 1024,
+      height: 1024,
+      bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    },
   } as any,
 ];
+
+// ─── Flood GeoTIFF demo (synthetic — for GIS export demonstration) ────────────
+const FLOOD_DEMO_UPLOADS: UploadResponse[] = [
+  {
+    file_id: 'demo_flood_t0',
+    filename: '[SYNTHETIC] Brahmaputra Valley T0 — Pre-flood GeoTIFF',
+    content_type: 'image/tiff',
+    size_bytes: 786_432,
+    upload_time: new Date().toISOString(),
+    modality: 'optical',
+    cloud_coverage_pct: 0,
+    preview_url: 'http://127.0.0.1:8000/uploads/demo_flood_t0.jpg',
+    geo_metadata: {
+      is_georeferenced: true,
+      crs_epsg: 32644,
+      width: 512,
+      height: 512,
+      bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    },
+  } as any,
+  {
+    file_id: 'demo_flood_t1',
+    filename: '[SYNTHETIC] Brahmaputra Valley T1 — Post-flood GeoTIFF',
+    content_type: 'image/tiff',
+    size_bytes: 786_432,
+    upload_time: new Date().toISOString(),
+    modality: 'optical',
+    cloud_coverage_pct: 0,
+    preview_url: 'http://127.0.0.1:8000/uploads/demo_flood_t1.jpg',
+    geo_metadata: {
+      is_georeferenced: true,
+      crs_epsg: 32644,
+      width: 512,
+      height: 512,
+      bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    },
+  } as any,
+];
+
+const FLOOD_DEMO_RESULT: AnalysisResult = {
+  query_id: 'SIH-2026-FLOOD-GIS',
+  task_type: 'CHANGE_DETECTION',
+  query: 'Identify and highlight the flood-affected regions after the event.',
+  answer: 'Significant flood inundation detected in the T1 image across a 700.0 hectare region. The affected area is primarily located in the central river valley (rows 100-380, cols 150-400), consistent with severe overflowing. Geospatial export is available for this detected region.',
+  confidence: 0.96,
+  detected_objects: [
+    { class_name: 'Flood Inundation Zone (SYNTHETIC)', confidence: 0.98, bbox: { x1: 0.293, y1: 0.195, x2: 0.781, y2: 0.742 }, area_hectares: 700.0 },
+  ],
+  change_metrics: {
+    ssim_score: 0.82,
+    change_ratio_pct: 12.5,
+    affected_area_km2: 7.0,
+    mean_delta: 0.45,
+    confidence_interval_95: [6500000, 7500000],
+  } as any,
+  cloud_reconstruction: { triggered: false } as any,
+  execution_trace: [
+    'Sub-pixel co-registration (RMSE 0.8 m) — PASS',
+    'Water index (NDWI) thresholding & differencing applied',
+    'Flood polygon vectorised and converted to WGS84 coordinates',
+    'Geospatial bounds extracted from source GeoTIFF (EPSG:32644)',
+    'SHA-256 cryptographic audit hash sealed',
+  ],
+  gate_verdicts: {
+    'G0_format_check': 'PASS (GeoTIFF)',
+    'G1_coregistration': 'PASS',
+    'G8_cloud_screen': 'PASS',
+  },
+  requires_expert_escalation: false,
+  escalation_reason: '',
+  audit_hash: 'f9b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+  processing_time_ms: 842,
+  primary_image_id: 'demo_flood_t1',
+  geo_metadata: {
+    is_georeferenced: true,
+    crs_epsg: 32644,
+    crs_wkt: 'PROJCS["WGS 84 / UTM zone 44N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",81],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AUTHORITY["EPSG","32644"]]',
+    width: 512,
+    height: 512,
+    bounds_wgs84: { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 },
+    message: 'GeoTIFF with valid spatial reference detected.',
+  } as any,
+} as any;
 
 // ─── App ─────────────────────────────────────────────────────────────────────
 function App() {
@@ -126,6 +233,7 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [viewMode, setViewMode] = useState<'tactical' | 'godseye'>('tactical');
+  const [demoType, setDemoType] = useState<'standard' | 'flood'>('standard');
 
   useEffect(() => {
     client.checkHealth().catch(console.error);
@@ -139,9 +247,9 @@ function App() {
     if (isDemoMode) {
       setIsProcessing(true);
       setResult(null);
-      // Simulate a quick 1.2 s "processing" animation so it looks real
       await new Promise(r => setTimeout(r, 1200));
-      setResult({ ...DEMO_RESULT, query, task_type: hint as any ?? DEMO_RESULT.task_type });
+      const baseResult = demoType === 'flood' ? FLOOD_DEMO_RESULT : DEMO_RESULT;
+      setResult({ ...baseResult, query, task_type: hint as any ?? baseResult.task_type });
       setIsProcessing(false);
       return;
     }
@@ -160,10 +268,11 @@ function App() {
   };
 
   /** Load demo preset — instant, no backend call */
-  const loadDemo = () => {
+  const loadDemo = (type: 'standard' | 'flood') => {
     setIsDemoMode(true);
-    setUploads(DEMO_UPLOADS);
-    setResult(DEMO_RESULT);
+    setDemoType(type);
+    setUploads(type === 'flood' ? FLOOD_DEMO_UPLOADS : DEMO_UPLOADS);
+    setResult(type === 'flood' ? FLOOD_DEMO_RESULT : DEMO_RESULT);
   };
 
   if (!isAuth) {
@@ -191,12 +300,22 @@ function App() {
             </span>
           )}
 
-          <button
-            onClick={loadDemo}
-            className="ml-4 px-3 py-1 text-xs font-mono font-bold bg-neon-green/20 text-neon-green border border-neon-green/50 rounded hover:bg-neon-green/40 transition-colors animate-pulse"
-          >
-            ▶ RUN SIH DEMO
-          </button>
+          <div className="ml-4 flex items-center gap-2 border-l border-gray-800 pl-4">
+            <span className="text-[10px] font-mono text-gray-500 tracking-widest font-bold">DEMO PRESETS:</span>
+            
+            <button
+              onClick={() => loadDemo('standard')}
+              className="px-2 py-1 text-xs font-mono font-bold bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/50 rounded hover:bg-neon-cyan/40 transition-colors"
+            >
+              ▶ STANDARD DEMO
+            </button>
+          
+            <button
+              onClick={() => loadDemo('flood')}
+              className="px-2 py-1 text-xs font-mono font-bold bg-neon-green/20 text-neon-green border border-neon-green/50 rounded hover:bg-neon-green/40 transition-colors animate-pulse"
+            >
+              ▶ GIS FLOOD DEMO
+            </button>
 
           {isDemoMode && (
             <button
@@ -205,7 +324,9 @@ function App() {
             >
               ✕ Exit Demo
             </button>
+
           )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2 text-sm font-mono font-bold">
@@ -219,7 +340,7 @@ function App() {
             onClick={() => setViewMode('godseye')}
             className={`px-4 py-1.5 flex items-center gap-2 rounded transition-colors ${viewMode === 'godseye' ? 'bg-neon-green text-black' : 'text-gray-400 hover:bg-gray-800 border border-gray-700'}`}
           >
-            <Globe2 className="w-4 h-4" /> GOD'S EYE 3D
+            <Globe2 className="w-4 h-4" /> 3D EXPLORER
           </button>
         </div>
       </header>
@@ -244,7 +365,7 @@ function App() {
               <div className="h-8 bg-panel-border/50 flex items-center justify-between px-3 font-mono text-xs text-gray-400 shrink-0">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-3 h-3" />
-                  {viewMode === 'tactical' ? 'TACTICAL VIEW' : "GOD'S EYE VIEW"}
+                  {viewMode === 'tactical' ? 'TACTICAL VIEW' : "3D EXPLORER VIEW"}
                 </div>
                 {result && (
                   <span className="text-[10px] text-neon-green font-mono animate-pulse">● LIVE</span>
@@ -267,7 +388,7 @@ function App() {
 
           {/* Col 3 — Result (3 cols) */}
           <div className="col-span-3 min-h-0 overflow-hidden">
-            <MissionIntel result={result} isProcessing={isProcessing} />
+            <MissionIntel result={result} isProcessing={isProcessing} uploads={uploads} />
           </div>
 
         </div>

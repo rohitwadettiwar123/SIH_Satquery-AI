@@ -46,9 +46,9 @@ function TraceStepCard({ step, index }: { step: string; index: number }) {
 
   return (
     <div
-      className={`min-w-[280px] w-[280px] flex-shrink-0 transition-all duration-500 ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+      className={`min-w-[280px] w-[280px] flex-shrink-0 flex items-stretch transition-all duration-500 ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
     >
-      <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 h-full flex flex-col justify-between hover:border-[#374151] transition-colors shadow-lg">
+      <div className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl p-5 flex flex-col justify-between hover:border-[#374151] transition-colors shadow-lg">
         <div>
           <span className="text-[11px] font-medium text-gray-500 mb-2 block">Step {index + 1}</span>
           <p className="text-[13px] font-sans text-gray-200 leading-snug line-clamp-3">
@@ -127,8 +127,8 @@ export default function IntelligenceTrace({ result, isProcessing }: Props) {
           ))}
 
           {/* Audit Hash Card (appears at the end) */}
-          <div className="min-w-[280px] w-[280px] flex-shrink-0 animate-in fade-in slide-in-from-right-8 duration-700 delay-700 fill-mode-both">
-            <div className="bg-[#111827] border border-[#1f2937] rounded-xl p-5 h-full flex flex-col justify-between shadow-lg">
+          <div className="min-w-[280px] w-[280px] flex-shrink-0 flex items-stretch animate-in fade-in slide-in-from-right-8 duration-700 delay-700 fill-mode-both">
+            <div className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl p-5 flex flex-col justify-between shadow-lg">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Lock className="w-3.5 h-3.5 text-[#2dd4bf]" />

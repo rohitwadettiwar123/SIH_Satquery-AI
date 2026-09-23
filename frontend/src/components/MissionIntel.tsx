@@ -5,10 +5,12 @@ import {
   Building2, Trees, Target, ArrowUpDown, TrendingDown,
   TrendingUp, Minus, Loader2, AlertCircle, FileSearch, ArrowRight
 } from 'lucide-react';
+import GisExportPanel from './GisExportPanel';
 
 interface Props {
   result: AnalysisResult | null;
   isProcessing?: boolean;
+  uploads?: any[];
 }
 
 // Animated counter
@@ -456,7 +458,7 @@ function AreaPieChart({ detectedObjects = [], deltaEntries = [], surfaceEntries 
   );
 }
 
-export default function MissionIntel({ result, isProcessing }: Props) {
+export default function MissionIntel({ result, isProcessing, uploads = [] }: Props) {
 
   if (!result && !isProcessing) {
     return (
@@ -495,19 +497,46 @@ export default function MissionIntel({ result, isProcessing }: Props) {
   const r = result!;
   const hasNdvi = !!r.ndvi_stats;
   const hasChange = !!r.change_metrics;
-  const hasObjects = (r.detected_objects?.length ?? 0) > 0;
+  const hasObjects = r.detected_objects && r.detected_objects.length > 0;
   const hasSurface = hasNdvi && r.ndvi_stats!.class_percentages && Object.keys(r.ndvi_stats!.class_percentages).length > 0;
   const hasDelta = !!r.ndvi_stats?.delta_ndvi && Object.keys(r.ndvi_stats.delta_ndvi).length > 0;
 
   // Surface entries sorted descending by %
   const surfaceEntries = hasSurface
-    ? Object.entries(r.ndvi_stats!.class_percentages).sort((a, b) => b[1] - a[1])
+    ? Object.entries(r.ndvi_stats!.class_percentages!).sort((a, b) => b[1] - a[1])
     : [];
 
   // Delta entries sorted by absolute change descending
   const deltaEntries = hasDelta
-    ? Object.entries(r.ndvi_stats!.delta_ndvi).sort((a, b) => Math.abs(b[1].delta) - Math.abs(a[1].delta))
+    ? Object.entries(r.ndvi_stats!.delta_ndvi!).sort((a, b) => Math.abs(b[1].delta) - Math.abs(a[1].delta))
     : [];
+
+  // Spatial Evidence Data
+  let centroidText = "Awaiting Query";
+  let areaHa = 0;
+  if (uploads.length > 0 && uploads[0].geo_metadata?.bounds_wgs84) {
+    const b = uploads[0].geo_metadata.bounds_wgs84;
+    let cx = 0.5;
+    let cy = 0.5;
+    if (hasObjects) {
+       const obj = r.detected_objects![0].bbox;
+       cx = (obj.x1 + obj.x2) / 2;
+       cy = (obj.y1 + obj.y2) / 2;
+    }
+    const lng = b.west + cx * (b.east - b.west);
+    const lat = b.north - cy * (b.north - b.south);
+    const latStr = `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? 'N' : 'S'}`;
+    const lngStr = `${Math.abs(lng).toFixed(6)}° ${lng >= 0 ? 'E' : 'W'}`;
+    centroidText = `${latStr}, ${lngStr}`;
+  }
+  
+  if (hasChange && r.change_metrics) {
+    areaHa = r.change_metrics.affected_area_km2 * 100;
+  } else if (hasObjects) {
+    areaHa = r.detected_objects!.reduce((acc, o) => acc + (o.area_hectares || 0), 0);
+  } else if (hasSurface) {
+    areaHa = r.land_cover_analysis ? Object.values(r.land_cover_analysis).reduce((acc, o) => acc + o.ha, 0) : 0;
+  }
 
   return (
     <div className="mission-panel flex flex-col p-4 gap-4 overflow-y-auto h-full">
@@ -518,13 +547,48 @@ export default function MissionIntel({ result, isProcessing }: Props) {
           <Binoculars className="w-4 h-4 text-amber-400" />
           <h2 className="font-mono text-amber-400 text-sm tracking-widest">RESULT</h2>
         </div>
-        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
-          {r.task_type}
-        </span>
       </div>
 
+      {/* ── LIVE SPATIAL EVIDENCE ──────────────────── */}
+      <FadeIn delay={30}>
+        <div className="mb-2">
+          <div className="flex items-center gap-2 mb-3 mt-1">
+            <Target className="w-4 h-4 text-cyan-400" />
+            <span className="text-[11px] font-sans text-cyan-400 tracking-widest font-bold uppercase">
+              LIVE SPATIAL EVIDENCE & RADIOMETRIC METRICS
+            </span>
+          </div>
+          <div className="grid grid-cols-4 gap-2.5">
+            <div className="bg-[#050b14] border border-gray-800/80 rounded-xl p-3 flex flex-col justify-center">
+              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">AREA (HA)</div>
+              <div className="text-[13px] font-mono font-bold text-gray-100">
+                {areaHa > 0 ? areaHa.toFixed(3) : '---'} <span className="text-[11px] text-gray-300">ha</span>
+              </div>
+            </div>
+            <div className="bg-[#050b14] border border-gray-800/80 rounded-xl p-3 flex flex-col justify-center">
+              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">CONFIDENCE</div>
+              <div className="text-[13px] font-mono font-bold text-[#34d399]">
+                {Math.round(r.confidence * 100)}%
+              </div>
+            </div>
+            <div className="bg-[#050b14] border border-gray-800/80 rounded-xl p-3 flex flex-col justify-center">
+              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">TASK ROUTER</div>
+              <div className="text-[11px] font-mono font-bold text-cyan-400 truncate">
+                {r.task_type}
+              </div>
+            </div>
+            <div className="bg-[#050b14] border border-gray-800/80 rounded-xl p-3 flex flex-col justify-center">
+              <div className="text-[9px] font-sans text-gray-500 mb-1.5 font-medium tracking-wide">CENTROID (WGS84)</div>
+              <div className="text-[10px] font-mono font-bold text-gray-100 leading-tight">
+                {centroidText}
+              </div>
+            </div>
+          </div>
+        </div>
+      </FadeIn>
+
       {/* ── Primary Finding ────────────────────────── */}
-      <FadeIn delay={0}>
+      <FadeIn delay={60}>
         <div className="bg-gradient-to-br from-[#0a0f1a] to-[#060910] border border-amber-900/30 rounded-xl p-3.5">
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
@@ -796,8 +860,13 @@ export default function MissionIntel({ result, isProcessing }: Props) {
         </FadeIn>
       )}
 
+      {/* ── GIS VECTOR EXPORT ─────────────────────── */}
+      <FadeIn delay={700}>
+        <GisExportPanel result={r} />
+      </FadeIn>
+
       {/* ── Footer ────────────────────────────────── */}
-      <FadeIn delay={650}>
+      <FadeIn delay={750}>
         <div className="pt-2 border-t border-gray-800/50">
           <p className="text-[8px] font-mono text-gray-700 text-center">
             Engine: satquery-v2 · {r.task_type} · {r.query_id.substring(0, 12)}

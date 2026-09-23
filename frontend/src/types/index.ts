@@ -11,6 +11,7 @@ export interface UploadResponse {
   bands?: number;
   metadata?: Record<string, any>;
   preview_url?: string;
+  geo_metadata?: GeoMetadata | null;
 }
 
 export interface BoundingBox {
@@ -55,6 +56,27 @@ export interface CloudReconstructionInfo {
   reconstructed_url?: string;
 }
 
+export interface GeoMetadata {
+  is_georeferenced: boolean;
+  crs_epsg?: number | null;
+  crs_wkt?: string | null;
+  width?: number;
+  height?: number;
+  bounds_wgs84?: {
+    west: number;
+    south: number;
+    east: number;
+    north: number;
+  } | null;
+  source_bounds?: {
+    west: number;
+    south: number;
+    east: number;
+    north: number;
+  } | null;
+  message?: string;
+}
+
 export interface LandCoverCategory {
   pct: number;
   ha: number;
@@ -74,6 +96,7 @@ export interface AnalysisResult {
   change_metrics?: ChangeMetrics;
   ndvi_stats?: NdviStats;
   land_cover_analysis?: Record<string, LandCoverCategory>;
+  geo_metadata?: GeoMetadata | null;
   cloud_reconstruction: CloudReconstructionInfo;
   execution_trace: string[];
   gate_verdicts: Record<string, string>;
@@ -81,4 +104,5 @@ export interface AnalysisResult {
   escalation_reason: string;
   processing_time_ms: number;
   audit_hash: string;
+  primary_image_id?: string;
 }

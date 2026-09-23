@@ -79,6 +79,7 @@ from backend.routes.analyze import router as analyze_router
 from backend.routes.benchmark import router as benchmark_router
 from backend.routes.report import router as report_router
 from backend.routes.chat import router as chat_router
+from backend.routes.gis_export import router as gis_router
 
 app.include_router(health_router, prefix="/api")
 app.include_router(upload_router, prefix="/api")
@@ -86,6 +87,7 @@ app.include_router(analyze_router, prefix="/api")
 app.include_router(benchmark_router, prefix="/api")
 app.include_router(report_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
+app.include_router(gis_router, prefix="/api")
 
 
 # ── Global exception handler ──────────────────────────────────────────────────

@@ -33,8 +33,9 @@ export default function MapViewer({ images, result }: Props) {
   }
 
   return (
-    <div className="w-full h-full bg-black relative overflow-hidden group">
-      {images.length > 1 ? (
+    <div className="w-full h-full bg-black flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-square h-full max-w-full group">
+        {images.length > 1 ? (
         <div className="absolute inset-0 z-0">
           <BeforeAfterSlider 
             beforeUrl={images[0].preview_url ?? ''} 
@@ -81,7 +82,7 @@ export default function MapViewer({ images, result }: Props) {
           return (
             <div
               key={i}
-              className="absolute flex items-start z-20 group/box"
+              className="absolute flex items-start z-20 group/box pointer-events-none"
               style={{
                 left: `${obj.bbox!.x1 * 100}%`,
                 top: `${obj.bbox!.y1 * 100}%`,
@@ -136,6 +137,7 @@ export default function MapViewer({ images, result }: Props) {
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }

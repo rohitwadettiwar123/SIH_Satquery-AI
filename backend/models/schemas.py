@@ -16,6 +16,7 @@ class UploadResponse(BaseModel):
     bands: int = 0
     metadata: dict[str, Any] = Field(default_factory=dict)
     preview_url: str = ""
+    geo_metadata: Optional[dict[str, Any]] = None   # GeoTIFF spatial info
 
 
 class AnalysisRequest(BaseModel):
@@ -63,6 +64,18 @@ class CloudReconstructionInfo(BaseModel):
     disclosure_text: str = ""
 
 
+class GeoMetadata(BaseModel):
+    """Spatial metadata attached to analysis results from GeoTIFF inputs."""
+    is_georeferenced: bool = False
+    crs_epsg: Optional[int] = None
+    crs_wkt: Optional[str] = None
+    width: int = 0
+    height: int = 0
+    bounds_wgs84: Optional[dict[str, float]] = None    # {west, south, east, north}
+    source_bounds: Optional[dict[str, float]] = None
+    message: str = ""
+
+
 class AnalysisResult(BaseModel):
     query_id: str
     task_type: str
@@ -72,6 +85,8 @@ class AnalysisResult(BaseModel):
     detected_objects: list[DetectedObject] = Field(default_factory=list)
     change_metrics: Optional[ChangeMetrics] = None
     ndvi_stats: Optional[NdviStats] = None
+    land_cover_analysis: Optional[dict[str, Any]] = None
+    geo_metadata: Optional[GeoMetadata] = None         # GIS georeferencing info
     cloud_reconstruction: CloudReconstructionInfo = Field(default_factory=CloudReconstructionInfo)
     execution_trace: list[str] = Field(default_factory=list)
     gate_verdicts: dict[str, str] = Field(default_factory=dict)
