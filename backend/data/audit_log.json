@@ -13152,5 +13152,209 @@
     "processing_time_ms": 156001.2,
     "audit_hash": "b5e09b62a794e8c2516e68ec7096dd9e21816b613102838e439b93fb2702332b",
     "geo_metadata": null
+  },
+  {
+    "query_id": "2b4d3d38-28f2-413f-b04f-05e2627d2ef6",
+    "task_type": "CHANGE_DETECTION",
+    "query": "Detect and describe all structural changes.",
+    "answer": "Based on a comparison of the two images, significant environmental and structural changes caused by severe flooding are visible between **T0** and **T1**:\n\n### 1. **Extensive Land Inundation**\n* **T0:** Shows a dry, well-defined landscape composed of green, yellow, and cultivated agricultural fields, clear road networks, and intact riverbanks.\n* **T1:** Widespread inundation by muddy floodwaters covers a large portion of the lower-lying terrain, submerging fields and standing agricultural plots across the area.\n\n### 2. **River Overflow and Watercourse Expansion**\n* The meandering river and stream corridors visible in T0 have severely overflowed their banks, merging with floodwaters across adjacent fields to form vast standing bodies of water.\n\n### 3. **Isolation of Settlements**\n* Built-up rural settlements and clusters of buildings that were previously integrated into the field network are now surrounded by water, turning several residential areas into isolated \"islands.\"\n\n### 4. **Infrastructure and Road Submersion**\n* Numerous local roads, field access paths, and intersection corridors connecting towns and fields are partially or completely submerged under water, disrupting transportation networks.",
+    "confidence": 0.818,
+    "detected_objects": [
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.77,
+        "bbox": {
+          "x1": 0.485,
+          "y1": 0.572,
+          "x2": 1.0,
+          "y2": 0.939
+        },
+        "area_hectares": 103.27,
+        "severity_score": 0.197
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.76,
+        "bbox": {
+          "x1": 0.73,
+          "y1": 0.0,
+          "x2": 0.896,
+          "y2": 0.104
+        },
+        "area_hectares": 81.72,
+        "severity_score": 0.156
+      },
+      {
+        "class_name": "Flood / Water Body Expansion",
+        "confidence": 0.75,
+        "bbox": {
+          "x1": 0.561,
+          "y1": 0.0,
+          "x2": 0.696,
+          "y2": 0.065
+        },
+        "area_hectares": 53.98,
+        "severity_score": 0.103
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.017,
+          "y1": 0.335,
+          "x2": 0.09,
+          "y2": 0.449
+        },
+        "area_hectares": 44.9,
+        "severity_score": 0.086
+      },
+      {
+        "class_name": "Vegetation Loss / Deforestation",
+        "confidence": 0.74,
+        "bbox": {
+          "x1": 0.163,
+          "y1": 0.443,
+          "x2": 0.462,
+          "y2": 0.722
+        },
+        "area_hectares": 36.54,
+        "severity_score": 0.07
+      }
+    ],
+    "change_metrics": {
+      "ssim_score": 0.2278,
+      "change_ratio_pct": 20.0,
+      "affected_area_km2": 20.9715,
+      "mean_delta": 0.4977,
+      "confidence_interval_95": [
+        18.6,
+        21.4
+      ]
+    },
+    "ndvi_stats": {
+      "mean": 0.45,
+      "median": 0.45,
+      "std": 0.12,
+      "class_percentages": {},
+      "delta_ndvi": {
+        "Vegetation Loss / Deforestation": {
+          "t0": 461.775,
+          "t1": 184.70999999999998,
+          "delta": -277.065,
+          "pct": -60.0
+        },
+        "Flood / Water Body Expansion": {
+          "t0": 135.7,
+          "t1": 339.25,
+          "delta": 203.55,
+          "pct": 150.00000000000003
+        }
+      }
+    },
+    "land_cover_analysis": {
+      "Vegetation & Canopy": {
+        "pct": 69.0,
+        "ha": 7165.78,
+        "px2": 716578,
+        "sub_metric": {
+          "label": "Mean NGRDI",
+          "value": 175.781
+        },
+        "color": "#22c55e",
+        "emoji": "🌲"
+      },
+      "Water Bodies & Hydrology": {
+        "pct": 0.0,
+        "ha": 1.38,
+        "px2": 138,
+        "sub_metric": {
+          "label": "Absorption Level",
+          "value": 34.6
+        },
+        "color": "#3b82f6",
+        "emoji": "🌊"
+      },
+      "Built-up & Infrastructure": {
+        "pct": 20.4,
+        "ha": 2113.19,
+        "px2": 211319,
+        "sub_metric": {
+          "label": "Edge Texture Density",
+          "value": 9.3
+        },
+        "color": "#f97316",
+        "emoji": "🏗️"
+      },
+      "Bare Soil & Terrain": {
+        "pct": 8.8,
+        "ha": 915.35,
+        "px2": 91535,
+        "sub_metric": {
+          "label": "Surface Albedo",
+          "value": 122.2
+        },
+        "color": "#f59e0b",
+        "emoji": "🏔️"
+      },
+      "Atmosphere & Clouds": {
+        "pct": 1.8,
+        "ha": 181.98,
+        "px2": 18198,
+        "sub_metric": {
+          "label": "Atmospheric Opacity",
+          "value": 12.1
+        },
+        "color": "#94a3b8",
+        "emoji": "☁️"
+      }
+    },
+    "cloud_reconstruction": {
+      "triggered": false,
+      "coverage_pct": 0.0,
+      "method": "passthrough",
+      "avg_confidence": 100.0,
+      "disclosure_text": "",
+      "original_url": "",
+      "reconstructed_url": ""
+    },
+    "execution_trace": [
+      "[2026-09-23T11:45:00.185432+00:00] Step 1: Classifying query intent",
+      "Task classified as: CHANGE_DETECTION (confidence=0.95)",
+      "Step 2: Profiling input images",
+      "Input profile: 2 image(s), modalities=['optical', 'optical'], session=bi_temporal",
+      "Step 3: Cloud screening (optical images only)",
+      "Step 4: Validating task-input compatibility",
+      "Step 5: Executing specialist — CHANGE_DETECTION",
+      "Step 6: Running G0-G8 scientific validation gates (Parallel)",
+      "G0: Validating input format and file integrity",
+      "G1: Checking image co-registration (ORB-RANSAC)",
+      "G1 result: PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2: Checking Nyquist spatial resolution limit",
+      "G3: Cloud screening and radiometric quality check",
+      "G4: Deterministic mathematical computation confirmed",
+      "G5: Checking if expert escalation is needed",
+      "G6: XAI attribution and grounding verified",
+      "G7: Generating SHA-256 audit hash",
+      "G8: Response package ready for delivery",
+      "Step 7: Fusing outputs and computing confidence",
+      "Step 8: Generating SHA-256 audit hash",
+      "Audit hash: dd49ce96bd44a9bd…"
+    ],
+    "gate_verdicts": {
+      "G0_format_check": "PASS",
+      "G1_coregistration": "PASS (RMSE=0.52px (≤ 2.0px))",
+      "G2_nyquist": "PASS (min_detectable=20.0m at GSD=10.0m)",
+      "G3_cloud_screening": "PASS (cloud_coverage=0.0%)",
+      "G4_deterministic_math": "PASS",
+      "G5_escalation_check": "PASS (confidence=1.00)",
+      "G6_xai_attribution": "PASS",
+      "G7_audit_hash": "PASS",
+      "G8_response_delivery": "PASS"
+    },
+    "requires_expert_escalation": false,
+    "escalation_reason": "OK",
+    "processing_time_ms": 18924.9,
+    "audit_hash": "dd49ce96bd44a9bdd8a2ea32103f9f0afa2e0dc20d7113a87579adfc3ee6808b",
+    "geo_metadata": null
   }
 ]
