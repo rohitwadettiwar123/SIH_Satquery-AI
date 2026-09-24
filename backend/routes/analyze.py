@@ -65,13 +65,10 @@ async def analyze(request: AnalysisRequest):
         if geo is not None:
             result["geo_metadata"] = geo.to_dict()
         else:
-            result["geo_metadata"] = {
-                "is_georeferenced": False,
-                "message": "Georeferencing unavailable — source image has no geographic metadata.",
-            }
+            result["geo_metadata"] = None
     except Exception as geo_err:
         log.warning("geo_metadata extraction failed: %s", geo_err)
-        result.setdefault("geo_metadata", None)
+        result["geo_metadata"] = None
 
     return AnalysisResult(**result)
 

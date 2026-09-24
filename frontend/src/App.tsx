@@ -405,6 +405,7 @@ function App() {
                 });
                 
                 // Add the retrieved imagery to the tactical inputs
+                setIsDemoMode(false);
                 setUploads(prev => [aoiImage, ...prev] as any);
                 setResult(null);
                 

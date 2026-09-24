@@ -154,8 +154,9 @@ async def upload_aoi(req: AOIRequest):
     using the Esri World Imagery public provider.
     """
     file_id = str(uuid.uuid4())
-    filename = f"AOI_{req.year}_{file_id[:8]}.jpg"
-    save_path = settings.uploads_dir / filename
+    display_filename = f"AOI_{req.year}_{file_id[:8]}.jpg"
+    actual_filename = f"{file_id}.jpg"
+    save_path = settings.uploads_dir / actual_filename
     settings.uploads_dir.mkdir(parents=True, exist_ok=True)
     
     # Esri export URL (World Imagery doesn't natively support dynamic time, 
@@ -186,7 +187,7 @@ async def upload_aoi(req: AOIRequest):
     
     return UploadResponse(
         file_id=file_id,
-        filename=filename,
+        filename=display_filename,
         size_bytes=len(content),
         modality="optical",
         cloud_coverage_pct=0.0,
@@ -195,10 +196,10 @@ async def upload_aoi(req: AOIRequest):
         bands=3,
         metadata={
             "source": f"Esri World Imagery ({req.year})", 
-            "original_filename": filename, 
+            "original_filename": display_filename, 
             "file_size_bytes": len(content),
             "acquisition_year": req.year
         },
-        preview_url=f"/uploads/{filename}",
+        preview_url=f"/uploads/{actual_filename}",
         geo_metadata=synthetic_geo,
     )
