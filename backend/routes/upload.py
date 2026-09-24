@@ -141,3 +141,58 @@ async def upload_image(file: UploadFile = File(...)):
         preview_url=f"/uploads/{file_id}{suffix}",
         geo_metadata=synthetic_geo,
     )
+
+
+from backend.models.schemas import AOIRequest
+import urllib.request
+import urllib.error
+
+@router.post("/upload/aoi", response_model=UploadResponse)
+async def upload_aoi(req: AOIRequest):
+    """
+    Constructs satellite imagery for a given geographic region (AOI)
+    using the Esri World Imagery public provider.
+    """
+    file_id = str(uuid.uuid4())
+    filename = f"AOI_{req.centerLat:.2f}_{req.centerLng:.2f}.jpg" if hasattr(req, "centerLat") else f"AOI_{file_id[:8]}.jpg"
+    save_path = settings.uploads_dir / filename
+    settings.uploads_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Esri export URL
+    url = f"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox={req.west},{req.south},{req.east},{req.north}&bboxSR=4326&size=1024,1024&imageSR=4326&format=jpg&f=image"
+    
+    try:
+        urllib.request.urlretrieve(url, save_path)
+    except Exception as e:
+        log.error("Failed to fetch Esri imagery: %s", e)
+        raise HTTPException(status_code=502, detail=f"Imagery provider failed: {e}")
+        
+    content = save_path.read_bytes()
+    
+    # Create valid spatial metadata for analysis
+    synthetic_geo = {
+        "is_georeferenced": True,
+        "crs_epsg": 4326,
+        "width": 1024,
+        "height": 1024,
+        "bounds_wgs84": {
+            "west": req.west,
+            "south": req.south,
+            "east": req.east,
+            "north": req.north
+        }
+    }
+    
+    return UploadResponse(
+        file_id=file_id,
+        filename=filename,
+        size_bytes=len(content),
+        modality="optical",
+        cloud_coverage_pct=0.0,
+        width=1024,
+        height=1024,
+        bands=3,
+        metadata={"source": "Esri World Imagery", "original_filename": filename, "file_size_bytes": len(content)},
+        preview_url=f"/uploads/{filename}",
+        geo_metadata=synthetic_geo,
+    )

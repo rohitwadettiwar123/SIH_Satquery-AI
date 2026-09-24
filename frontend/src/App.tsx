@@ -391,45 +391,30 @@ function App() {
         <div className="flex-1 overflow-hidden relative z-10">
           <Explorer3D
             existingAoi={explorerAoi}
-            onAnalyze={(aoi, dataUrl) => {
+            onAnalyze={async (aoi) => {
               setExplorerAoi(aoi);
               
-              if (dataUrl) {
-                // If we captured the 3D map, create a mock upload so it shows in 2D tactical
-                const mockUpload = {
-                  file_id: `3d-capture-${Date.now()}`,
-                  filename: `3D_Capture_${aoi.centerLat.toFixed(2)}_${aoi.centerLng.toFixed(2)}.jpg`,
-                  preview_url: dataUrl,
-                  content_type: 'image/jpeg',
-                  size_bytes: Math.round((dataUrl.length * 3) / 4),
-                  modality: 'optical',
-                  cloud_coverage_pct: 0,
-                  upload_time: new Date().toISOString(),
-                  geo_metadata: {
-                    bounds_wgs84: {
-                      north: aoi.north,
-                      south: aoi.south,
-                      east: aoi.east,
-                      west: aoi.west
-                    },
-                    crs: "EPSG:4326"
-                  }
-                };
+              try {
+                // Retrieve the actual satellite imagery from the backend provider
+                const aoiImage = await client.fetchAoiImage({
+                  north: aoi.north,
+                  south: aoi.south,
+                  east: aoi.east,
+                  west: aoi.west
+                });
                 
-                // Keep existing uploads but add the new 3D capture at the top
-                setUploads(prev => [mockUpload, ...prev] as any);
-                
-                // Clear any previous results when switching contexts
+                // Add the retrieved imagery to the tactical inputs
+                setUploads(prev => [aoiImage, ...prev] as any);
                 setResult(null);
                 
-                // Instead of passing the 0-1 bbox of a reference image, we just pass the full image (0 to 1) 
-                // because this new screenshot *is* the area we are analyzing.
+                // Set the selection area to the full image extent since the image was already cropped to the AOI
                 setSelectedArea({ x1: 0, y1: 0, x2: 1, y2: 1 });
-              } else {
-                setSelectedArea(aoi.bbox);
+                setViewMode('tactical');
+                
+              } catch (error: any) {
+                console.error("Failed to retrieve imagery for AOI:", error);
+                alert("Failed to retrieve imagery from provider. Please check your connection or try a different area.");
               }
-              
-              setViewMode('tactical');
             }}
           />
         </div>

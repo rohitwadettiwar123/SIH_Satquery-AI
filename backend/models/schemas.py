@@ -26,6 +26,13 @@ class AnalysisRequest(BaseModel):
     bbox: Optional[list[float]] = None # Custom Area Selection [x1, y1, x2, y2]
 
 
+class AOIRequest(BaseModel):
+    north: float
+    south: float
+    east: float
+    west: float
+
+
 class BoundingBox(BaseModel):
     x1: float   # normalised 0-1
     y1: float

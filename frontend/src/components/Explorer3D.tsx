@@ -32,7 +32,7 @@ export interface ExplorerAOI {
 }
 
 interface Props {
-  onAnalyze: (aoi: ExplorerAOI, dataUrl?: string) => void;
+  onAnalyze: (aoi: ExplorerAOI) => void | Promise<void>;
   existingAoi?: ExplorerAOI | null;
 }
 
@@ -163,17 +163,10 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
     const centerLat = (north + south) / 2;
     const centerLng = (east + west) / 2;
     const areaKm2 = calcAreaKm2(north, south, east, west);
-    const REF = { west: 88.7012, south: 24.7956, east: 88.7475, north: 24.8421 };
-    const refW = REF.east - REF.west;
-    const refH = REF.north - REF.south;
+    
     return {
       north, south, east, west, centerLat, centerLng, areaKm2,
-      bbox: {
-        x1: Math.max(0, Math.min(1, (west  - REF.west) / refW)),
-        x2: Math.max(0, Math.min(1, (east  - REF.west) / refW)),
-        y1: Math.max(0, Math.min(1, (REF.north - north) / refH)),
-        y2: Math.max(0, Math.min(1, (REF.north - south) / refH)),
-      }
+      bbox: { x1: west, y1: north, x2: east, y2: south } // Return actual coordinates
     };
   }, []);
 
@@ -277,21 +270,17 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
   }, []);
 
   const clearAoi = useCallback(() => { setAoi(null); }, []);
+  const [isExporting, setIsExporting] = useState(false);
 
-  const handleAnalyzeClick = () => {
+  const handleAnalyzeClick = async () => {
     if (!aoi) return;
-    const viewer = viewerRef.current?.cesiumElement;
-    let dataUrl = undefined;
-    if (viewer) {
-      try {
-        viewer.render();
-        dataUrl = viewer.scene.canvas.toDataURL("image/jpeg", 0.85);
-      } catch (e: any) {
-        alert("Screenshot failed: " + e.message);
-        console.error("Failed to capture Cesium canvas:", e);
-      }
+    setIsExporting(true);
+    
+    try {
+      await onAnalyze(aoi);
+    } finally {
+      setIsExporting(false);
     }
-    onAnalyze(aoi, dataUrl);
   };
 
   const zoomIn = () => {
@@ -473,7 +462,6 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
             geocoder={false}
             baseLayerPicker={false}
             sceneModePicker={false}
-            contextOptions={{ preserveDrawingBuffer: true }}
             className="absolute inset-0 z-0"
           >
             {!flyTarget && (
@@ -803,25 +791,34 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
             <div className="p-3 border-t border-cyan-900/30 flex-shrink-0">
               <button
                 onClick={handleAnalyzeClick}
-                disabled={!aoi}
+                disabled={!aoi || isExporting}
                 className={`w-full relative overflow-hidden flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-sm transition-all duration-300 ${
-                  aoi
+                  aoi && !isExporting
                     ? 'text-black cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                     : 'bg-gray-800/40 border border-gray-700/30 text-gray-600 cursor-not-allowed'
                 }`}
-                style={aoi ? {
+                style={aoi && !isExporting ? {
                   background: 'linear-gradient(135deg, #00f5ff 0%, #00c9b1 50%, #00a896 100%)',
                   boxShadow: '0 0 25px rgba(0,245,255,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
                 } : {}}>
-                {aoi && (
+                {aoi && !isExporting && (
                   <>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
                     <Sparkles className="w-4 h-4 animate-pulse" />
                   </>
                 )}
-                <Activity className="w-4 h-4" />
-                <span>Analyze This View</span>
-                {aoi && <ArrowRight className="w-4 h-4" />}
+                {isExporting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-cyan-500">Retrieving Imagery...</span>
+                  </>
+                ) : (
+                  <>
+                    <Activity className="w-4 h-4" />
+                    <span>Analyze This View</span>
+                    {aoi && <ArrowRight className="w-4 h-4" />}
+                  </>
+                )}
               </button>
               {!aoi && (
                 <p className="text-[9px] text-gray-600 text-center mt-2 font-mono">SELECT AN AREA TO ENABLE</p>
