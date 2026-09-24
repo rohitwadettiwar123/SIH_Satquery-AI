@@ -15,7 +15,7 @@ export const client = {
     return data;
   },
 
-  async fetchAoiImage(aoi: { north: number; south: number; east: number; west: number }): Promise<UploadResponse> {
+  async fetchAoiImage(aoi: { north: number; south: number; east: number; west: number, year: number }): Promise<UploadResponse> {
     const { data } = await api.post<UploadResponse>('/upload/aoi', aoi);
     return data;
   },

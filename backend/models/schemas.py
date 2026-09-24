@@ -31,6 +31,7 @@ class AOIRequest(BaseModel):
     south: float
     east: float
     west: float
+    year: int
 
 
 class BoundingBox(BaseModel):

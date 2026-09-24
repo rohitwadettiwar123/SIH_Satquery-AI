@@ -32,7 +32,7 @@ export interface ExplorerAOI {
 }
 
 interface Props {
-  onAnalyze: (aoi: ExplorerAOI) => void | Promise<void>;
+  onAnalyze: (aoi: ExplorerAOI, year: number) => void | Promise<void>;
   existingAoi?: ExplorerAOI | null;
 }
 
@@ -110,6 +110,8 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
   const [currentLocation, setCurrentLocation] = useState<{ name: string; lat: number; lng: number } | null>(null);
   const [panelVisible, setPanelVisible] = useState(true);
   const [drawHint, setDrawHint] = useState('');
+  const [selectedYear, setSelectedYear] = useState<number>(2024);
+  const [timelineFilter, setTimelineFilter] = useState<string>('ALL');
 
   // Live preview bounds during drag
   const drawStartRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -277,7 +279,7 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
     setIsExporting(true);
     
     try {
-      await onAnalyze(aoi);
+      await onAnalyze(aoi, selectedYear);
     } finally {
       setIsExporting(false);
     }
@@ -826,6 +828,58 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
             </div>
           </div>
         )}
+        {/* ── Earth Observation Timeline ─────────────────────────────────────── */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-4xl px-4 pointer-events-auto">
+             <div className="bg-[#0b101e] border border-[#1a253a] rounded-lg p-3 shadow-2xl flex flex-col gap-3 font-mono">
+               {/* Header */}
+               <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-3">
+                   <div className="text-[#ff9800] text-sm">⏳</div>
+                   <div className="text-cyan-400 font-bold text-sm tracking-wide">
+                     EARTH OBSERVATION TIMELINE
+                     <span className="text-gray-400 font-normal ml-3 text-xs">
+                       Active Globe Layer: <span className="text-gray-200">Sentinel-2 Cloudless ({selectedYear})</span>
+                     </span>
+                   </div>
+                 </div>
+                 <div className="flex items-center gap-2 text-xs">
+                   <button className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#102a35] border border-cyan-800 text-cyan-400 transition-colors hover:bg-cyan-900/40">
+                     🛰️ Sentinel-2 Mosaic (Active)
+                   </button>
+                   <button className={`px-3 py-1 rounded border transition-colors ${timelineFilter === 'ALL' ? 'bg-[#102a35] border-cyan-800 text-cyan-400' : 'bg-transparent border-[#1a253a] text-gray-500 hover:text-gray-300'}`} onClick={() => setTimelineFilter('ALL')}>ALL</button>
+                   <button className={`px-3 py-1 rounded border transition-colors ${timelineFilter === 'SENTINEL-2' ? 'bg-[#102a35] border-cyan-800 text-cyan-400' : 'bg-transparent border-[#1a253a] text-gray-500 hover:text-gray-300'}`} onClick={() => setTimelineFilter('SENTINEL-2')}>SENTINEL-2</button>
+                   <button className={`px-3 py-1 rounded border transition-colors ${timelineFilter === 'SENTINEL-1' ? 'bg-[#102a35] border-cyan-800 text-cyan-400' : 'bg-transparent border-[#1a253a] text-gray-500 hover:text-gray-300'}`} onClick={() => setTimelineFilter('SENTINEL-1')}>SENTINEL-1</button>
+                 </div>
+               </div>
+
+               {/* Slider */}
+               <div className="flex items-center gap-4 mt-2">
+                 <span className="text-gray-500 text-xs font-bold">2016</span>
+                 <div className="relative flex-1 h-3 bg-[#111827] rounded-full flex items-center">
+                    <input 
+                      type="range" 
+                      min="2016" 
+                      max="2024" 
+                      value={selectedYear} 
+                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                      className="w-full absolute z-10 opacity-0 cursor-pointer"
+                    />
+                    <div className="absolute left-0 h-full bg-cyan-400 rounded-full" style={{ width: `${((selectedYear - 2016) / 8) * 100}%` }} />
+                    <div className="absolute w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6)] transform -translate-x-1/2" style={{ left: `${((selectedYear - 2016) / 8) * 100}%` }} />
+                 </div>
+                 <span className="text-gray-500 text-xs font-bold">2024</span>
+                 <div className="px-3 py-1 rounded bg-[#102a35] border border-cyan-800 text-cyan-400 text-xs font-bold ml-2">
+                   YEAR: {selectedYear}
+                 </div>
+               </div>
+
+               {/* Footer text */}
+               <div className="text-[10px] text-gray-400 tracking-wider flex gap-2">
+                 <span>VERIFIED OBSERVATIONS:</span>
+                 <span className="text-[#ffb74d]">o No suitable open satellite observation was found for this location and date range. Satellite imagery coverage begins with mission launch dates.</span>
+               </div>
+             </div>
+          </div>
       </div>
     </div>
   );

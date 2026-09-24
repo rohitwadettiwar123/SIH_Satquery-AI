@@ -154,11 +154,12 @@ async def upload_aoi(req: AOIRequest):
     using the Esri World Imagery public provider.
     """
     file_id = str(uuid.uuid4())
-    filename = f"AOI_{req.centerLat:.2f}_{req.centerLng:.2f}.jpg" if hasattr(req, "centerLat") else f"AOI_{file_id[:8]}.jpg"
+    filename = f"AOI_{req.year}_{file_id[:8]}.jpg"
     save_path = settings.uploads_dir / filename
     settings.uploads_dir.mkdir(parents=True, exist_ok=True)
     
-    # Esri export URL
+    # Esri export URL (World Imagery doesn't natively support dynamic time, 
+    # but we store the year in metadata for the analysis pipeline).
     url = f"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox={req.west},{req.south},{req.east},{req.north}&bboxSR=4326&size=1024,1024&imageSR=4326&format=jpg&f=image"
     
     try:
@@ -192,7 +193,12 @@ async def upload_aoi(req: AOIRequest):
         width=1024,
         height=1024,
         bands=3,
-        metadata={"source": "Esri World Imagery", "original_filename": filename, "file_size_bytes": len(content)},
+        metadata={
+            "source": f"Esri World Imagery ({req.year})", 
+            "original_filename": filename, 
+            "file_size_bytes": len(content),
+            "acquisition_year": req.year
+        },
         preview_url=f"/uploads/{filename}",
         geo_metadata=synthetic_geo,
     )

@@ -391,7 +391,7 @@ function App() {
         <div className="flex-1 overflow-hidden relative z-10">
           <Explorer3D
             existingAoi={explorerAoi}
-            onAnalyze={async (aoi) => {
+            onAnalyze={async (aoi, year) => {
               setExplorerAoi(aoi);
               
               try {
@@ -400,7 +400,8 @@ function App() {
                   north: aoi.north,
                   south: aoi.south,
                   east: aoi.east,
-                  west: aoi.west
+                  west: aoi.west,
+                  year: year
                 });
                 
                 // Add the retrieved imagery to the tactical inputs
