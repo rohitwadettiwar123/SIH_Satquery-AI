@@ -12,6 +12,11 @@ interface Props {
 export default function MapViewer({ images, result, isSelectionMode, onSelectionChange }: Props) {
   const [activeImage, setActiveImage] = useState<string>('');
   
+
+  // Evidence State
+  const [selectedEvidenceIndex, setSelectedEvidenceIndex] = useState<number | null>(null);
+  const [viewRegionIndex, setViewRegionIndex] = useState<number | null>(null);
+
   // Area Selection State
   const [isSelecting, setIsSelecting] = useState(false);
   const [selStart, setSelStart] = useState({ x: 0, y: 0 });
@@ -89,7 +94,7 @@ export default function MapViewer({ images, result, isSelectionMode, onSelection
   return (
     <div className="w-full h-full bg-black flex items-center justify-center overflow-hidden">
       <div 
-        ref={containerRef}
+        ref={containerRef} onClick={() => { setSelectedEvidenceIndex(null); setViewRegionIndex(null); }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -187,60 +192,100 @@ export default function MapViewer({ images, result, isSelectionMode, onSelection
         );
       })()}
 
-      {/* Detected Bounding Boxes — sorted by confidence, each labelled AREA N */}
+      
+      {/* 📍 AI EVIDENCE PINS & REGIONS */}
       {result && [...(result.detected_objects || [])]
         .filter(obj => obj.bbox)
         .sort((a, b) => b.confidence - a.confidence)
         .map((obj, i) => {
-          const areaLabel = `AREA ${i + 1}`;
-          const boxColors = [
-            { border: '#00f5ff', bg: 'rgba(0,245,255,0.08)', text: '#000', badge: '#00f5ff' }, // cyan
-            { border: '#22c55e', bg: 'rgba(34,197,94,0.08)',  text: '#000', badge: '#22c55e' }, // green
-            { border: '#f59e0b', bg: 'rgba(245,158,11,0.08)', text: '#000', badge: '#f59e0b' }, // amber
-            { border: '#a78bfa', bg: 'rgba(167,139,250,0.08)', text: '#000', badge: '#a78bfa' }, // purple
-            { border: '#f97316', bg: 'rgba(249,115,22,0.08)', text: '#000', badge: '#f97316' }, // orange
-          ];
-          const c = boxColors[i % boxColors.length];
-          const shortClass = (obj.class_name || obj.label || 'Region').split('/')[0].trim();
+          const pinNumber = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩"][i] || `(${i+1})`;
+          const c = { border: '#00f5ff', bg: 'rgba(0,245,255,0.08)', text: '#000', badge: '#00f5ff' };
+          
+          const cx = obj.bbox!.x1 + (obj.bbox!.x2 - obj.bbox!.x1) / 2;
+          const cy = obj.bbox!.y1 + (obj.bbox!.y2 - obj.bbox!.y1) / 2;
+          
+          const isSelected = selectedEvidenceIndex === i;
+          const isViewRegion = viewRegionIndex === i;
+          
+          let lat = "--", lng = "--";
+          if (images.length > 0 && images[0].geo_metadata?.bounds_wgs84) {
+            const b = images[0].geo_metadata.bounds_wgs84;
+            lat = (b.south + (1 - cy) * (b.north - b.south)).toFixed(4);
+            lng = (b.west + cx * (b.east - b.west)).toFixed(4);
+          }
+
           return (
-            <div
-              key={i}
-              className="absolute flex items-start z-20 group/box pointer-events-none"
-              style={{
-                left: `${obj.bbox!.x1 * 100}%`,
-                top: `${obj.bbox!.y1 * 100}%`,
-                width: `${(obj.bbox!.x2 - obj.bbox!.x1) * 100}%`,
-                height: `${(obj.bbox!.y2 - obj.bbox!.y1) * 100}%`,
-                border: `2px solid ${c.border}`,
-                background: c.bg,
-                boxShadow: `0 0 10px ${c.border}50`,
-              }}
-            >
-              {/* Corner brackets */}
-              <span
-                className="absolute -top-px -left-px w-2.5 h-2.5 border-t-2 border-l-2"
-                style={{ borderColor: c.border }}
-              />
-              <span
-                className="absolute -top-px -right-px w-2.5 h-2.5 border-t-2 border-r-2"
-                style={{ borderColor: c.border }}
-              />
-              <span
-                className="absolute -bottom-px -left-px w-2.5 h-2.5 border-b-2 border-l-2"
-                style={{ borderColor: c.border }}
-              />
-              <span
-                className="absolute -bottom-px -right-px w-2.5 h-2.5 border-b-2 border-r-2"
-                style={{ borderColor: c.border }}
-              />
-              {/* Label badge */}
-              <span
-                className="absolute -top-5 left-0 text-[9px] font-mono font-bold px-1.5 py-0.5 flex items-center gap-1 whitespace-nowrap"
-                style={{ backgroundColor: c.badge, color: '#000' }}
+            <React.Fragment key={i}>
+              {/* Region Highlight */}
+              {isViewRegion && (
+                <div
+                  className="absolute flex items-start z-10 pointer-events-none transition-all duration-500"
+                  style={{
+                    left: `${obj.bbox!.x1 * 100}%`,
+                    top: `${obj.bbox!.y1 * 100}%`,
+                    width: `${(obj.bbox!.x2 - obj.bbox!.x1) * 100}%`,
+                    height: `${(obj.bbox!.y2 - obj.bbox!.y1) * 100}%`,
+                    border: `2px solid ${c.border}`,
+                    background: 'rgba(0,245,255,0.15)',
+                    boxShadow: `0 0 25px rgba(0,245,255,0.4), inset 0 0 15px rgba(0,245,255,0.2)`,
+                  }}
+                >
+                  <span className="absolute -top-px -left-px w-3 h-3 border-t-2 border-l-2 border-cyan-300" />
+                  <span className="absolute -top-px -right-px w-3 h-3 border-t-2 border-r-2 border-cyan-300" />
+                  <span className="absolute -bottom-px -left-px w-3 h-3 border-b-2 border-l-2 border-cyan-300" />
+                  <span className="absolute -bottom-px -right-px w-3 h-3 border-b-2 border-r-2 border-cyan-300" />
+                </div>
+              )}
+
+              {/* Glowing Pin */}
+              <div 
+                className="absolute z-20 cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group"
+                style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }}
+                onClick={(e) => { e.stopPropagation(); setSelectedEvidenceIndex(isSelected ? null : i); setViewRegionIndex(null); }}
               >
-                {areaLabel} · {shortClass} ({Math.round(obj.confidence * 100)}%)
-              </span>
-            </div>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-all shadow-[0_0_15px_rgba(0,245,255,0.5)] border ${isSelected ? 'bg-cyan-500/40 border-cyan-300 scale-110' : 'bg-[#050b14]/80 border-cyan-500/50 hover:bg-cyan-500/20 hover:border-cyan-400'}`}>
+                  {pinNumber}
+                </div>
+                {/* Ping animation */}
+                <div className="absolute inset-0 rounded-full border border-cyan-400/50 animate-ping pointer-events-none" style={{ animationDuration: '3s' }}></div>
+              </div>
+
+              {/* Evidence Card */}
+              {isSelected && (
+                <div className="absolute z-30 transform -translate-x-1/2 mt-6 pointer-events-auto" style={{ left: `${cx * 100}%`, top: `${cy * 100}%` }}>
+                  <div className="w-56 bg-[#0a1118]/90 backdrop-blur-md border border-cyan-500/40 rounded-lg p-3 font-mono shadow-[0_0_20px_rgba(0,245,255,0.15)] flex flex-col gap-2">
+                    <div className="flex justify-between items-center border-b border-cyan-500/30 pb-1 mb-1">
+                      <div className="text-[10px] text-cyan-400 font-bold tracking-widest">EVIDENCE #{String(i+1).padStart(2, '0')}</div>
+                      <button className="text-gray-500 hover:text-white" onClick={(e) => { e.stopPropagation(); setSelectedEvidenceIndex(null); setViewRegionIndex(null); }}>×</button>
+                    </div>
+                    <div className="text-sm font-bold text-white">{obj.class_name}</div>
+                    
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <div>
+                        <div className="text-[9px] text-gray-500 tracking-wider">LOCATION</div>
+                        <div className="text-[10px] text-gray-300">{lat}° N<br/>{lng}° E</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] text-gray-500 tracking-wider">CONFIDENCE</div>
+                        <div className="text-[10px] text-green-400 font-bold">{Math.round(obj.confidence * 100)}%</div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-1">
+                        <div className="text-[9px] text-gray-500 tracking-wider">SOURCE</div>
+                        <div className="text-[10px] text-gray-300">Satellite Analysis Pipeline</div>
+                    </div>
+
+                    <button 
+                      className={`mt-2 w-full py-1.5 border text-xs tracking-wider transition-colors ${isViewRegion ? 'border-cyan-300 bg-cyan-500/20 text-cyan-200 shadow-[0_0_10px_rgba(0,245,255,0.3)]' : 'border-cyan-800 bg-[#0a1628] hover:bg-cyan-900/40 text-cyan-400'}`}
+                      onClick={(e) => { e.stopPropagation(); setViewRegionIndex(isViewRegion ? null : i); }}
+                    >
+                      [ VIEW REGION ]
+                    </button>
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
           );
         })
       }
