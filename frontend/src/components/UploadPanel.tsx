@@ -11,9 +11,11 @@ interface Props {
 
 export default function UploadPanel({ uploads, setUploads }: Props) {
   const [isUploading, setIsUploading] = useState(false);
+  const [activeDemoPreset, setActiveDemoPreset] = useState<string | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setIsUploading(true);
+    setActiveDemoPreset(null);
     try {
       for (const file of acceptedFiles) {
         if (uploads.length >= 2) break; // Max 2
@@ -34,6 +36,7 @@ export default function UploadPanel({ uploads, setUploads }: Props) {
   });
 
   const loadPreset = (type: string) => {
+    setActiveDemoPreset(type);
     const makeEntry = (id: string, name: string, imgFile: string, modality: 'optical' | 'sar', cloud: number) => ({
       file_id: imgFile.replace('.jpg', '').replace('.png', ''), // must match filename on disk
       filename: name,
@@ -72,18 +75,25 @@ export default function UploadPanel({ uploads, setUploads }: Props) {
     }
   };
 
+
+  const getButtonClass = (type: string) => {
+    return activeDemoPreset === type
+      ? "p-2 border border-neon-cyan/50 rounded bg-neon-cyan/10 hover:bg-neon-cyan/20 transition-colors text-xs font-mono text-neon-cyan text-left"
+      : "p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left";
+  };
+
   return (
     <div className="mission-panel flex flex-col p-4 overflow-y-auto">
       <h2 className="font-mono text-gray-400 text-xs font-bold mb-3 tracking-wider">DEMO PRESETS</h2>
       
       {/* Presets Grid */}
       <div className="grid grid-cols-2 gap-2 mb-6">
-        <button onClick={() => loadPreset('optical')} className="p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left">Optical</button>
-        <button onClick={() => loadPreset('sar')} className="p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left">SAR Radar</button>
-        <button onClick={() => loadPreset('change')} className="p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left">Change (T0+T1)</button>
-        <button onClick={() => loadPreset('fusion')} className="p-2 border border-neon-cyan/50 rounded bg-neon-cyan/10 hover:bg-neon-cyan/20 transition-colors text-xs font-mono text-neon-cyan text-left">Fusion (Same Area)</button>
-        <button onClick={() => loadPreset('xview')} className="p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left">xView2 Disaster</button>
-        <button onClick={() => loadPreset('mismatch')} className="p-2 border border-panel-border rounded bg-space hover:bg-panel transition-colors text-xs font-mono text-gray-300 text-left">Different Place (Mismatch)</button>
+        <button onClick={() => loadPreset('optical')} className={getButtonClass('optical')}>Optical</button>
+        <button onClick={() => loadPreset('sar')} className={getButtonClass('sar')}>SAR Radar</button>
+        <button onClick={() => loadPreset('change')} className={getButtonClass('change')}>Change (T0+T1)</button>
+        <button onClick={() => loadPreset('fusion')} className={getButtonClass('fusion')}>Fusion (Same Area)</button>
+        <button onClick={() => loadPreset('xview')} className={getButtonClass('xview')}>xView2 Disaster</button>
+        <button onClick={() => loadPreset('mismatch')} className={getButtonClass('mismatch')}>Different Place (Mismatch)</button>
       </div>
 
       {/* Uploads Display matching design */}
