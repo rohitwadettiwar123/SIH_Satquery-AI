@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Viewer as ResiumViewer, Entity, CameraFlyTo } from 'resium';
+import { Viewer as ResiumViewer, Entity, CameraFlyTo, ImageryLayer } from 'resium';
 import {
   Viewer as CesiumViewer,
   Cartesian3,
@@ -10,7 +10,27 @@ import {
   ScreenSpaceEventType,
   Rectangle,
   CallbackProperty,
+  UrlTemplateImageryProvider,
 } from 'cesium';
+
+const WAYBACK_URLS: Record<number, string> = {
+  2010: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
+  2011: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
+  2012: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
+  2013: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
+  2014: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
+  2015: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/30584/{z}/{y}/{x}',
+  2016: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23601/{z}/{y}/{x}',
+  2017: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31026/{z}/{y}/{x}',
+  2018: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/32337/{z}/{y}/{x}',
+  2019: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/25944/{z}/{y}/{x}',
+  2020: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23001/{z}/{y}/{x}',
+  2021: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/1049/{z}/{y}/{x}',
+  2022: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/42663/{z}/{y}/{x}',
+  2023: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/11475/{z}/{y}/{x}',
+  2024: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/41468/{z}/{y}/{x}',
+  2025: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/36557/{z}/{y}/{x}'
+};
 import {
   MapPin, Search, Satellite, ZoomIn, ZoomOut,
   Navigation, Layers, Copy, Trash2, ChevronRight,
@@ -112,6 +132,13 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
   const [drawHint, setDrawHint] = useState('');
   const [selectedYear, setSelectedYear] = useState<number>(2024);
   const [timelineFilter, setTimelineFilter] = useState<string>('ALL');
+
+  const waybackProvider = React.useMemo(() => {
+    return new UrlTemplateImageryProvider({
+      url: WAYBACK_URLS[selectedYear] || WAYBACK_URLS[2024],
+      maximumLevel: 19
+    });
+  }, [selectedYear]);
 
   // Live preview bounds during drag
   const drawStartRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -466,6 +493,7 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
             sceneModePicker={false}
             className="absolute inset-0 z-0"
           >
+            <ImageryLayer imageryProvider={waybackProvider} />
             {!flyTarget && (
               <CameraFlyTo
                 duration={0}
@@ -854,20 +882,20 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
 
                {/* Slider */}
                <div className="flex items-center gap-4 mt-2">
-                 <span className="text-gray-500 text-xs font-bold">2016</span>
+                 <span className="text-gray-500 text-xs font-bold">2010</span>
                  <div className="relative flex-1 h-3 bg-[#111827] rounded-full flex items-center">
                     <input 
                       type="range" 
-                      min="2016" 
-                      max="2024" 
+                      min="2010" 
+                      max="2025" 
                       value={selectedYear} 
                       onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                       className="w-full absolute z-10 opacity-0 cursor-pointer"
                     />
-                    <div className="absolute left-0 h-full bg-cyan-400 rounded-full" style={{ width: `${((selectedYear - 2016) / 8) * 100}%` }} />
-                    <div className="absolute w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6)] transform -translate-x-1/2" style={{ left: `${((selectedYear - 2016) / 8) * 100}%` }} />
+                    <div className="absolute left-0 h-full bg-cyan-400 rounded-full" style={{ width: `${((selectedYear - 2010) / 15) * 100}%` }} />
+                    <div className="absolute w-4 h-4 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6)] transform -translate-x-1/2" style={{ left: `${((selectedYear - 2010) / 15) * 100}%` }} />
                  </div>
-                 <span className="text-gray-500 text-xs font-bold">2024</span>
+                 <span className="text-gray-500 text-xs font-bold">2025</span>
                  <div className="px-3 py-1 rounded bg-[#102a35] border border-cyan-800 text-cyan-400 text-xs font-bold ml-2">
                    YEAR: {selectedYear}
                  </div>
