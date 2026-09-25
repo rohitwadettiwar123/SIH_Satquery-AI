@@ -67,14 +67,8 @@ def classify_query_intent(query: str) -> tuple[str, float]:
     return best_task, round(confidence, 3)
 
 
-def profile_inputs(image_paths: list[str], image_metadata: list[dict]) -> dict:
-    """
-    Profile the uploaded images to determine session type.
-
-    Returns:
-        dict with: n_images, modalities, session_type
-            ('single' | 'bi_temporal' | 'cross_modal_pair')
-    """
+def profile_inputs(image_paths: list[str], image_metadata: list[dict], bbox: Optional[list[float]] = None) -> dict:
+    """Profile the uploaded images and metadata."""
     n = len(image_paths)
     modalities = []
     for i, p in enumerate(image_paths):
@@ -83,18 +77,13 @@ def profile_inputs(image_paths: list[str], image_metadata: list[dict]) -> dict:
         if "sar" in Path(p).name.lower() or "s1" in Path(p).name.lower():
             mod = "sar"
         modalities.append(mod)
+    
+    session_type = "metadata_only" if n == 0 else "single"
+    if n >= 2:
+        session_type = "bi_temporal" if len(set(modalities)) == 1 else "cross_modal_pair"
+        
+    return {"n_images": n, "modalities": modalities, "session_type": session_type, "has_aoi": bbox is not None}
 
-    if n == 1:
-        session_type = "single"
-    elif n == 2:
-        if len(set(modalities)) == 2:  # one optical + one SAR
-            session_type = "cross_modal_pair"
-        else:
-            session_type = "bi_temporal"
-    else:
-        session_type = "multi"
-
-    return {"n_images": n, "modalities": modalities, "session_type": session_type}
 
 
 def check_task_compatibility(task_type: str, profile: dict) -> tuple[bool, str]:
@@ -132,6 +121,8 @@ async def _run_specialist(
     query: str,
     config: dict,
     reconstruction_results: list[dict],
+    bbox: Optional[list[float]] = None,
+    aoi_metadata: Optional[dict] = None,
 ) -> dict:
     """Dispatch to the correct specialist model."""
     from ai.models.vqa import run_vqa
@@ -139,6 +130,29 @@ async def _run_specialist(
     from ai.models.change_detection import run_change_detection
     from ai.models.fusion import run_optical_sar_fusion
     from pipeline.ndvi.ndvi_module import run_ndvi_analysis, run_ndvi_change_analysis
+
+
+    if not image_paths:
+        from groq import Groq
+        from backend.config import settings
+        try:
+            client = Groq(api_key=settings.groq_api_key)
+            system_msg = "You are an expert geospatial AI analyst. Provide concise, highly accurate answers."
+            if aoi_metadata:
+                system_msg += f"\nSELECTED AOI (GeoJSON): {aoi_metadata.get('geojson')}\nCENTER: {aoi_metadata.get('centerLat')}, {aoi_metadata.get('centerLng')}\nBOUNDS: {bbox}\nAREA: {aoi_metadata.get('areaKm2')} km2\nCRS: EPSG:4326\nDo not invent satellite observations. Since no image is provided, rely on available geographical knowledge or state that imagery is required for a conclusive answer."
+            elif bbox:
+                system_msg += f"\nSELECTED AOI BOUNDS: {bbox}\nDo not invent satellite observations. Since no image is provided, rely on available geographical knowledge or state that imagery is required for a conclusive answer."
+            
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": query}
+                ],
+                model="qwen/qwen3.8-27b",
+            )
+            return {"answer": chat_completion.choices[0].message.content, "confidence": 0.0, "detected_objects": [], "limitations": ["No satellite imagery available for this AOI. Please run ANALYZE THIS VIEW to capture imagery."]}
+        except Exception as e:
+            return {"answer": f"Error consulting LLM: {str(e)}", "confidence": 0.0, "detected_objects": []}
 
     if task_type == "CAPTIONING":
         return await run_captioning(image_paths[0], config)
@@ -191,6 +205,7 @@ async def orchestrate(
     config: dict,
     task_hint: Optional[str] = None,
     bbox: Optional[list[float]] = None,
+    aoi_metadata: Optional[dict] = None,
 ) -> dict:
     """
     Main agentic orchestration function.
@@ -214,7 +229,7 @@ async def orchestrate(
 
     # ── Step 2: Input Profiling ───────────────────────────────────────────────
     trace_steps.append("Step 2: Profiling input images")
-    profile = profile_inputs(image_paths, image_metadata)
+    profile = profile_inputs(image_paths, image_metadata, bbox)
     trace_steps.append(
         f"Input profile: {profile['n_images']} image(s), "
         f"modalities={profile['modalities']}, session={profile['session_type']}"
@@ -277,7 +292,7 @@ async def orchestrate(
     
     async def run_specialist_task():
         try:
-            return await _run_specialist(task_type, image_paths, query, config, reconstruction_results)
+            return await _run_specialist(task_type, image_paths, query, config, reconstruction_results, bbox, aoi_metadata)
         except Exception as e:
             log.exception("Specialist execution failed")
             return {"answer": f"Analysis completed with partial results. ({e})", "confidence": 0.5, "detected_objects": []}
@@ -286,10 +301,22 @@ async def orchestrate(
         gate_request = {"cloud_coverage_pct": cloud_reconstruction_info["coverage_pct"], "confidence": 1.0, "task_type": task_type}
         return await asyncio.to_thread(run_validation_gates, gate_request, image_paths, config)
 
-    trace_steps.append("Step 6: Running G0-G8 scientific validation gates (Parallel)")
-    specialist_result, (gate_verdicts, gate_trace) = await asyncio.gather(
+    async def run_land_cover_task():
+        if not image_paths:
+            return {}
+        try:
+            from ai.models.land_cover_analysis import analyse_land_cover
+            import asyncio as _asyncio
+            return await _asyncio.to_thread(analyse_land_cover, image_paths[0], config.get("default_gsd_meters", 10.0))
+        except Exception as _lce:
+            log.warning("Land cover analysis skipped: %s", _lce)
+            return {}
+
+    trace_steps.append("Step 6: Running G0-G8 scientific validation gates & Land Cover (Parallel)")
+    specialist_result, (gate_verdicts, gate_trace), land_cover_analysis = await asyncio.gather(
         run_specialist_task(),
-        run_gates_task()
+        run_gates_task(),
+        run_land_cover_task()
     )
     trace_steps.extend(gate_trace)
 
@@ -309,13 +336,17 @@ async def orchestrate(
     detected_objects = specialist_result.get("detected_objects", [])
 
     # ── Land Cover Analysis (always run on primary image) ──────────────────
-    try:
-        from ai.models.land_cover_analysis import analyse_land_cover
-        import asyncio as _asyncio
-        land_cover_analysis = await _asyncio.to_thread(analyse_land_cover, image_paths[0], config.get("default_gsd_meters", 10.0))
-    except Exception as _lce:
-        log.warning("Land cover analysis skipped: %s", _lce)
+    if not image_paths:
         land_cover_analysis = {}
+    else:
+        try:
+            from ai.models.land_cover_analysis import analyse_land_cover
+            import asyncio as _asyncio
+            land_cover_analysis = await _asyncio.to_thread(analyse_land_cover, image_paths[0], config.get("default_gsd_meters", 10.0))
+        except Exception as _lce:
+            log.warning("Land cover analysis skipped: %s", _lce)
+            land_cover_analysis = {}
+
 
     # Build change metrics
     change_metrics = specialist_result.get("change_metrics")
