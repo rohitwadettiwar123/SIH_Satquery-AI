@@ -14,29 +14,29 @@ import {
 } from 'cesium';
 
 const WAYBACK_URLS: Record<number, string> = {
-  2010: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
-  2011: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
-  2012: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
-  2013: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
-  2014: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31144/{z}/{y}/{x}',
-  2015: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/30584/{z}/{y}/{x}',
-  2016: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23601/{z}/{y}/{x}',
-  2017: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/31026/{z}/{y}/{x}',
-  2018: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/32337/{z}/{y}/{x}',
-  2019: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/25944/{z}/{y}/{x}',
-  2020: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/23001/{z}/{y}/{x}',
-  2021: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/1049/{z}/{y}/{x}',
-  2022: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/42663/{z}/{y}/{x}',
-  2023: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/11475/{z}/{y}/{x}',
-  2024: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/41468/{z}/{y}/{x}',
-  2025: 'https://wayback.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/WMTS/1.0.0/default028mm/MapServer/tile/36557/{z}/{y}/{x}'
+  2010: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2011: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2012: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2013: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2014: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2015: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2016: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2017: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg',
+  2018: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2018_3857/default/g/{z}/{y}/{x}.jpg',
+  2019: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2019_3857/default/g/{z}/{y}/{x}.jpg',
+  2020: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg',
+  2021: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg',
+  2022: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2022_3857/default/g/{z}/{y}/{x}.jpg',
+  2023: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2023_3857/default/g/{z}/{y}/{x}.jpg',
+  2024: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',
+  2025: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg'
 };
 import {
   MapPin, Search, Satellite, ZoomIn, ZoomOut,
   Navigation, Layers, Copy, Trash2, ChevronRight,
   Activity, User, Globe, BarChart3, X, MousePointer2,
   Target, Crosshair, Sparkles, ArrowRight, CheckCircle,
-  Maximize2, Info,
+  Maximize2, Info, Send
 } from 'lucide-react';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -139,6 +139,123 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
       maximumLevel: 19
     });
   }, [selectedYear]);
+
+
+
+  // AI Query Panel States
+  const [showAiPanel, setShowAiPanel] = useState(false);
+  const [aiInput, setAiInput] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([]);
+
+  const sendAiQuery = async (queryText: string) => {
+    if (!queryText.trim()) return;
+    
+    if (!displayAoi) {
+      setAiMessages(prev => [...prev, 
+        { role: 'user', content: queryText },
+        { role: 'assistant', content: "No area selected. Draw an area on the map first." }
+      ]);
+      setAiInput('');
+      return;
+    }
+
+    const newMsg = { role: 'user' as const, content: queryText };
+    setAiMessages(prev => [...prev, newMsg]);
+    setAiInput('');
+    setIsAiLoading(true);
+
+    try {
+      const fullQuery = aiMessages.length > 1 
+        ? aiMessages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\\n') + `\\nUSER: ${queryText}` 
+        : queryText;
+
+      const res = await fetch('http://127.0.0.1:8000/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          query: fullQuery,
+          image_ids: [],
+          bbox: displayAoi ? [displayAoi.west, displayAoi.south, displayAoi.east, displayAoi.north] : undefined,
+          aoi_metadata: displayAoi ? {
+             centerLat: displayAoi.centerLat,
+             centerLng: displayAoi.centerLng,
+             areaKm2: displayAoi.areaKm2,
+             geojson: {
+                type: "Feature",
+                geometry: {
+                   type: "Polygon",
+                   coordinates: [[
+                     [displayAoi.west, displayAoi.north],
+                     [displayAoi.east, displayAoi.north],
+                     [displayAoi.east, displayAoi.south],
+                     [displayAoi.west, displayAoi.south],
+                     [displayAoi.west, displayAoi.north]
+                   ]]
+                }
+             }
+          } : undefined
+        })
+      });
+      const data = await res.json();
+      setAiMessages(prev => [...prev, { role: 'assistant', content: data.answer || data.detail || "Error retrieving response." }]);
+    } catch (e) {
+      setAiMessages(prev => [...prev, { role: 'assistant', content: "AI provider request failed. Please try again." }]);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleAskAiClick = () => {
+    setShowAiPanel(true);
+    if (aiMessages.length === 0) {
+      setAiMessages([{ role: 'assistant', content: 'Hello! I am ready to analyze this area. What would you like to know?' }]);
+    }
+  };
+
+  // AI Recon States
+  const [isScanning, setIsScanning] = useState(false);
+  const [reconResults, setReconResults] = useState<any[]>([]);
+  const [hoveredRecon, setHoveredRecon] = useState<any | null>(null);
+
+  const activateAIRecon = () => {
+    if (isScanning) return;
+    setIsScanning(true);
+    setReconResults([]);
+    setAoi(null);
+    setHoveredRecon(null);
+    
+    setTimeout(() => {
+      const centerLat = flyTarget?.lat || currentLocation?.lat || 22.54;
+      const centerLng = flyTarget?.lng || currentLocation?.lng || 88.38;
+      const results = [
+        { id: 1, lat: centerLat + 0.005, lng: centerLng - 0.004, type: 'Urban Change', conf: 87, label: 'HIGH INTEREST', color: '#ef4444' },
+        { id: 2, lat: centerLat - 0.003, lng: centerLng + 0.006, type: 'Vegetation Loss', conf: 92, label: 'VEGETATION', color: '#22c55e' },
+        { id: 3, lat: centerLat + 0.002, lng: centerLng + 0.002, type: 'Water Expansion', conf: 76, label: 'WATER', color: '#3b82f6' },
+        { id: 4, lat: centerLat - 0.006, lng: centerLng - 0.003, type: 'SAR Anomaly', conf: 94, label: 'SAR ANOMALY', color: '#a855f7' },
+      ];
+      setReconResults(results);
+      setIsScanning(false);
+    }, 2500);
+  };
+
+  const handleSelectRecon = (r: any) => {
+    const latDelta = 0.0045;
+    const lngDelta = 0.005;
+    const newAoi: any = {
+      centerLat: r.lat,
+      centerLng: r.lng,
+      north: r.lat + latDelta,
+      south: r.lat - latDelta,
+      east: r.lng + lngDelta,
+      west: r.lng - lngDelta,
+      areaKm2: 1.0,
+      reconInterest: r.label,
+    };
+    setAoi(newAoi);
+    setLiveAoi(null);
+    setFlyTarget({ lat: r.lat, lng: r.lng, alt: 3000 });
+  };
 
   // Live preview bounds during drag
   const drawStartRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -416,8 +533,22 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
             />
           </form>
 
-          {/* Satellite + Status badges */}
-          <div className="flex items-center gap-2">
+
+          {/* AI Recon */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={activateAIRecon}
+              disabled={isScanning}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono font-bold text-xs transition-all ${
+                isScanning || reconResults.length > 0 
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                  : 'bg-transparent text-gray-400 border border-gray-700/50 hover:bg-cyan-500/10 hover:text-cyan-400 hover:border-cyan-500/40'
+              }`}
+            >
+              <span className={isScanning ? 'animate-pulse text-cyan-400' : 'text-cyan-500'}>⚡</span>
+              {isScanning ? 'SCANNING AOI...' : 'AI RECON'}
+            </button>
+
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0a1628]/80 border border-gray-700/40">
               <Satellite className="w-3.5 h-3.5 text-cyan-400" />
               <span className="text-xs text-gray-300 font-mono">Sentinel-2</span>
@@ -545,6 +676,30 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
                 }}
               />
             )}
+            
+            {/* AI Recon Points */}
+            {reconResults.map((r, i) => (
+              <Entity
+                key={`recon-${i}`}
+                position={Cartesian3.fromDegrees(r.lng, r.lat, 100)}
+                point={{
+                  pixelSize: 14,
+                  color: Color.fromCssColorString(r.color).withAlpha(0.9),
+                  outlineColor: Color.WHITE,
+                  outlineWidth: 2,
+                }}
+                label={{
+                  text: r.label,
+                  font: 'bold 11px monospace',
+                  fillColor: Color.WHITE,
+                  showBackground: true,
+                  backgroundColor: Color.fromCssColorString(r.color).withAlpha(0.8),
+                  backgroundPadding: { x: 6, y: 4 } as any,
+                  pixelOffset: { x: 0, y: -20 } as any
+                }}
+              />
+            ))}
+
             {/* Final AOI */}
             {aoi && (
               <Entity
@@ -634,235 +789,142 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
         </div>
 
         {/* ── RIGHT PANEL: AREA SELECTOR ──────────────────────────────────────── */}
-        {panelVisible && (
-          <div className="w-68 flex-shrink-0 flex flex-col overflow-y-auto z-20 relative"
-               style={{
-                 width: '272px',
-                 background: 'linear-gradient(180deg, rgba(4,12,26,0.98) 0%, rgba(2,8,16,0.98) 100%)',
-                 borderLeft: '1px solid rgba(0,245,255,0.12)',
-               }}>
-            {/* Panel top glow line */}
-            <div className="absolute top-0 left-0 right-0 h-[1px]"
-                 style={{ background: 'linear-gradient(90deg, transparent, #00f5ff40, transparent)' }} />
-
-            {/* Panel Header */}
-            <div className="px-4 py-4 border-b border-cyan-900/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center">
-                    <Target className="w-3.5 h-3.5 text-cyan-400" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white font-mono tracking-widest">AREA SELECTOR</div>
-                    <div className="text-[9px] text-gray-600 mt-0.5">Geographic Intelligence</div>
-                  </div>
-                </div>
-                {aoi && (
-                  <div className="flex items-center gap-1 text-[10px] text-green-400 font-mono px-2 py-1 rounded-full bg-green-500/10 border border-green-600/30">
-                    <CheckCircle className="w-2.5 h-2.5" />
-                    Selected
-                  </div>
-                )}
-              </div>
+        
+        
+        {/* AI QUERY PANEL (ASK AI) */}
+        {showAiPanel && panelVisible && (
+          <div className="absolute top-24 right-[22rem] w-[26rem] bg-[#0a1118]/95 backdrop-blur-md border border-cyan-500/40 rounded-xl p-4 shadow-[0_0_30px_rgba(0,245,255,0.15)] flex flex-col z-30 pointer-events-auto">
+            <div className="flex justify-between items-center border-b border-cyan-500/30 pb-3 mb-3">
+              <span className="text-cyan-400 font-bold tracking-widest text-sm flex items-center gap-2"><Sparkles className="w-4 h-4"/> AI ANALYSIS</span>
+              <button onClick={() => setShowAiPanel(false)} className="text-gray-400 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
             </div>
-
-            {/* Draw Area Controls */}
-            <div className="p-3 border-b border-cyan-900/15">
-              {!isDrawing ? (
-                <div className="flex gap-2">
-                  <button onClick={startDrawing}
-                    className="flex-1 group relative overflow-hidden flex items-center gap-2.5 px-3 py-3 rounded-xl border border-cyan-600/40 bg-cyan-500/10 hover:bg-cyan-500/20 hover:border-cyan-500/70 transition-all duration-300 text-left">
-                    {/* Animated gradient bg on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
-                    <div className="relative w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <MousePointer2 className="w-4 h-4 text-cyan-400" />
-                    </div>
-                    <div className="relative">
-                      <div className="text-sm font-bold text-cyan-200">Draw Area</div>
-                      <div className="text-[10px] text-cyan-600 mt-0.5">Rectangle / Polygon</div>
-                    </div>
-                  </button>
-                  {aoi && (
-                    <button onClick={clearAoi}
-                      className="px-2.5 py-2 rounded-xl border border-gray-700/40 text-gray-500 hover:border-red-600/50 hover:text-red-400 hover:bg-red-500/5 transition-all text-xs flex flex-col items-center gap-1">
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span className="text-[9px]">Clear</span>
-                    </button>
-                  )}
+            
+            <div className="flex-1 overflow-y-auto max-h-80 mb-3 space-y-3 font-mono text-xs pr-1 custom-scrollbar">
+              {aiMessages.map((msg, idx) => (
+                <div key={idx} className={`p-2.5 rounded-lg whitespace-pre-wrap leading-relaxed ${msg.role === 'user' ? 'bg-cyan-900/20 text-cyan-100 ml-6 border border-cyan-800/50' : 'bg-[#101b2b] text-gray-300 mr-6 border border-gray-800'}`}>
+                  {msg.content}
                 </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 px-3 py-3 rounded-xl border border-cyan-400/50 bg-cyan-500/15 animate-pulse">
-                    <Crosshair className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: '2s' }} />
-                    <div>
-                      <div className="text-sm font-bold text-cyan-200">Drawing Mode Active</div>
-                      <div className="text-[10px] text-cyan-500">{drawHint || 'Click on map to begin'}</div>
-                    </div>
-                  </div>
-                  <button onClick={cancelDrawing}
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-gray-700/40 text-gray-500 hover:text-gray-300 hover:border-gray-600 transition-all text-xs">
-                    <X className="w-3 h-3" /> Cancel Drawing
-                  </button>
+              ))}
+              {isAiLoading && (
+                <div className="text-cyan-400 animate-pulse text-[10px] tracking-widest flex items-center gap-2 mt-2">
+                  <div className="w-3 h-3 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" />
+                  ANALYZING TELEMETRY...
                 </div>
               )}
             </div>
-
-            {/* Selected Area Details */}
-            <div className="p-3 flex-1">
-              {displayAoi ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-                    <span className="text-xs font-bold text-white tracking-wide">
-                      {liveAoi ? 'LIVE PREVIEW' : 'SELECTED AREA'}
-                    </span>
-                    {liveAoi && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />}
-                  </div>
-
-                  {/* Bounding box grid */}
-                  <div className="rounded-xl overflow-hidden border border-gray-800/50"
-                       style={{ background: 'rgba(6,15,30,0.8)' }}>
-                    {[
-                      { label: 'North Lat', val: displayAoi.north, suffix: '° N', color: 'text-cyan-300' },
-                      { label: 'South Lat', val: displayAoi.south, suffix: '° N', color: 'text-cyan-300' },
-                      { label: 'East Long', val: displayAoi.east,  suffix: '° E', color: 'text-teal-300' },
-                      { label: 'West Long', val: displayAoi.west,  suffix: '° W', color: 'text-teal-300' },
-                    ].map((row, i) => (
-                      <div key={row.label} className={`flex items-center justify-between px-3 py-2.5 ${i < 3 ? 'border-b border-gray-800/40' : ''}`}>
-                        <span className="text-[9px] text-gray-500 font-mono tracking-wide uppercase">{row.label}</span>
-                        <span className={`text-[11px] font-mono font-bold ${row.color}`}>
-                          {liveAoi
-                            ? <AnimatedValue value={row.val} decimals={4} />
-                            : row.val.toFixed(4)
-                          }
-                          {row.suffix}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Center + Area + CRS */}
-                  <div className="rounded-xl overflow-hidden border border-gray-800/50"
-                       style={{ background: 'rgba(6,15,30,0.8)' }}>
-                    <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-800/40">
-                      <span className="text-[9px] text-gray-500 font-mono">CENTER</span>
-                      <span className="text-[10px] font-mono font-bold text-gray-200">
-                        {displayAoi.centerLat.toFixed(4)}°N,{displayAoi.centerLng.toFixed(4)}°E
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-800/40">
-                      <span className="text-[9px] text-gray-500 font-mono">AREA</span>
-                      <span className="text-[12px] font-mono font-bold text-cyan-400">
-                        {liveAoi ? <AnimatedValue value={displayAoi.areaKm2} decimals={2} /> : displayAoi.areaKm2.toFixed(2)} km²
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between px-3 py-2.5">
-                      <span className="text-[9px] text-gray-500 font-mono">CRS</span>
-                      <span className="text-[10px] font-mono text-gray-400">EPSG:4326 (WGS84)</span>
-                    </div>
-                  </div>
-
-                  {/* Action buttons — only if final AOI */}
-                  {aoi && !liveAoi && (
-                    <div className="flex gap-2">
-                      <button onClick={copyCoords}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-gray-700/50 text-gray-400 hover:border-cyan-700/50 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all text-[11px]">
-                        <Copy className="w-3 h-3" />
-                        {copied ? '✓ Copied!' : 'Copy Coords'}
-                      </button>
-                      <button onClick={clearAoi}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-gray-700/50 text-gray-400 hover:border-red-600/50 hover:text-red-400 hover:bg-red-500/5 transition-all text-[11px]">
-                        <X className="w-3 h-3" /> Clear
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="relative w-16 h-16 mb-4">
-                    <div className="w-16 h-16 rounded-2xl bg-[#0a1628]/80 border border-gray-800/60 flex items-center justify-center">
-                      <MousePointer2 className="w-6 h-6 text-gray-700" />
-                    </div>
-                    <div className="absolute inset-0 rounded-2xl border border-gray-700/30 animate-ping" style={{ animationDuration: '3s' }} />
-                  </div>
-                  <p className="text-xs text-gray-600 leading-relaxed max-w-[180px] font-mono">
-                    No area selected. Draw an area on the map to begin analysis.
-                  </p>
-                  <button onClick={startDrawing}
-                    className="mt-4 px-4 py-2 rounded-xl text-xs font-bold text-cyan-400 border border-cyan-600/30 hover:bg-cyan-500/10 transition-all hover:border-cyan-500/60">
-                    + Draw Now
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Info bar */}
-            {aoi && (
-              <div className="px-3 py-2 border-t border-cyan-900/15">
-                <div className="flex items-center gap-2 text-[9px] text-gray-600 font-mono">
-                  <Info className="w-2.5 h-2.5 text-gray-700" />
-                  Click map to redraw • Hover box to view details
-                </div>
+            
+            {aiMessages.length <= 1 && (
+              <div className="grid grid-cols-1 gap-2 mb-4 font-mono">
+                <button onClick={() => sendAiQuery("What is happening in this region?")} className="text-left text-[11px] text-gray-400 hover:text-cyan-300 bg-[#0d1624] p-2 rounded-lg border border-gray-800 hover:border-cyan-800 transition-colors">"What is happening in this region?"</button>
+                <button onClick={() => sendAiQuery("Are there signs of flooding?")} className="text-left text-[11px] text-gray-400 hover:text-cyan-300 bg-[#0d1624] p-2 rounded-lg border border-gray-800 hover:border-cyan-800 transition-colors">"Are there signs of flooding?"</button>
+                <button onClick={() => sendAiQuery("What type of land cover is present?")} className="text-left text-[11px] text-gray-400 hover:text-cyan-300 bg-[#0d1624] p-2 rounded-lg border border-gray-800 hover:border-cyan-800 transition-colors">"What type of land cover is present?"</button>
               </div>
             )}
 
-            {/* Quick Presets accordion */}
-            <div className="border-t border-cyan-900/20">
-              <button className="w-full flex items-center justify-between px-4 py-3 text-xs text-gray-500 hover:text-gray-300 hover:bg-white/[0.02] transition-all">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="w-3.5 h-3.5 text-cyan-800" />
-                  <span className="font-mono tracking-wider">QUICK PRESETS</span>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5" />
+            <form onSubmit={(e) => { e.preventDefault(); sendAiQuery(aiInput); }} className="flex gap-2">
+              <input 
+                value={aiInput} 
+                onChange={e => setAiInput(e.target.value)} 
+                placeholder="Ask something about this selected area..." 
+                className="flex-1 bg-[#050b14] border border-cyan-800/50 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono transition-colors" 
+                disabled={isAiLoading}
+              />
+              <button 
+                type="submit" 
+                disabled={!aiInput.trim() || isAiLoading} 
+                className="bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 px-4 py-2 rounded-lg hover:bg-cyan-500/20 disabled:opacity-50 transition-colors flex items-center justify-center"
+              >
+                <Send className="w-4 h-4"/>
               </button>
-            </div>
-
-            {/* ANALYZE THIS VIEW CTA */}
-            <div className="p-3 border-t border-cyan-900/30 flex-shrink-0">
-              <button
-                onClick={handleAnalyzeClick}
-                disabled={!aoi || isExporting}
-                className={`w-full relative overflow-hidden flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-sm transition-all duration-300 ${
-                  aoi && !isExporting
-                    ? 'text-black cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                    : 'bg-gray-800/40 border border-gray-700/30 text-gray-600 cursor-not-allowed'
-                }`}
-                style={aoi && !isExporting ? {
-                  background: 'linear-gradient(135deg, #00f5ff 0%, #00c9b1 50%, #00a896 100%)',
-                  boxShadow: '0 0 25px rgba(0,245,255,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
-                } : {}}>
-                {aoi && !isExporting && (
-                  <>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
-                    <Sparkles className="w-4 h-4 animate-pulse" />
-                  </>
-                )}
-                {isExporting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-cyan-500">Retrieving Imagery...</span>
-                  </>
-                ) : (
-                  <>
-                    <Activity className="w-4 h-4" />
-                    <span>Analyze This View</span>
-                    {aoi && <ArrowRight className="w-4 h-4" />}
-                  </>
-                )}
-              </button>
-              {!aoi && (
-                <p className="text-[9px] text-gray-600 text-center mt-2 font-mono">SELECT AN AREA TO ENABLE</p>
-              )}
-            </div>
+            </form>
           </div>
         )}
-        {/* ── Earth Observation Timeline ─────────────────────────────────────── */}
+
+        {/* RIGHT PANEL: SMART AOI + INTELLIGENCE CARD */}
+        {panelVisible && (
+          <div className="w-80 flex-shrink-0 flex flex-col overflow-y-auto z-20 absolute right-20 top-24 pointer-events-none">
+            {displayAoi ? (
+              <div className="bg-[#0a1118]/85 backdrop-blur-md border border-cyan-500/30 rounded-xl shadow-[0_0_20px_rgba(0,245,255,0.1)] p-4 font-mono pointer-events-auto flex flex-col gap-4">
+                <div className="flex items-center gap-2 border-b border-cyan-500/30 pb-2">
+                  <Target className="w-4 h-4 text-cyan-400" />
+                  <span className="text-cyan-400 font-bold tracking-widest text-sm">◈ SELECTED AOI</span>
+                  <span className="ml-auto text-xs text-gray-400">AOI-01</span>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <div className="text-[10px] text-gray-500 tracking-wider mb-0.5">CENTER</div>
+                    <div className="text-gray-200 text-xs">{displayAoi.centerLat.toFixed(4)}° N, {displayAoi.centerLng.toFixed(4)}° E</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-500 tracking-wider mb-0.5">AREA</div>
+                    <div className="text-cyan-300 text-xs">{displayAoi.areaKm2.toFixed(2)} km²</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-500 tracking-wider mb-0.5">BOUNDS</div>
+                    <div className="text-gray-300 text-xs">{displayAoi.south.toFixed(2)}° — {displayAoi.north.toFixed(2)}° N</div>
+                    <div className="text-gray-300 text-xs">{displayAoi.west.toFixed(2)}° — {displayAoi.east.toFixed(2)}° E</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-gray-500 tracking-wider mb-0.5">CRS</div>
+                    <div className="text-gray-400 text-xs">EPSG:4326</div>
+                  </div>
+                  
+                  {(displayAoi as any).reconInterest && (
+                    <div>
+                      <div className="text-[10px] text-gray-500 tracking-wider mb-0.5">AI INTEREST</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-red-400 font-bold">███████████████░░ HIGH</div>
+                        <span className="text-[9px] bg-red-500/20 text-red-400 px-1 rounded">{(displayAoi as any).reconInterest}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-2 mt-2">
+                  <button onClick={handleAskAiClick} className="w-full py-2.5 border border-cyan-800/50 bg-[#0a1628] hover:bg-cyan-900/30 text-cyan-300 text-xs font-bold tracking-widest transition-colors">
+                    [ ASK AI ]
+                  </button>
+                  <button onClick={handleAnalyzeClick} disabled={isExporting} className="w-full py-2.5 border border-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-bold tracking-widest transition-colors shadow-[0_0_10px_rgba(0,245,255,0.2)]">
+                    {isExporting ? '[ PROCESSING... ]' : '[ ANALYZE THIS VIEW → ]'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-[#0a1118]/85 backdrop-blur-md border border-cyan-700/50 rounded-xl p-6 text-center pointer-events-auto flex flex-col items-center gap-3 shadow-[0_0_20px_rgba(0,245,255,0.05)]">
+                <Crosshair className="w-6 h-6 text-cyan-500/80" />
+                <div className="text-sm text-cyan-400 font-bold tracking-widest">SELECT AN AREA</div>
+                <div className="text-xs text-gray-500 font-mono">Draw an area on the map to begin investigation.</div>
+                <button onClick={startDrawing} className="mt-2 px-4 py-1.5 border border-cyan-800 hover:bg-cyan-900/30 hover:border-cyan-500 text-cyan-400 text-xs tracking-wider transition-colors">
+                  [ DRAW AREA ]
+                </button>
+              </div>
+            )}
+            
+            {reconResults.length > 0 && !displayAoi && (
+               <div className="mt-4 flex flex-col gap-2 pointer-events-auto">
+                 <div className="text-[10px] text-cyan-400 font-mono font-bold tracking-widest text-center mb-1">DEVELOPMENT / DEMO DATA</div>
+                 {reconResults.map((r, i) => (
+                   <div key={i} className="bg-[#0a1118]/90 border border-gray-700/50 hover:border-cyan-500/50 p-3 rounded-xl flex flex-col gap-1 cursor-pointer transition-colors backdrop-blur-md" onClick={() => handleSelectRecon(r)}>
+                     <div className="text-xs font-bold" style={{ color: r.color }}>{r.type}</div>
+                     <div className="text-[10px] text-gray-400">Confidence: {r.conf}%</div>
+                     <div className="text-[10px] text-gray-500">{r.lat.toFixed(4)}° N, {r.lng.toFixed(4)}° E</div>
+                     <div className="text-[10px] text-cyan-400 mt-1 hover:underline">[SELECT AREA]</div>
+                   </div>
+                 ))}
+               </div>
+            )}
+          </div>
+        )}
+
+
+        {/* Earth Observation Timeline */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-4xl px-4 pointer-events-auto">
              <div className="bg-[#0b101e] border border-[#1a253a] rounded-lg p-3 shadow-2xl flex flex-col gap-3 font-mono">
                {/* Header */}
                <div className="flex items-center justify-between">
                  <div className="flex items-center gap-3">
-                   <div className="text-[#ff9800] text-sm">⏳</div>
+                   <div className="text-[#ff9800] text-sm">🌍</div>
                    <div className="text-cyan-400 font-bold text-sm tracking-wide">
                      EARTH OBSERVATION TIMELINE
                      <span className="text-gray-400 font-normal ml-3 text-xs">
@@ -872,7 +934,7 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
                  </div>
                  <div className="flex items-center gap-2 text-xs">
                    <button className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#102a35] border border-cyan-800 text-cyan-400 transition-colors hover:bg-cyan-900/40">
-                     🛰️ Sentinel-2 Mosaic (Active)
+                     📡 Sentinel-2 Mosaic (Active)
                    </button>
                    <button className={`px-3 py-1 rounded border transition-colors ${timelineFilter === 'ALL' ? 'bg-[#102a35] border-cyan-800 text-cyan-400' : 'bg-transparent border-[#1a253a] text-gray-500 hover:text-gray-300'}`} onClick={() => setTimelineFilter('ALL')}>ALL</button>
                    <button className={`px-3 py-1 rounded border transition-colors ${timelineFilter === 'SENTINEL-2' ? 'bg-[#102a35] border-cyan-800 text-cyan-400' : 'bg-transparent border-[#1a253a] text-gray-500 hover:text-gray-300'}`} onClick={() => setTimelineFilter('SENTINEL-2')}>SENTINEL-2</button>
@@ -904,10 +966,11 @@ export default function Explorer3D({ onAnalyze, existingAoi }: Props) {
                {/* Footer text */}
                <div className="text-[10px] text-gray-400 tracking-wider flex gap-2">
                  <span>VERIFIED OBSERVATIONS:</span>
-                 <span className="text-[#ffb74d]">o No suitable open satellite observation was found for this location and date range. Satellite imagery coverage begins with mission launch dates.</span>
+                 <span className="text-[#ffb74d]">⚠️ EOX Sentinel-2 Global Mosaics are available from 2017 to 2024. Years outside this range will display the nearest available mosaic.</span>
                </div>
              </div>
           </div>
+
       </div>
     </div>
   );
