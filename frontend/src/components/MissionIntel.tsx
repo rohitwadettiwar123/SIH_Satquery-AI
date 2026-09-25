@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { AnalysisResult } from '../types';
 import {
   Binoculars, Layers, Droplets, Mountain, Cloud,
@@ -461,6 +463,27 @@ function AreaPieChart({ detectedObjects = [], deltaEntries = [], surfaceEntries 
 
 export default function MissionIntel({ result, isProcessing, uploads = [], selectedArea }: Props) {
 
+  
+  const downloadPDF = async () => {
+    const element = document.getElementById('mission-intel-result-panel');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { backgroundColor: '#020617', scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('satquery_analysis_report.pdf');
+    } catch (error) {
+      console.error('Failed to generate PDF', error);
+    }
+  };
+
   if (!result && !isProcessing) {
     return (
       <div className="mission-panel h-full flex flex-col p-4">
@@ -551,15 +574,22 @@ export default function MissionIntel({ result, isProcessing, uploads = [], selec
   }
 
   return (
-    <div className="mission-panel flex flex-col p-4 gap-4 overflow-y-auto h-full">
+    <div id="mission-intel-result-panel" className="mission-panel flex flex-col p-4 gap-4 overflow-y-auto h-full">
 
       {/* ── Header ─────────────────────────────────── */}
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <Binoculars className="w-4 h-4 text-amber-400" />
           <h2 className="font-mono text-amber-400 text-sm tracking-widest">RESULT</h2>
+          </div>
+          <button 
+            onClick={downloadPDF} 
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-900/40 border border-cyan-800 rounded text-cyan-400 text-[10px] font-mono hover:bg-cyan-800/60 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            DOWNLOAD REPORT
+          </button>
         </div>
-      </div>
 
       {/* ── LIVE SPATIAL EVIDENCE ──────────────────── */}
       <FadeIn delay={30}>
