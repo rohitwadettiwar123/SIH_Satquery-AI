@@ -14,6 +14,8 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[ChatMessage]
+    aoi: dict = None
+
 
 @router.post("/chat")
 async def chat_copilot(req: ChatRequest):
@@ -23,11 +25,25 @@ async def chat_copilot(req: ChatRequest):
     try:
         client = Groq(api_key=settings.groq_api_key)
         
+        
         # Convert history to Groq format
+        
+        system_content = "You are an advanced geospatial AI analyst. Provide concise, highly accurate answers."
+        if req.aoi:
+            system_content = f"""You are an expert geospatial AI analyst.
+USER QUESTION IS ABOUT THIS SPECIFIC GEOGRAPHIC REGION:
+SELECTED AOI (GeoJSON): {req.aoi.get('geojson')}
+CENTER: {req.aoi.get('centerLat')}, {req.aoi.get('centerLng')}
+BOUNDS: {req.aoi.get('south')} to {req.aoi.get('north')} Lat, {req.aoi.get('west')} to {req.aoi.get('east')} Lng
+AREA: {req.aoi.get('areaKm2')} km2
+CRS: EPSG:4326
+
+The AI must not invent satellite observations. If actual imagery/analysis is unavailable, explicitly state that the available data is insufficient instead of claiming that it detected something."""
+
         formatted_messages = [
             {
                 "role": "system",
-                "content": "You are Satquery Chatbot, a friendly and helpful AI expert in satellite imagery, remote sensing, Earth Engine (GEE), and GIS. If the user just says 'hi' or greets you, respond naturally, warmly, and concisely (e.g., 'Hello! How can I help you with your satellite data today?'). Do not give unprompted technical lectures. For technical questions, provide perfect, concise, and highly accurate answers, format code clearly, and prioritize scientific accuracy."
+                "content": system_content
             }
         ]
         for msg in req.messages:

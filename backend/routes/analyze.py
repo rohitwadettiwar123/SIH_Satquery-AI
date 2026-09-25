@@ -18,8 +18,8 @@ async def analyze(request: AnalysisRequest):
     Accepts image IDs (from /upload) + natural language query.
     Runs the full agentic pipeline: validation → reconstruction → specialist → fusion → audit.
     """
-    if not request.image_ids:
-        raise HTTPException(status_code=400, detail="At least one image_id is required.")
+    if request.image_ids is None:
+        request.image_ids = []
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
 
@@ -51,6 +51,7 @@ async def analyze(request: AnalysisRequest):
             config=settings.as_dict(),
             task_hint=request.task_hint,
             bbox=request.bbox,
+            aoi_metadata=request.aoi_metadata,
         )
     except Exception as e:
         log.exception("Orchestration failed")
@@ -60,10 +61,13 @@ async def analyze(request: AnalysisRequest):
 
     # ── Attach georeferencing metadata (GeoTIFF only) ───────────────────────
     try:
-        from backend.utils.geo_utils import extract_geo_metadata
-        geo = extract_geo_metadata(image_paths[0])
-        if geo is not None:
-            result["geo_metadata"] = geo.to_dict()
+        if image_paths:
+            from backend.utils.geo_utils import extract_geo_metadata
+            geo = extract_geo_metadata(image_paths[0])
+            if geo is not None:
+                result["geo_metadata"] = geo.model_dump()
+            else:
+                result["geo_metadata"] = None
         else:
             result["geo_metadata"] = None
     except Exception as geo_err:

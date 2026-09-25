@@ -31,7 +31,7 @@ class Settings:
         # AI models
         self.gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
         self.groq_api_key: str = os.getenv("GROQ_API_KEY", "")
-        self.gemini_model: str = cfg.get("gemini_model", "gemini-3.6-flash")
+        self.gemini_model: str = cfg.get("gemini_model", "gemini-1.5-flash")
         self.ollama_url: str = os.getenv("OLLAMA_URL", cfg.get("ollama_url", "http://localhost:11434"))
         self.ollama_model: str = cfg.get("ollama_model", "llava")
         self.use_ollama_fallback: bool = cfg.get("use_ollama_fallback", True)

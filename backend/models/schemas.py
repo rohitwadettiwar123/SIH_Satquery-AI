@@ -23,7 +23,8 @@ class AnalysisRequest(BaseModel):
     image_ids: list[str]
     query: str
     task_hint: Optional[str] = None    # Override auto-detected task type
-    bbox: Optional[list[float]] = None # Custom Area Selection [x1, y1, x2, y2]
+    bbox: Optional[list[float]] = None
+    aoi_metadata: Optional[dict] = None # Custom Area Selection [x1, y1, x2, y2]
 
 
 class AOIRequest(BaseModel):
