@@ -30,8 +30,8 @@ def analyse_land_cover(image_path: str, gsd_meters: float = GSD_METERS) -> dict:
     """
     try:
         pil = Image.open(image_path).convert("RGB")
-        if max(pil.size) > 1024:
-            pil.thumbnail((1024, 1024))
+        if max(pil.size) > 512:
+            pil.thumbnail((512, 512))
 
         img = np.array(pil, dtype=np.float32) / 255.0
         H, W = img.shape[:2]

@@ -99,145 +99,52 @@ async def run_change_detection(
         ssim_score = compute_ssim(img1, img2)
         change_vector = compute_change_vector(img1, img2)
 
-        # Threshold the change vector to get binary mask
-        threshold = float(np.percentile(change_vector, 80))
-        change_mask = change_vector > threshold
-        change_ratio = float(change_mask.mean() * 100)
+        # Create valid mask to ignore black borders
+        valid_mask1 = img1.sum(axis=2) > 15
+        valid_mask2 = img2.sum(axis=2) > 15
+        valid_mask = valid_mask1 & valid_mask2
+
+        # Threshold the change vector to get binary mask, restricted to valid pixels
+        valid_changes = change_vector[valid_mask]
+        if valid_changes.size > 0:
+            threshold = float(np.percentile(valid_changes, 80))
+        else:
+            threshold = float(np.percentile(change_vector, 80))
+            
+        change_mask = (change_vector > threshold) & valid_mask
+        
+        # Calculate ratio based on valid pixels, not entire image
+        valid_pixel_count = valid_mask.sum()
+        if valid_pixel_count > 0:
+            change_ratio = float((change_mask.sum() / valid_pixel_count) * 100)
+        else:
+            change_ratio = float(change_mask.mean() * 100)
 
         gsd = config.get("default_gsd_meters", 10.0)
         affected_area = compute_affected_area(change_mask, gsd)
         clusters = detect_change_clusters(change_mask, min_area=50)
 
         # AI description
-        description = await _ai_change_description(
-            query, img1_path, img2_path, ssim_score, change_ratio, affected_area, config
-        )
-
-        # Build detected_objects with REAL spectral class names
-        detected_objects = []
-        for i, c in enumerate(clusters[:5]):
-            bbox = c["bbox_normalized"]  # [x1, y1, x2, y2]
-            class_name = _classify_cluster(img1, img2, bbox)
-            confidence = round(min(0.97, 0.72 + c["severity_score"] * 0.25), 2)
-            detected_objects.append({
-                "class_name": class_name,
-                "confidence": confidence,
-                "bbox": {
-                    "x1": bbox[0],
-                    "y1": bbox[1],
-                    "x2": bbox[2],
-                    "y2": bbox[3],
-                },
-                "area_hectares": round(c["area_pixels"] * gsd ** 2 / 10000, 2),
-                "severity_score": c["severity_score"],
-            })
-
-        confidence = min(0.95, 0.65 + ssim_score * 0.3 + min(0.1, change_ratio / 100))
-
-        # Build pseudo-NDVI stats so the UI can render its Ranked Change table and Macro graphs
-        delta_ndvi = {}
-        for obj in detected_objects:
-            cls = obj["class_name"]
-            if cls not in delta_ndvi:
-                delta_ndvi[cls] = {"t0": 0.0, "t1": 0.0, "delta": 0.0, "pct": 0.0}
-            
-            # Simple heuristic for T0 vs T1 based on the class label
-            ha = obj["area_hectares"]
-            if "Loss" in cls or "Recession" in cls or "Demolition" in cls or "Excavation" in cls or "Fire" in cls:
-                delta_ndvi[cls]["t0"] += ha * 2.5
-                delta_ndvi[cls]["t1"] += ha
-                delta_ndvi[cls]["delta"] -= (ha * 1.5)
-            else:
-                delta_ndvi[cls]["t0"] += ha
-                delta_ndvi[cls]["t1"] += ha * 2.5
-                delta_ndvi[cls]["delta"] += (ha * 1.5)
-
-        for cls in delta_ndvi:
-             if delta_ndvi[cls]["t0"] > 0:
-                 delta_ndvi[cls]["pct"] = (delta_ndvi[cls]["delta"] / delta_ndvi[cls]["t0"]) * 100
+        from ai.models.vlm_client import call_vlm
+        prompt = f"You are an expert change detection analyst. Analyze this before/after satellite image pair. Objective metrics indicate a {change_ratio:.1f}% change ratio ({affected_area} km2 affected). {len(clusters)} major change clusters detected. User query: {query}. Describe the likely cause and nature of these changes concisely."
+        
+        try:
+            answer = await call_vlm(prompt, [img1_path, img2_path])
+        except Exception as e:
+            answer = f"Detected {change_ratio:.1f}% changed area ({affected_area} km2). (AI description failed: {e})"
 
         return {
-            "answer": description,
-            "confidence": round(confidence, 3),
-            "ssim_score": ssim_score,
-            "change_ratio_pct": round(change_ratio, 2),
-            "affected_area_km2": affected_area,
-            "detected_objects": detected_objects,
-            "ndvi_result": {
-                "stats": {"mean": 0.45, "median": 0.45, "std": 0.12, "class_percentages": {}},
-                "delta_ndvi": delta_ndvi
-            },
+            "answer": answer,
+            "confidence": 0.88,
+            "detected_objects": [],
             "change_metrics": {
                 "ssim_score": ssim_score,
-                "change_ratio_pct": round(change_ratio, 2),
+                "change_ratio_pct": change_ratio,
                 "affected_area_km2": affected_area,
-                "mean_delta": round(float(change_vector.mean()), 4),
-                "confidence_interval_95": [
-                    round(change_ratio * 0.93, 2),
-                    round(change_ratio * 1.07, 2),
-                ],
+                "cluster_count": len(clusters),
             },
+            "clusters": clusters
         }
     except Exception as e:
         log.exception("Change detection failed")
-        return {
-            "answer": f"Change analysis encountered an error: {e}",
-            "confidence": 0.3,
-            "detected_objects": [],
-            "ssim_score": 0.0,
-            "change_ratio_pct": 0.0,
-            "affected_area_km2": 0.0,
-        }
-
-
-async def _ai_change_description(
-    query: str,
-    img1_path: str,
-    img2_path: str,
-    ssim: float,
-    change_pct: float,
-    area: float,
-    config: dict,
-) -> str:
-    """Generate LLM description of the detected change."""
-    gemini_key = os.getenv("GEMINI_API_KEY", "")
-    if gemini_key:
-        try:
-            import io
-            from google import genai
-            from google.genai import types as gtypes
-            client = genai.Client(api_key=gemini_key)
-            MODEL = config.get("gemini_model", "gemini-3.6-flash")
-
-            def to_part(path):
-                img = Image.open(path)
-                if max(img.size) > 1024:
-                    img.thumbnail((1024, 1024))
-                buf = io.BytesIO()
-                img.save(buf, format="JPEG")
-                return gtypes.Part.from_bytes(data=buf.getvalue(), mime_type="image/jpeg")
-
-            prompt = gtypes.Part.from_text(text=
-                f"Compare these two satellite images (before/after). Query: {query}\n"
-                f"Deterministic metrics: SSIM={ssim:.4f}, Change area={change_pct:.1f}%, Affected area={area:.2f} km2.\n"
-                f"Describe what changed between T0 (first image) and T1 (second image). Be specific."
-            )
-            response = client.models.generate_content(
-                model=MODEL,
-                contents=[prompt, to_part(img1_path), to_part(img2_path)]
-            )
-            return response.text.strip()
-        except Exception as e:
-            log.warning("Gemini change description failed: %s", e)
-
-    # Deterministic fallback (structured for the RESULT panel)
-    change_level = "Significant" if change_pct > 20 else ("Moderate" if change_pct > 10 else "Minor")
-    return (
-        f"{change_level} structural and terrain changes detected between the T0 and T1 baseline images. "
-        f"Quantitative analysis confirms {change_pct:.1f}% of the total scene underwent surface-level transformation. "
-        f"Total affected physical area is approximately {area:.2f} km² ({area * 100:.1f} hectares). "
-        f"Sub-pixel Structural Similarity (SSIM) registered at {ssim:.4f}, indicating statistically confident localized variance. "
-        f"Mean Change Vector Magnitude confirms deviations well above the established noise floor. "
-        f"Multiple distinct change clusters were isolated, spectral-classified, and geographically bounded for tactical review. "
-        f"Cryptographic hash and evidence provenance generated successfully for audit logging. "
-    )
+        return {"answer": f"Error: {e}", "confidence": 0.0, "detected_objects": []}
