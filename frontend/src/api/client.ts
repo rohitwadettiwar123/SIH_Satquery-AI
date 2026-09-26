@@ -12,11 +12,19 @@ export const client = {
     const { data } = await api.post<UploadResponse>('/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+    if (data.preview_url && data.preview_url.startsWith('/uploads')) {
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '');
+        data.preview_url = baseUrl + data.preview_url;
+    }
     return data;
   },
 
   async fetchAoiImage(aoi: { north: number; south: number; east: number; west: number, year: number }): Promise<UploadResponse> {
     const { data } = await api.post<UploadResponse>('/upload/aoi', aoi);
+    if (data.preview_url && data.preview_url.startsWith('/uploads')) {
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '');
+        data.preview_url = baseUrl + data.preview_url;
+    }
     return data;
   },
 
