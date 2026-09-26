@@ -2,7 +2,7 @@ import axios from 'axios';
 import { UploadResponse, AnalysisResult } from '../types';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
 });
 
 export const client = {
