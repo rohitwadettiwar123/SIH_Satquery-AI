@@ -114,7 +114,7 @@ const DEMO_UPLOADS: UploadResponse[] = [
     upload_time: new Date().toISOString(),
     modality: 'optical',
     cloud_coverage_pct: 5,
-    preview_url: 'http://127.0.0.1:8000/uploads/demo_change_t0.jpg',
+    preview_url: `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '')}/uploads/demo_change_t0.jpg`,
     geo_metadata: {
       is_georeferenced: true,
       crs_epsg: 32644,
@@ -131,7 +131,7 @@ const DEMO_UPLOADS: UploadResponse[] = [
     upload_time: new Date().toISOString(),
     modality: 'optical',
     cloud_coverage_pct: 18,
-    preview_url: 'http://127.0.0.1:8000/uploads/demo_change_t1.jpg',
+    preview_url: `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '')}/uploads/demo_change_t1.jpg`,
     geo_metadata: {
       is_georeferenced: true,
       crs_epsg: 32644,
@@ -152,7 +152,7 @@ const FLOOD_DEMO_UPLOADS: UploadResponse[] = [
     upload_time: new Date().toISOString(),
     modality: 'optical',
     cloud_coverage_pct: 0,
-    preview_url: 'http://127.0.0.1:8000/uploads/demo_flood_t0.jpg',
+    preview_url: `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '')}/uploads/demo_flood_t0.jpg`,
     geo_metadata: {
       is_georeferenced: true,
       crs_epsg: 32644,
@@ -169,7 +169,7 @@ const FLOOD_DEMO_UPLOADS: UploadResponse[] = [
     upload_time: new Date().toISOString(),
     modality: 'optical',
     cloud_coverage_pct: 0,
-    preview_url: 'http://127.0.0.1:8000/uploads/demo_flood_t1.jpg',
+    preview_url: `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '')}/uploads/demo_flood_t1.jpg`,
     geo_metadata: {
       is_georeferenced: true,
       crs_epsg: 32644,

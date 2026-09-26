@@ -45,7 +45,7 @@ export default function UploadPanel({ uploads, setUploads }: Props) {
       upload_time: new Date().toISOString(),
       modality,
       cloud_coverage_pct: cloud,
-      preview_url: `http://127.0.0.1:8000/uploads/${imgFile}`
+      preview_url: `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api').replace('/api', '')}/uploads/${imgFile}`
     });
 
     if (type === 'optical') {
