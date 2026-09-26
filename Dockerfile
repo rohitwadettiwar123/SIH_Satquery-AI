@@ -3,16 +3,13 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-# Install system dependencies for OpenCV and rasterio
+# Install build essentials in case any Python package needs compilation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc g++ \
-    libgdal-dev \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements.txt
 
 # Production stage
 FROM python:3.11-slim
@@ -20,9 +17,6 @@ FROM python:3.11-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgdal-dev \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
