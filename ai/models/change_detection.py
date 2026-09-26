@@ -126,10 +126,10 @@ async def run_change_detection(
 
         # AI description
         from ai.models.vlm_client import call_vlm
-        prompt = f"You are an expert change detection analyst. Analyze this before/after satellite image pair. Objective metrics indicate a {change_ratio:.1f}% change ratio ({affected_area} km2 affected). {len(clusters)} major change clusters detected. User query: {query}. Describe the likely cause and nature of these changes concisely."
+        prompt = f"You are an expert change detection analyst. Analyze this before/after satellite image pair. Objective metrics indicate a {change_ratio:.1f}% change ratio ({affected_area} km2 affected). {len(clusters)} major change clusters detected. User query: {query}. Give a detailed, exact description of the primary finding, outlining what specifically changed, likely causes, and impact."
         
         try:
-            answer = await call_vlm(prompt, [img1_path, img2_path])
+            answer = await call_vlm(prompt, [img1_path, img2_path], max_tokens=500)
         except Exception as e:
             answer = f"Detected {change_ratio:.1f}% changed area ({affected_area} km2). (AI description failed: {e})"
 

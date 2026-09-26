@@ -35,8 +35,15 @@ function TraceStepCard({ step, index }: { step: string; index: number }) {
   }, [index]);
 
   // Parse confidence from step text if present
-  const confMatch = step.match(/(\d{2,3})%/);
-  const conf = confMatch ? parseInt(confMatch[1]) : 100;
+  let conf = 100;
+  const confMatchDecimal = step.match(/confidence=([0-9.]+)/i);
+  const confMatchPercent = step.match(/(\d{2,3})%/);
+  
+  if (confMatchDecimal) {
+    conf = Math.round(parseFloat(confMatchDecimal[1]) * 100);
+  } else if (confMatchPercent) {
+    conf = parseInt(confMatchPercent[1]);
+  }
   
   // Clean up step text to remove the percentage from the main display since we show it below
   const stepText = step.replace(/—\s*\d{2,3}%/, '').replace(/Step \d+:\s*/, '');
@@ -46,7 +53,7 @@ function TraceStepCard({ step, index }: { step: string; index: number }) {
 
   return (
     <div
-      className={`min-w-[280px] w-[280px] flex-shrink-0 flex items-stretch transition-all duration-500 ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
+      className={`min-w-[280px] w-[280px] h-[140px] flex-shrink-0 flex items-stretch transition-all duration-500 ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
     >
       <div className="flex-1 bg-[#111827] border border-[#1f2937] rounded-xl p-5 flex flex-col justify-between hover:border-[#374151] transition-colors shadow-lg">
         <div>
