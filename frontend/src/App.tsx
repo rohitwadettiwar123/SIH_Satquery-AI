@@ -413,6 +413,17 @@ function App() {
                 setSelectedArea({ x1: 0, y1: 0, x2: 1, y2: 1 });
                 setViewMode('tactical');
                 
+                // Auto execute the analysis
+                setIsProcessing(true);
+                try {
+                  const res = await client.analyze([aoiImage.file_id], "Analyze this geographical region and identify primary features.", undefined, [0, 0, 1, 1]);
+                  setResult(res);
+                } catch (analyzeErr) {
+                  console.error("Auto-analyze failed", analyzeErr);
+                } finally {
+                  setIsProcessing(false);
+                }
+                
               } catch (error: any) {
                 console.error("Failed to retrieve imagery for AOI:", error);
                 alert("Failed to retrieve imagery from provider. Please check your connection or try a different area.");
