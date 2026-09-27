@@ -19,7 +19,6 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
     if gemini_key:
         try:
             genai.configure(api_key=gemini_key)
-            # Use gemini-1.5-flash as the standard fast vision model
             model = genai.GenerativeModel("gemini-1.5-flash")
             
             contents = [system_prompt]
@@ -32,5 +31,6 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
             return resp.text.strip() if resp.text else "Analysis complete."
         except Exception as e:
             log.warning(f"Gemini Vision failed: {e}.")
+            raise RuntimeError(f"Gemini API Error: {str(e)}")
             
-    raise RuntimeError("No VLM API keys configured or all VLM calls failed.")
+    raise RuntimeError("No VLM API keys configured in Render environment variables.")
