@@ -19,7 +19,7 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
     if gemini_key:
         try:
             genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-1.5-flash-latest")
             
             contents = [system_prompt]
             contents.extend(pil_images)
