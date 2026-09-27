@@ -11,7 +11,7 @@ scikit-image
 Pillow
 aiofiles
 httpx
-google-genai
+google-generativeai
 reportlab
 python-jose
 groq
