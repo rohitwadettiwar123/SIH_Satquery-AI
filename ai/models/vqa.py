@@ -81,11 +81,11 @@ def get_valid_bbox(image_path: str) -> dict:
         rows = np.any(valid_mask, axis=1)
         cols = np.any(valid_mask, axis=0)
         if not np.any(rows) or not np.any(cols):
-            return {"label": "Analyzed Area", "confidence": 1.0, "bbox": {"x1": 0.0, "y1": 0.0, "x2": 1.0, "y2": 1.0}}
+            return {"class_name": "Analyzed Area", "confidence": 1.0, "bbox": {"x1": 0.0, "y1": 0.0, "x2": 1.0, "y2": 1.0}}
         ymin, ymax = np.where(rows)[0][[0, -1]]
         xmin, xmax = np.where(cols)[0][[0, -1]]
         return {
-            "label": "Analyzed Area",
+            "class_name": "Analyzed Area",
             "confidence": 1.0,
             "bbox": {
                 "x1": float(xmin / W),
@@ -95,4 +95,4 @@ def get_valid_bbox(image_path: str) -> dict:
             }
         }
     except Exception:
-        return {"label": "Analyzed Area", "confidence": 1.0, "bbox": {"x1": 0.0, "y1": 0.0, "x2": 1.0, "y2": 1.0}}
+        return {"class_name": "Analyzed Area", "confidence": 1.0, "bbox": {"x1": 0.0, "y1": 0.0, "x2": 1.0, "y2": 1.0}}
