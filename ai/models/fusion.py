@@ -22,21 +22,21 @@ async def run_optical_sar_fusion(
     except Exception:
         ssim_val = 0.0
 
-    prompt = f"You are a remote sensing expert analysing an Optical and SAR image pair. Cross-modal structural similarity (SSIM) is {ssim_val:.2f}. Briefly describe the complementary information visible in the SAR image compared to the Optical image. Answer concisely.\n\nUser query: {query}"
+    prompt = f"You are a remote sensing expert analysing an Optical and SAR image pair. Cross-modal structural similarity (SSIM) is {ssim_val:.2f}. Provide a highly detailed, exact description of the primary finding, outlining the complementary information visible in the SAR image compared to the Optical image. Describe specific changes or structures. User query: {query}"
     
     try:
-        answer = await call_vlm(prompt, [opt_path, sar_path])
+        answer = await call_vlm(prompt, [opt_path, sar_path], max_tokens=500)
         return {
             "answer": answer,
             "confidence": 0.86,
-            "detected_objects": [get_valid_bbox(image_path)],
+            "detected_objects": [get_valid_bbox(opt_path)],
             "change_metrics": {"ssim_score": ssim_val},
         }
     except Exception as e:
         return {
             "answer": f"Cross-modal structural similarity (SSIM): {ssim_val:.2f}. (AI description unavailable: {e})",
             "confidence": 0.70,
-            "detected_objects": [get_valid_bbox(image_path)],
+            "detected_objects": [get_valid_bbox(opt_path)],
             "change_metrics": {"ssim_score": ssim_val},
         }
 
