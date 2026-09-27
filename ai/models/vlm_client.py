@@ -34,12 +34,12 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
     }
     
     models_to_try = [
-        "gemini-1.5-flash",
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-pro",
-        "gemini-1.5-pro-latest",
-        "gemini-1.0-pro-vision-latest",
-        "gemini-pro-vision"
+        "gemini-3.6-flash",
+        "gemini-3.7-flash",
+        "gemini-3.5-flash",
+        "gemini-2.5-flash",
+        "gemini-flash-latest",
+        "gemini-3.8-flash"
     ]
     
     last_error = ""
