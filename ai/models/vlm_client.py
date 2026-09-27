@@ -28,7 +28,7 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
             }
         })
             
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={gemini_key}"
     payload = {
         "contents": [{"parts": parts}],
         "generationConfig": {"maxOutputTokens": max_tokens}
