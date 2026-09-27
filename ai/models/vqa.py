@@ -10,10 +10,10 @@ log = logging.getLogger("satquery.ai.vqa")
 
 async def run_vqa(query: str, image_paths: list[str], config: dict) -> dict:
     from ai.models.vlm_client import call_vlm
-    prompt = f"You are an expert remote sensing analyst. Answer concisely in 2-3 sentences.\n\nQuestion: {query}"
+    prompt = f"You are an expert remote sensing analyst. Provide a highly detailed, exact description of the primary finding and all relevant geographical insights.\n\nQuestion: {query}"
     
     try:
-        answer = await call_vlm(prompt, image_paths[:2])
+        answer = await call_vlm(prompt, image_paths[:2], max_tokens=500)
         return {
             "answer": answer,
             "confidence": 0.88,
