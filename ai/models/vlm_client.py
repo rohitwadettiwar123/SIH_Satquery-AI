@@ -70,10 +70,12 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
                     log.warning(f"Rate limited on {model_name}, waiting {wait_secs:.1f}s then trying next model...")
                     await asyncio.sleep(wait_secs)
                     continue  # try next model
-                elif resp.status_code == 404:
-                    continue  # model not found, try next
+                elif resp.status_code in (404, 503, 502, 500):
+                    # Model not found, overloaded or server error - try next model
+                    log.warning(f"Model {model_name} returned {resp.status_code}, trying next model...")
+                    continue
                 else:
-                    break  # other error, stop trying
+                    break  # unrecoverable error, stop trying
                     
             except Exception as e:
                 last_error = f"Gemini Request Failed ({model_name}): {e}"
