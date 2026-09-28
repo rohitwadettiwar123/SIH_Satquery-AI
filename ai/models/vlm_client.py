@@ -1,7 +1,9 @@
 import os
 import io
 import base64
+import asyncio
 import logging
+import re
 import httpx
 from PIL import Image
 
@@ -47,7 +49,7 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
         for model_name in models_to_try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
             try:
-                resp = await client.post(url, json=payload, timeout=30.0)
+                resp = await client.post(url, json=payload, timeout=60.0)
                 data = resp.json()
                 
                 if resp.status_code == 200:
@@ -56,14 +58,26 @@ async def call_vlm(system_prompt: str, image_paths: list[str], max_tokens: int =
                         return text.strip()
                     except (KeyError, IndexError):
                         return "Analysis complete."
+                
+                err_msg = data.get("error", {}).get("message", str(data))
+                last_error = f"Gemini API Error ({model_name}): {err_msg}"
+                
+                if resp.status_code == 429:
+                    # Rate limited - extract retry delay and wait, then try next model
+                    retry_match = re.search(r"retry in ([\d.]+)s", err_msg)
+                    wait_secs = float(retry_match.group(1)) if retry_match else 5.0
+                    wait_secs = min(wait_secs, 15.0)  # cap wait at 15s
+                    log.warning(f"Rate limited on {model_name}, waiting {wait_secs:.1f}s then trying next model...")
+                    await asyncio.sleep(wait_secs)
+                    continue  # try next model
+                elif resp.status_code == 404:
+                    continue  # model not found, try next
                 else:
-                    err_msg = data.get("error", {}).get("message", str(data))
-                    last_error = f"Gemini API Error ({model_name}): {err_msg}"
-                    # If it's a 404, we continue to the next model. Otherwise, break and raise.
-                    if resp.status_code != 404:
-                        break
+                    break  # other error, stop trying
+                    
             except Exception as e:
                 last_error = f"Gemini Request Failed ({model_name}): {e}"
+                continue
                 
     log.warning(f"All models failed. Last error: {last_error}")
     raise RuntimeError(last_error)
